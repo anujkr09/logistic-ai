@@ -391,18 +391,38 @@ button,
     padding:14px;
   }
 
-  .map,
-  .google-map-shell,
-  .google-map-canvas,
-  .leaflet-map-shell .leaflet-container,
-  .route-map{
-    min-height:480px;
+  .map{
+    min-height:0;
+    height:auto;
+    overflow:visible;
+    background:#eef5f7;
+  }
+
+  .google-map-shell{
+    min-height:0;
+    height:auto;
+    padding-top:360px;
+    overflow:visible;
+    background:#eef5f7;
+  }
+
+  .google-map-canvas{
+    inset:0 0 auto 0;
+    min-height:0;
+    height:360px;
+  }
+
+  .leaflet-map-shell .leaflet-container{
+    min-height:0;
+    height:360px;
   }
 
   .google-map-overlay{
-    left:8px;
-    right:8px;
-    bottom:8px;
+    position:static;
+    display:grid;
+    gap:8px;
+    padding:8px;
+    background:#eef5f7;
   }
 
   .google-map-summary,
@@ -413,14 +433,42 @@ button,
   }
 
   .map-route-panel{
-    max-height:240px;
+    width:100%;
+    max-height:220px;
     overflow:auto;
+    box-shadow:none;
   }
 
   .map-status{
-    left:10px;
-    right:10px;
-    bottom:10px;
+    position:static;
+    margin:8px;
+  }
+
+  .route-map{
+    min-height:360px;
+    height:360px;
+    overflow:hidden;
+  }
+
+  .route-map .map-insights,
+  .route-map .route-stages,
+  .route-map .fraud-alert,
+  .route-map .map-status{
+    display:none;
+  }
+
+  .route-map .pin-label{
+    max-width:120px;
+    padding:7px 9px;
+  }
+
+  .route-map .pin-label b{
+    font-size:10px;
+  }
+
+  .route-map .pin-label span{
+    max-width:92px;
+    font-size:11px;
   }
 
   .tracking-chat-form,
@@ -514,12 +562,22 @@ button,
     max-width:none;
   }
 
-  .map,
-  .google-map-shell,
+  .google-map-shell{
+    padding-top:320px;
+  }
+
   .google-map-canvas,
   .leaflet-map-shell .leaflet-container,
   .route-map{
-    min-height:420px;
+    height:320px;
+  }
+
+  .route-map{
+    min-height:320px;
+  }
+
+  .map-route-panel{
+    max-height:190px;
   }
 }
 
