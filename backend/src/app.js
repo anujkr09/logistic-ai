@@ -45,25 +45,9 @@ app.use('/api/ai/public', publicAiRoutes);
 app.use('/api/ui', uiRoutes);
 
 const frontendDir = path.resolve(__dirname, '../../frontend');
-const dynamicApp = path.join(frontendDir, 'app.html');
-const frontendIndex = fs.existsSync(dynamicApp) ? dynamicApp : path.join(frontendDir, 'index.html');
+const frontendIndex = path.join(frontendDir, 'index.html');
 
 if (fs.existsSync(frontendIndex)) {
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api/')) return next();
-    if (req.path.startsWith('/assets/') || req.path.startsWith('/socket.io/')) return next();
-    if (req.path === '/manifest.webmanifest' || req.path === '/service-worker.js') return next();
-
-    const ext = path.extname(req.path);
-    const wantsHtml = req.accepts('html');
-    if (!ext || ext === '.html') {
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-      return res.sendFile(frontendIndex);
-    }
-
-    return next();
-  });
-
   app.use(express.static(frontendDir, {
     setHeaders(res, filePath) {
       const name = path.basename(filePath);

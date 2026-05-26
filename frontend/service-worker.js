@@ -1,14 +1,19 @@
-const CACHE_NAME = 'shipx-ai-logistics-dynamic-v1';
+const CACHE_NAME = 'shipx-ai-logistics-v31';
 const APP_SHELL = [
   './',
-  './app.html',
-  './manifest.webmanifest?v=dynamic1',
+  './index.html',
+  './manifest.webmanifest?v=shipx31',
   './assets/css/style.css?v=shipx30',
+  './assets/css/animations.css?v=shipx30',
+  './assets/css/responsive.css?v=shipx30',
   './assets/css/tracking.css?v=shipx30',
   './assets/css/chatbot.css?v=shipx30',
   './assets/css/dashboard.css?v=shipx30',
-  './assets/css/dynamic-app.css?v=dynamic1',
-  './assets/js/dynamicApp.js?v=dynamic1',
+  './assets/js/app.js?v=shipx30',
+  './assets/js/universalChatbot.js?v=shipx30',
+  './assets/js/auth.js?v=shipx30',
+  './assets/js/maps.js?v=shipx30',
+  './assets/js/tracking.js?v=shipx30',
   './assets/img/app-icon-192.png',
   './assets/img/app-icon-512.png',
   './assets/img/download.png',
@@ -41,7 +46,7 @@ self.addEventListener('fetch', (event) => {
   if (isNavigation) {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
-        .catch(() => caches.match('./app.html'))
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }
@@ -53,6 +58,6 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./app.html')))
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
   );
 });

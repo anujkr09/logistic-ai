@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 
 const PORT = process.env.PORT || process.env.FRONTEND_PORT || 3000;
-const dynamicApp = path.join(__dirname, 'app.html');
-const fallbackFile = require('fs').existsSync(dynamicApp) ? dynamicApp : path.join(__dirname, 'index.html');
+const fallbackFile = path.join(__dirname, 'index.html');
 
 app.set('trust proxy', true);
 
@@ -28,19 +28,6 @@ app.get('/download-app', (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Content-Disposition', 'attachment; filename="shipX AI Logistics.html"');
   res.send(launcher);
-});
-
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/assets/')) return next();
-  if (req.path === '/manifest.webmanifest' || req.path === '/service-worker.js') return next();
-
-  const ext = path.extname(req.path);
-  if (!ext || ext === '.html') {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    return res.sendFile(fallbackFile);
-  }
-
-  return next();
 });
 
 // Serve static files from the current directory
