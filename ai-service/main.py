@@ -4,6 +4,9 @@ from typing import AsyncGenerator, Optional
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="shipX AI Service")
 
@@ -255,8 +258,7 @@ async def stream_gemini_chat(messages: list[dict], model: str) -> AsyncGenerator
     stream = client.models.generate_content_stream(
         model=model,
         contents=prompt,
-        system_instruction=system,
-        config={"temperature": 0.2},
+        config={"temperature": 0.2, "system_instruction": system},
     )
 
     for chunk in stream:
@@ -269,7 +271,7 @@ async def stream_gemini_chat(messages: list[dict], model: str) -> AsyncGenerator
 async def stream_llm(messages: list[dict]) -> AsyncGenerator[str, None]:
     provider = (_env("AI_PROVIDER", "openai") or "openai").lower()
     openai_model = _env("OPENAI_MODEL", "gpt-4o-mini")
-    gemini_model = _env("GEMINI_MODEL", "gemini-1.5-pro")
+    gemini_model = _env("GEMINI_MODEL", "gemini-2.5-flash")
 
     last_err: Optional[Exception] = None
 

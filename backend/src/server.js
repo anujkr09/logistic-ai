@@ -6,13 +6,9 @@ const { startAutoTracker } = require('./services/autoTracker');
 
 const PORT = process.env.PORT || 4000;
 
-connectMongo()
-  .then(() => {
-    initSocket(app, PORT);
-    startAutoTracker();
-  })
-  .catch((err) => {
-    console.error('Failed to start backend', err);
-    process.exit(1);
-  });
+initSocket(app, PORT);
+startAutoTracker();
 
+connectMongo().catch((err) => {
+  console.error('MongoDB connection failed. The frontend is still available, but data routes need MONGODB_URI.', err.message);
+});
