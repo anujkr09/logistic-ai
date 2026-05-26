@@ -93,12 +93,14 @@
 
     const links = isAdmin(user)
       ? [
+          ['Home', '../index.html'],
           ['Dashboard', './admin-dashboard.html'],
           ['Profile', './profile.html'],
           ['Warehouses', './warehouses.html'],
           ['Track', './tracking.html'],
         ]
       : [
+          ['Home', '../index.html'],
           ['Dashboard', './customer-dashboard.html'],
           ['Profile', './profile.html'],
           ['Track Shipment', './tracking.html'],

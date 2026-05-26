@@ -229,8 +229,8 @@
 
     const dashboardLink = document.getElementById('dashboardNavLink');
     if (dashboardLink) {
-      dashboardLink.href = pageUrl('tracking.html');
-      dashboardLink.textContent = 'Tracking';
+      dashboardLink.href = pageUrl(isAdmin ? 'admin-dashboard.html' : 'customer-dashboard.html');
+      dashboardLink.textContent = 'Dashboard';
     }
 
     ensureProfileAction();
