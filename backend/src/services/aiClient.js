@@ -239,6 +239,43 @@ function normalizedScreenShipment(message, context = {}) {
   };
 }
 
+function projectHowToAnswer(message) {
+  const text = String(message || '').toLowerCase();
+  const asksTrackingHelp = (
+    /\bhow\s+(do|to|can)\s+(i\s+)?track\b/i.test(text) ||
+    /\btrack\s+(my\s+)?(shipment|parcel|package|order)\b/i.test(text) ||
+    /\btracking\s+(kaise|kahan|kaha|help|process)\b/i.test(text) ||
+    /\bshipment\s+kaise\s+track\b/i.test(text)
+  );
+
+  if (!asksTrackingHelp) return null;
+
+  const hi = preferredLanguage(message) === 'hi';
+  if (hi) {
+    return {
+      reply: [
+        'Shipment track karne ke liye:',
+        '1. Tracking page open karo.',
+        '2. Apna tracking number paste karo, jaise SX-8042 ya SX-604547.',
+        '3. Track button dabao.',
+        '4. App current location, status, route, ETA, weather, delay reason, transport mode aur timeline dikhayega.',
+        'Agar tracking number nahi hai to sender/admin se full tracking number lo.',
+      ].join('\n'),
+    };
+  }
+
+  return {
+    reply: [
+      'To track a shipment:',
+      '1. Open the Tracking page.',
+      '2. Paste your tracking number, for example SX-8042 or SX-604547.',
+      '3. Click Track.',
+      '4. The app will show current location, status, route, ETA, weather, delay reason, transport mode, and timeline.',
+      'If you do not have a tracking number, ask the sender/admin for the full tracking number.',
+    ].join('\n'),
+  };
+}
+
 async function callOpenAiChat({ message, trackingNumber, companyId, context, role }) {
   if (!OPENAI_API_KEY) return null;
 
@@ -356,6 +393,9 @@ function fallbackChat({ message, trackingNumber, context }) {
 }
 
 async function chat({ message, trackingNumber, companyId, context, role }) {
+  const howTo = projectHowToAnswer(message);
+  if (howTo) return howTo;
+
   if (OPENAI_API_KEY) {
     try {
       const openAiReply = await callOpenAiChat({ message, trackingNumber, companyId, context, role });
@@ -374,6 +414,12 @@ async function chat({ message, trackingNumber, companyId, context, role }) {
 }
 
 async function* streamChat({ message, trackingNumber, companyId, context, role }) {
+  const howTo = projectHowToAnswer(message);
+  if (howTo) {
+    yield howTo.reply;
+    return;
+  }
+
   if (OPENAI_API_KEY) {
     try {
       const openAiReply = await callOpenAiChat({ message, trackingNumber, companyId, context, role });
