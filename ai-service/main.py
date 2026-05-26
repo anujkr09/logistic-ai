@@ -272,6 +272,8 @@ async def stream_llm(messages: list[dict]) -> AsyncGenerator[str, None]:
     provider = (_env("AI_PROVIDER", "openai") or "openai").lower()
     openai_model = _env("OPENAI_MODEL", "gpt-4o-mini")
     gemini_model = _env("GEMINI_MODEL", "gemini-2.5-flash")
+    has_openai_key = bool(_env("OPENAI_API_KEY", ""))
+    has_gemini_key = bool(_env("GEMINI_API_KEY", ""))
 
     last_err: Optional[Exception] = None
 
@@ -281,10 +283,17 @@ async def stream_llm(messages: list[dict]) -> AsyncGenerator[str, None]:
     async def try_gemini():
         return stream_gemini_chat(messages=messages, model=gemini_model)
 
-    # order: provider first, fallback to other
-    providers = ["openai", "gemini"]
-    if provider in ("openai", "gemini"):
-        providers = [provider, "gemini" if provider == "openai" else "openai"]
+    # Order provider first, but skip providers without keys to keep deploy logs clear.
+    providers = []
+    preferred = [provider, "gemini" if provider == "openai" else "openai"]
+    for item in preferred:
+        if item == "openai" and has_openai_key:
+            providers.append(item)
+        if item == "gemini" and has_gemini_key:
+            providers.append(item)
+
+    if not providers:
+        raise RuntimeError("No LLM API key configured. Set GEMINI_API_KEY or OPENAI_API_KEY.")
 
     for p in providers:
         try:
