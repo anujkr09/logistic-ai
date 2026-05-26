@@ -108,3 +108,418 @@
   }
 }
 
+/* Cross-device stability layer */
+html,
+body{
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+img,
+video,
+canvas,
+svg{
+  max-width:100%;
+}
+
+.container,
+.shipx-home,
+.home-hero,
+.home-section,
+.home-metrics,
+.home-cta,
+.shell,
+.main,
+.panel,
+.card,
+.tracking-grid,
+.tracking-shell{
+  min-width:0;
+}
+
+.table-wrap,
+.data-table,
+.tracking-search,
+.chatbot-messages,
+.notif-list,
+.timeline,
+.warehouses-grid{
+  min-width:0;
+}
+
+.data-table{
+  width:100%;
+}
+
+.data-table th,
+.data-table td{
+  max-width:clamp(120px, 28vw, 280px);
+  overflow-wrap:anywhere;
+}
+
+.input,
+.select,
+textarea,
+button,
+.btn{
+  max-width:100%;
+}
+
+@media (max-width: 1180px){
+  .shipx-page .shipx-header__inner,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta{
+    width:calc(100% - 32px);
+  }
+
+  .home-hero{
+    grid-template-columns:minmax(0,1fr) minmax(320px,.82fr);
+    gap:28px;
+  }
+}
+
+@media (max-width: 900px){
+  .topbar{
+    position:relative;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  .brand{
+    min-width:0;
+  }
+
+  .brand-name{
+    max-width:calc(100vw - 150px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .shipx-page .shipx-header{
+    height:auto;
+  }
+
+  .shipx-page .shipx-header__inner{
+    height:auto;
+    min-height:72px;
+    flex-wrap:wrap;
+    align-items:center;
+    padding:10px 0;
+    gap:10px;
+  }
+
+  .shipx-page .shipx-nav{
+    order:3;
+    width:100%;
+    height:auto;
+    display:flex;
+    overflow-x:auto;
+    overflow-y:visible;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+
+  .shipx-page .shipx-nav__button{
+    height:48px;
+    min-height:48px;
+    white-space:nowrap;
+  }
+
+  .shipx-page .shipx-menu,
+  .shipx-page .shipx-mega-menu,
+  .shipx-page .shipx-tracking-menu,
+  .shipx-page .shipx-menu--support,
+  .shipx-page .shipx-menu--account{
+    top:100%;
+    left:0;
+    right:0;
+    transform:none;
+    width:min(100vw - 32px, 560px);
+    max-height:calc(100vh - 118px);
+    overflow:auto;
+  }
+
+  .home-hero,
+  .home-section--split,
+  .home-section--documents,
+  .tracking-grid,
+  .grid-2{
+    grid-template-columns:1fr;
+  }
+
+  .home-hero{
+    min-height:auto;
+    padding-top:34px;
+  }
+
+  .home-hero__visual{
+    justify-content:center;
+  }
+
+  .shipment-panel{
+    width:100%;
+  }
+
+  .feature-grid,
+  .grid-4{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+
+  .form-grid,
+  .profile-edit-form{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+
+  .shell{
+    grid-template-columns:1fr;
+    padding:16px;
+  }
+
+  .sidebar{
+    position:relative;
+    top:auto;
+    min-height:0;
+  }
+}
+
+@media (max-width: 640px){
+  .container,
+  .shell{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .shipx-page .shipx-header__inner,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta{
+    width:calc(100% - 24px);
+  }
+
+  .shipx-page .shipx-logo{
+    font-size:27px;
+    letter-spacing:-.8px;
+  }
+
+  .shipx-actions{
+    gap:6px;
+  }
+
+  .home-hero h1{
+    font-size:clamp(34px, 11vw, 42px);
+    line-height:1.02;
+  }
+
+  .home-hero__lead{
+    font-size:16px;
+    line-height:1.6;
+  }
+
+  .home-hero__actions,
+  .dynamic-actions,
+  .form-actions,
+  .assign-row,
+  .list-controls,
+  .top-actions{
+    align-items:stretch;
+    flex-direction:column;
+  }
+
+  .home-primary,
+  .home-secondary,
+  .btn,
+  .btn-primary,
+  .btn-secondary{
+    width:100%;
+    min-width:0;
+  }
+
+  .home-metrics,
+  .feature-grid,
+  .grid-3,
+  .grid-4,
+  .form-grid,
+  .profile-grid,
+  .profile-edit-form,
+  .warehouses-grid,
+  .shipment-stats,
+  .shipx-menu__grid,
+  .shipx-menu__grid--compact{
+    grid-template-columns:1fr;
+  }
+
+  .home-metrics article{
+    border-right:0;
+    border-bottom:1px solid #dde6ee;
+  }
+
+  .home-metrics article:last-child{
+    border-bottom:0;
+  }
+
+  .home-cta{
+    flex-direction:column;
+    align-items:stretch;
+    padding:22px;
+  }
+
+  .shipment-route{
+    grid-template-columns:1fr;
+  }
+
+  .shipment-map-preview{
+    min-height:210px;
+  }
+
+  .map-path{
+    left:28px;
+    top:112px;
+    width:58%;
+  }
+
+  .map-node--a{left:24px;top:104px}
+  .map-node--b{left:46%;top:104px}
+  .map-node--c{left:auto;right:28px;top:186px}
+
+  .tracking-grid .panel,
+  .panel,
+  .card{
+    padding:14px;
+  }
+
+  .map,
+  .google-map-shell,
+  .google-map-canvas,
+  .leaflet-map-shell .leaflet-container,
+  .route-map{
+    min-height:480px;
+  }
+
+  .google-map-overlay{
+    left:8px;
+    right:8px;
+    bottom:8px;
+  }
+
+  .google-map-summary,
+  .map-route-list,
+  .map-insights,
+  .route-stages{
+    grid-template-columns:1fr;
+  }
+
+  .map-route-panel{
+    max-height:240px;
+    overflow:auto;
+  }
+
+  .map-status{
+    left:10px;
+    right:10px;
+    bottom:10px;
+  }
+
+  .tracking-chat-form,
+  .chatbot-form,
+  .chat-input{
+    grid-template-columns:1fr;
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .tracking-chat-form button,
+  .chatbot-form button,
+  .chat-input button{
+    width:100%;
+  }
+
+  .chatbot-widget{
+    left:10px;
+    right:10px;
+    bottom:10px;
+    width:auto;
+    max-width:none;
+  }
+
+  .chatbot-card{
+    border-radius:12px;
+  }
+
+  .chatbot-messages{
+    height:min(320px, calc(100vh - 250px));
+    max-height:calc(100vh - 250px);
+  }
+
+  #chatbotSuggestions{
+    overflow-x:auto;
+    flex-wrap:nowrap !important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #chatbotSuggestions button{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+}
+
+@media (max-width: 420px){
+  .shipx-page .shipx-header__inner,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta{
+    width:calc(100% - 18px);
+  }
+
+  .shipx-page .shipx-logo{
+    font-size:24px;
+  }
+
+  .brand-logo{
+    width:32px;
+    height:32px;
+  }
+
+  .brand-name{
+    max-width:calc(100vw - 128px);
+    font-size:14px;
+  }
+
+  .panel-title,
+  .page-title{
+    font-size:22px;
+  }
+
+  .home-section h2,
+  .home-cta h2{
+    font-size:30px;
+  }
+
+  .data-table th,
+  .data-table td{
+    padding:9px 8px;
+    font-size:13px;
+  }
+
+  .data-table th{
+    width:auto;
+  }
+
+  .tracking-viewer-badge{
+    width:100%;
+    max-width:none;
+  }
+
+  .map,
+  .google-map-shell,
+  .google-map-canvas,
+  .leaflet-map-shell .leaflet-container,
+  .route-map{
+    min-height:420px;
+  }
+}
+
