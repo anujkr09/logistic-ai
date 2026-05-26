@@ -259,8 +259,10 @@ function loadGoogleMaps() {
   if (!key) return Promise.reject(new Error('Google Maps API key missing'));
 
   window.__shipxGoogleMapsPromise = new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Google Maps took too long to load')), 4500);
     const callbackName = `__shipxGoogleMapsReady_${Date.now()}`;
     window[callbackName] = () => {
+      clearTimeout(timer);
       delete window[callbackName];
       resolve(window.google.maps);
     };
@@ -269,7 +271,10 @@ function loadGoogleMaps() {
     script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&callback=${callbackName}`;
     script.async = true;
     script.defer = true;
-    script.onerror = () => reject(new Error('Google Maps failed to load'));
+    script.onerror = () => {
+      clearTimeout(timer);
+      reject(new Error('Google Maps failed to load'));
+    };
     document.head.appendChild(script);
   });
 
@@ -281,6 +286,7 @@ function loadLeaflet() {
   if (window.__shipxLeafletPromise) return window.__shipxLeafletPromise;
 
   window.__shipxLeafletPromise = new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('OpenStreetMap took too long to load')), 4500);
     const cssId = 'leaflet-css';
     if (!document.getElementById(cssId)) {
       const link = document.createElement('link');
@@ -293,8 +299,14 @@ function loadLeaflet() {
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
     script.async = true;
-    script.onload = () => resolve(window.L);
-    script.onerror = () => reject(new Error('OpenStreetMap failed to load'));
+    script.onload = () => {
+      clearTimeout(timer);
+      resolve(window.L);
+    };
+    script.onerror = () => {
+      clearTimeout(timer);
+      reject(new Error('OpenStreetMap failed to load'));
+    };
     document.head.appendChild(script);
   });
 
@@ -617,6 +629,14 @@ function renderFallbackMap(element, location, shipment = {}, empty = false, reas
   window.__MAP_DETAILS = { mode: state.mode, weather: state.weather };
 }
 
+function upgradeToProviderMap(element, location, shipment = {}, empty = false) {
+  renderProviderMap(element, location, shipment, empty)
+    .catch(() => {
+      const providerBadge = element.querySelector('.map-provider-badge');
+      if (providerBadge) providerBadge.textContent = 'Smart route preview';
+    });
+}
+
 window.__MAP_INIT = function () {
   const element = document.getElementById('map');
   if (!element) return;
@@ -628,8 +648,8 @@ window.__MAP_INIT = function () {
     destination: { text: 'Delivery city', coordinates: [77.5946, 12.9716] },
   };
 
-  renderProviderMap(element, placeholderShipment.currentLocation, placeholderShipment, true)
-    .catch((error) => renderFallbackMap(element, placeholderShipment.currentLocation, placeholderShipment, true, error.message));
+  renderFallbackMap(element, placeholderShipment.currentLocation, placeholderShipment, true, 'Smart route preview');
+  upgradeToProviderMap(element, placeholderShipment.currentLocation, placeholderShipment, true);
 };
 
 window.__MAP_UPDATE = function (location, shipment = {}) {
@@ -644,6 +664,6 @@ window.__MAP_UPDATE = function (location, shipment = {}) {
   const state = buildMapState(location, shipment, false);
   window.__MAP_DETAILS = { mode: state.mode, weather: state.weather };
 
-  renderProviderMap(element, location, shipment, false)
-    .catch((error) => renderFallbackMap(element, location, shipment, false, error.message));
+  renderFallbackMap(element, location, shipment, false, 'Smart route preview');
+  upgradeToProviderMap(element, location, shipment, false);
 };
