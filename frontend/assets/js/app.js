@@ -109,10 +109,59 @@
     }
   }
 
+  function setStoredUser(user) {
+    if (!user) return;
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('userRole', user.role || '');
+    localStorage.setItem('companyId', user.companyId || '');
+  }
+
   function initials(name) {
     const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return '';
     return parts.slice(0, 2).map((part) => part[0]?.toUpperCase()).join('');
+  }
+
+  function roleLabel(role) {
+    if (role === 'warehouse_manager') return 'Warehouse manager';
+    if (role === 'admin') return 'Admin';
+    if (role === 'customer') return 'Customer';
+    return role ? role.replace(/_/g, ' ') : 'User';
+  }
+
+  function renderProfileIdentity(user = getStoredUser()) {
+    document.querySelectorAll('[data-profile-identity]').forEach((identity) => {
+      const token = localStorage.getItem('token');
+      const displayName = user.name || user.email || (token ? 'User' : 'Login');
+      const detail = [roleLabel(user.role || userRole()), user.companyName].filter(Boolean).join(' - ');
+      const avatar = identity.querySelector('[data-profile-avatar]') || identity.querySelector('#adminAvatar') || document.getElementById('adminAvatar');
+      const name = identity.querySelector('[data-profile-name]') || identity.querySelector('#adminName') || document.getElementById('adminName');
+      const role = identity.querySelector('[data-profile-role]') || identity.querySelector('#adminRole') || document.getElementById('adminRole');
+
+      identity.setAttribute('href', token ? pageUrl('profile.html') : pageUrl('login.html'));
+      identity.setAttribute('title', token ? `Open ${displayName}'s profile` : 'Login or profile');
+      if (avatar) avatar.textContent = initials(displayName) || 'U';
+      if (name) name.textContent = displayName;
+      if (role) role.textContent = detail || roleLabel(user.role || userRole());
+    });
+  }
+
+  async function refreshProfileIdentity() {
+    const token = localStorage.getItem('token');
+    renderProfileIdentity();
+    if (!token || !document.querySelector('[data-profile-identity]')) return;
+    try {
+      const response = await fetch(`${apiBase}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data.user) {
+        setStoredUser(data.user);
+        renderProfileIdentity(data.user);
+      }
+    } catch {
+      renderProfileIdentity();
+    }
   }
 
   function ensureProfileAction() {
@@ -185,6 +234,7 @@
     }
 
     ensureProfileAction();
+    refreshProfileIdentity();
     enforceOpenAccountLinks();
 
     document.querySelectorAll('a').forEach((link) => {
@@ -221,6 +271,7 @@
   applyTheme(localStorage.getItem('theme') || (document.body.classList.contains('theme-dark') ? 'dark' : 'light'));
   enforceRoleVisibility();
   ensureProfileAction();
+  refreshProfileIdentity();
   enforceOpenAccountLinks();
 
   if (themeToggle) {

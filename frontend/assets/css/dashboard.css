@@ -126,6 +126,23 @@
   border-radius:8px;
   background:rgba(255,255,255,.62);
   box-shadow:0 12px 28px rgba(15,23,42,.07);
+  color:var(--text);
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.admin-identity:hover,
+.admin-identity:focus{
+  border-color:rgba(79,70,229,.34);
+  box-shadow:0 16px 34px rgba(15,23,42,.11);
+  outline:none;
+  transform:translateY(-1px);
+}
+
+.admin-identity:focus-visible{
+  outline:3px solid rgba(79,70,229,.24);
+  outline-offset:3px;
 }
 
 .theme-dark .admin-identity{

@@ -17,6 +17,22 @@
   background:rgba(255,255,255,.78);
   color:var(--text);
   box-shadow:0 10px 24px rgba(15,23,42,.08);
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.tracking-viewer-badge:hover,
+.tracking-viewer-badge:focus{
+  border-color:rgba(20,184,166,.42);
+  box-shadow:0 14px 30px rgba(15,23,42,.12);
+  outline:none;
+  transform:translateY(-1px);
+}
+
+.tracking-viewer-badge:focus-visible{
+  outline:3px solid rgba(20,184,166,.24);
+  outline-offset:3px;
 }
 
 .tracking-viewer-badge[hidden]{
