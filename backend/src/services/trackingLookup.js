@@ -21,14 +21,14 @@ function trackingCandidates(value) {
   return [...candidates].filter(Boolean);
 }
 
-async function findShipmentForChat({ trackingNumber, companyId }) {
+async function findShipment({ trackingNumber, companyId }) {
   const candidates = trackingCandidates(trackingNumber);
   if (!candidates.length) return { shipment: null, candidates };
 
   const base = companyId ? { companyId } : {};
   const exact = await Shipment.findOne({
     ...base,
-    trackingNumber: { $in: candidates },
+    trackingNumber: { $in: candidates.map((item) => new RegExp(`^${escapeRegex(item)}$`, 'i')) },
   }).exec();
 
   if (exact) return { shipment: exact, candidates };
@@ -44,9 +44,13 @@ async function findShipmentForChat({ trackingNumber, companyId }) {
   return { shipment: fuzzy, candidates };
 }
 
+async function findShipmentForChat({ trackingNumber, companyId }) {
+  return findShipment({ trackingNumber, companyId });
+}
+
 async function latestActiveShipment({ companyId }) {
   const base = companyId ? { companyId } : {};
   return Shipment.findOne({ ...base, status: { $ne: 'Delivered' } }).sort({ updatedAt: -1 }).exec();
 }
 
-module.exports = { findShipmentForChat, latestActiveShipment, trackingCandidates };
+module.exports = { findShipment, findShipmentForChat, latestActiveShipment, trackingCandidates };

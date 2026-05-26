@@ -4,16 +4,16 @@ const { Shipment, Warehouse, Notification } = require('../services/models');
 const { predictEta, detectFraud, analyzeTracking } = require('../services/aiClient');
 const { scoreShipmentFraud, publishFraudNotifications } = require('../services/operationsIntelligence');
 const { getIo } = require('../sockets/instance');
+const { findShipment } = require('../services/trackingLookup');
 
 // Public tracking by tracking number
 router.get('/track/:trackingNumber', async (req, res) => {
   const { trackingNumber } = req.params;
-  const shipment = await Shipment.findOne({ trackingNumber })
-    .select('trackingNumber origin destination currentLocation status estimatedDelivery history updatedAt')
-    .exec();
+  const { shipment, candidates } = await findShipment({ trackingNumber });
   if (!shipment) return res.status(404).json({ message: 'Shipment not found' });
   const data = shipment.toObject();
   data.aiInsights = await analyzeTracking({ shipment: data });
+  data.lookup = { requestedTracking: trackingNumber, tried: candidates };
   res.json(data);
 });
 

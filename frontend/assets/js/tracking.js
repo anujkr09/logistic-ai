@@ -240,7 +240,12 @@
       if (error) error.textContent = '';
       window.__showToast?.('Tracking loaded');
     } catch (err) {
-      if (error) error.textContent = err?.message || 'Error';
+      if (error) {
+        const message = err?.message || 'Error';
+        error.textContent = message === 'Shipment not found'
+          ? 'Tracking number nahi mila. Exact number check karo, ya admin dashboard se pehle shipment create karo.'
+          : message;
+      }
     }
   }
 
