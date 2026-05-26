@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <div class="shell">
+    <aside class="sidebar card">
+      <div class="side-brand">
+        <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+        <div>
+          <div class="side-title">shipX AI</div>
+          <div id="profileSideRole" class="side-sub muted">Profile</div>
+        </div>
+      </div>
+      <nav id="profileNav" class="side-nav"></nav>
+      <div class="side-card">
+        <span>Signed in</span>
+        <strong id="profileSideName">Your account</strong>
+      </div>
+      <div class="side-footer">
+        <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-top">
+        <div>
+          <h1 class="page-title">My Profile</h1>
+          <p class="page-subtitle">Account, contact, and company verification details.</p>
+        </div>
+        <div class="top-actions">
+          <a id="profileDashboardLink" class="btn btn-primary" href="./customer-dashboard.html">Open dashboard</a>
+          <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+        </div>
+      </header>
+
+      <section class="profile-hero panel card">
+        <div class="profile-avatar" id="profileAvatar">SX</div>
+        <div>
+          <span id="profileRole" class="badge status-active">Profile</span>
+          <h2 id="profileNameTitle">-</h2>
+          <p id="profileEmailTitle" class="page-subtitle">-</p>
+        </div>
+      </section>
+
+      <section class="panel card profile-edit-panel" style="margin-top:16px;">
+        <div class="profile-head">
+          <div>
+            <h2 class="panel-title">Update contact details</h2>
+            <p class="page-subtitle">Change your email or mobile number anytime.</p>
+          </div>
+          <span id="profileSaveState" class="hint" aria-live="polite"></span>
+        </div>
+        <form id="profileEditForm" class="profile-edit-form">
+          <label class="field">
+            <span>Email</span>
+            <input id="editEmail" name="email" type="email" class="input" placeholder="you@company.com" required />
+          </label>
+          <label class="field">
+            <span>Country</span>
+            <select id="editPhoneCountry" name="phoneCountry" class="select" required>
+              <option value="India" data-code="+91">India (+91)</option>
+              <option value="United States" data-code="+1">United States (+1)</option>
+              <option value="United Kingdom" data-code="+44">United Kingdom (+44)</option>
+              <option value="United Arab Emirates" data-code="+971">United Arab Emirates (+971)</option>
+              <option value="Singapore" data-code="+65">Singapore (+65)</option>
+              <option value="Australia" data-code="+61">Australia (+61)</option>
+              <option value="Canada" data-code="+1">Canada (+1)</option>
+              <option value="Germany" data-code="+49">Germany (+49)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Mobile number</span>
+            <div class="profile-phone-field">
+              <input id="editPhoneCode" name="phoneCountryCode" class="input profile-phone-code" readonly aria-label="Country code" />
+              <input id="editPhoneNumber" name="phoneNumber" type="tel" class="input" placeholder="9876543210" inputmode="tel" required />
+            </div>
+          </label>
+          <div class="form-actions profile-edit-actions">
+            <button id="profileSaveBtn" class="btn btn-primary" type="submit">Save changes</button>
+            <button id="profileResetBtn" class="btn btn-ghost" type="button">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Personal details</h2>
+        <div class="profile-grid">
+          <div class="profile-item"><span>Name</span><strong id="profileName">-</strong></div>
+          <div class="profile-item"><span>Email</span><strong id="profileEmail">-</strong></div>
+          <div class="profile-item"><span>Mobile</span><strong id="profilePhone">-</strong></div>
+          <div class="profile-item"><span>Country</span><strong id="profileCountry">-</strong></div>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Company verification</h2>
+        <div class="profile-grid">
+          <div class="profile-item"><span>Company</span><strong id="profileCompany">-</strong></div>
+          <div class="profile-item"><span>PAN number</span><strong id="profilePan">-</strong></div>
+          <div class="profile-item"><span>GST number</span><strong id="profileGst">-</strong></div>
+          <div class="profile-item"><span>Account type</span><strong id="profileAccountType">-</strong></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="../assets/js/profile.js"></script>
+</body>
+</html>

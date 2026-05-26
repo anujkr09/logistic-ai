@@ -1,0 +1,10 @@
+node_modules
+frontend/node_modules
+backend/node_modules
+ai-service/__pycache__
+*.env
+.env
+.DS_Store
+coverage
+*.log
+

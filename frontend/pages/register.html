@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand" aria-label="Brand">
+      <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+      <span class="brand-name">shipX AI Logistics</span>
+    </div>
+    <nav class="topnav">
+      <a class="nav-link" href="../index.html">Home</a>
+      <a class="nav-link" href="./login.html">Login</a>
+    </nav>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+  </header>
+
+  <main class="container auth-page">
+    <section class="auth-info card animate-in">
+      <span class="eyebrow">New account</span>
+      <h1>Create your logistics profile</h1>
+      <p>Your profile stores contact details, mobile number with country code, and company PAN/GST verification.</p>
+      <div class="auth-points">
+        <span>Country selector adds phone code automatically</span>
+        <span>Choose Customer or Admin during registration</span>
+        <span>Admin opens operations tools, customer opens tracking tools</span>
+      </div>
+    </section>
+
+    <section class="auth-wrap card animate-in">
+      <h2 class="auth-title">Create account</h2>
+      <p class="auth-sub">Register with company verification details.</p>
+
+      <form id="registerForm" class="auth-form">
+        <label class="field">
+          <span>Name</span>
+          <input name="name" type="text" class="input" placeholder="Your full name" required />
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input name="email" type="email" class="input" placeholder="you@company.com" required />
+        </label>
+        <label class="field">
+          <span>Account type</span>
+          <select name="accountRole" class="select" required>
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Country</span>
+          <select name="phoneCountry" id="phoneCountry" class="select" required>
+            <option value="India" data-code="+91">India (+91)</option>
+            <option value="United States" data-code="+1">United States (+1)</option>
+            <option value="United Kingdom" data-code="+44">United Kingdom (+44)</option>
+            <option value="United Arab Emirates" data-code="+971">United Arab Emirates (+971)</option>
+            <option value="Singapore" data-code="+65">Singapore (+65)</option>
+            <option value="Australia" data-code="+61">Australia (+61)</option>
+            <option value="Canada" data-code="+1">Canada (+1)</option>
+            <option value="Germany" data-code="+49">Germany (+49)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Mobile number</span>
+          <div class="phone-field">
+            <input name="phoneCountryCode" id="phoneCountryCode" class="input phone-code" value="+91" readonly aria-label="Country code" />
+            <input name="phoneNumber" type="tel" class="input" placeholder="9876543210" inputmode="tel" required />
+          </div>
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input name="password" type="password" class="input" placeholder="Minimum 6 characters" required />
+        </label>
+        <label class="field">
+          <span>Company</span>
+          <input name="companyName" type="text" class="input" placeholder="Company name" required />
+          <small class="field-help">If this company already exists, PAN/GST must match the registered details.</small>
+        </label>
+        <label class="field">
+          <span>PAN number</span>
+          <input name="panNumber" type="text" class="input" placeholder="ABCDE1234F" maxlength="10" required />
+        </label>
+        <label class="field">
+          <span>GST number</span>
+          <input name="gstNumber" type="text" class="input" placeholder="07ABCDE1234F1Z5" maxlength="15" required />
+          <small class="field-help">Example: first 2 digits are state code, next 10 characters must be your PAN.</small>
+        </label>
+
+        <button class="btn btn-primary" type="submit">Register</button>
+        <div id="authHint" class="hint" aria-live="polite"></div>
+      </form>
+
+      <div class="auth-footer">
+        <span>Already have an account?</span>
+        <a href="./login.html" class="link">Sign in</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="../assets/js/auth.js?v=shipx30"></script>
+</body>
+</html>

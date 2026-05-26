@@ -1,0 +1,30 @@
+{
+  "name": "shipX AI Logistics",
+  "short_name": "shipX AI",
+  "description": "AI-powered logistics, shipment tracking, account tools, and delivery intelligence.",
+  "start_url": "/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#120b22",
+  "theme_color": "#4d148c",
+  "icons": [
+    {
+      "src": "./assets/img/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/img/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/img/download.png",
+      "sizes": "225x225",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

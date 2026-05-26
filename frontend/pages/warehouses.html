@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warehouses - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <div class="shell">
+    <aside class="sidebar card">
+      <div class="side-brand">
+        <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+        <div>
+          <div class="side-title">shipX AI</div>
+          <div class="side-sub muted">Admin</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <a class="side-link" href="./admin-dashboard.html">Overview</a>
+        <a class="side-link" href="./profile.html">Profile</a>
+        <a class="side-link" href="./warehouses.html">Warehouses</a>
+        <a class="side-link" href="./tracking.html">Track</a>
+      </nav>
+      <div class="side-card">
+        <span>Routing</span>
+        <strong>Warehouse network ready</strong>
+      </div>
+      <div class="side-footer">
+        <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-top">
+        <div>
+          <h1 class="page-title">Warehouse Management</h1>
+          <p class="page-subtitle">Create hubs and assign shipments to the fastest fulfillment point.</p>
+        </div>
+        <div class="top-actions">
+          <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+        </div>
+      </header>
+
+      <section class="dashboard-hero card">
+        <div>
+          <span class="eyebrow">Network planning</span>
+          <h2>Warehouse routing workspace</h2>
+          <p>Use hubs for inventory visibility, shipment assignment, and faster route decisions.</p>
+        </div>
+        <a class="btn btn-primary" href="./admin-dashboard.html">Create shipment</a>
+      </section>
+
+      <section class="panel card">
+        <h2 class="panel-title">Warehouses</h2>
+        <div id="warehousesGrid" class="warehouses-grid"></div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Create warehouse</h2>
+        <div class="form-grid">
+          <label class="field">
+            <span>Name</span>
+            <input id="warehouseName" class="input" placeholder="North Express Hub" />
+          </label>
+          <label class="field">
+            <span>Address</span>
+            <input id="warehouseAddress" class="input" placeholder="Cargo terminal address" />
+          </label>
+          <label class="field">
+            <span>City</span>
+            <input id="warehouseCity" class="input" placeholder="Delhi" />
+          </label>
+          <label class="field">
+            <span>Country</span>
+            <input id="warehouseCountry" class="input" placeholder="India" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="createWarehouseBtn" class="btn btn-primary" type="button">Create warehouse</button>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Assign shipments</h2>
+        <div class="assign-row">
+          <select id="assignWarehouse" class="select" aria-label="Warehouse list" title="Warehouse list"></select>
+          <input id="assignTracking" class="input" placeholder="Tracking number" aria-label="Tracking number" />
+          <button id="assignBtn" class="btn btn-primary" type="button">Assign</button>
+        </div>
+        <div id="assignHint" class="hint"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+  <script src="../assets/js/socket.js"></script>
+  <script src="../assets/js/warehouse.js"></script>
+  <script>
+    (function(){
+      const logoutBtn = document.getElementById('logoutBtn');
+      if(!logoutBtn) return;
+      logoutBtn.addEventListener('click',()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('companyId');
+        localStorage.removeItem('user');
+        location.href='./login.html';
+      });
+    })();
+  </script>
+</body>
+</html>
+

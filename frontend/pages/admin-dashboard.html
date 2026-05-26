@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <div class="shell">
+    <aside class="sidebar card">
+      <div class="side-brand">
+        <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+        <div>
+          <div class="side-title">shipX AI</div>
+          <div class="side-sub muted">Admin</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <a class="side-link" href="./admin-dashboard.html">Overview</a>
+        <a class="side-link" href="./profile.html">Profile</a>
+        <a class="side-link" href="./warehouses.html">Warehouses</a>
+        <a class="side-link" href="./tracking.html">Track</a>
+      </nav>
+      <div class="side-card">
+        <span>Operations</span>
+        <strong>Control tower online</strong>
+      </div>
+      <div class="side-footer">
+        <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-top">
+        <div>
+          <h1 class="page-title">Admin Dashboard</h1>
+          <p class="page-subtitle">Create shipments, monitor delivery health, and manage warehouse routing.</p>
+        </div>
+        <div class="top-actions">
+          <div class="admin-identity" id="adminIdentity" aria-label="Logged in admin">
+            <span class="admin-identity-avatar" id="adminAvatar">A</span>
+            <span class="admin-identity-text">
+              <strong id="adminName">Admin</strong>
+              <small id="adminRole">Operations</small>
+            </span>
+          </div>
+          <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+        </div>
+      </header>
+
+      <section class="dashboard-hero card">
+        <div>
+          <span class="eyebrow">shipX operations</span>
+          <h2>Shipment control center</h2>
+          <p>Keep every package moving with live tracking, AI recommendations, fraud alerts, and warehouse assignment tools.</p>
+        </div>
+        <a class="btn btn-primary" href="./tracking.html">Open tracking</a>
+      </section>
+
+      <section class="grid-4">
+        <div class="stat card"><div class="stat-value" id="statTotal">-</div><div class="stat-label muted">Total shipments</div></div>
+        <div class="stat card"><div class="stat-value" id="statDelayed">-</div><div class="stat-label muted">Delayed shipments</div></div>
+        <div class="stat card"><div class="stat-value" id="statDelivered">-</div><div class="stat-label muted">Delivered shipments</div></div>
+        <div class="stat card"><div class="stat-value" id="statRevenue">-</div><div class="stat-label muted">Revenue analytics</div></div>
+      </section>
+
+      <section class="grid-2" style="margin-top:16px;">
+        <div class="panel card">
+          <div class="panel-head">
+            <h2 class="panel-title">Fraud alerts</h2>
+            <button id="scanFraudBtn" class="table-action" type="button">Run scan</button>
+          </div>
+          <div id="fraudAlerts" class="notif-list"></div>
+        </div>
+        <div class="panel card">
+          <div class="panel-head">
+            <h2 class="panel-title">AI recommendations</h2>
+            <button id="refreshRecsBtn" class="table-action" type="button">Refresh</button>
+          </div>
+          <div id="aiRecs" class="notif-list"></div>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Create shipment</h2>
+        <div class="form-grid">
+          <label class="field">
+            <span>Tracking number</span>
+            <input id="createTracking" class="input" placeholder="SX-123456-01" />
+          </label>
+          <label class="field">
+            <span>Origin</span>
+            <input id="createOrigin" class="input" placeholder="Origin address" />
+          </label>
+          <label class="field">
+            <span>Destination</span>
+            <input id="createDestination" class="input" placeholder="Destination address" />
+          </label>
+          <label class="field">
+            <span>Status</span>
+            <select id="createStatus" class="select">
+              <option value="Created">Created</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Arrived">Arrived</option>
+              <option value="Out for Delivery">Out for Delivery</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="createShipmentBtn" class="btn btn-primary" type="button">Create shipment</button>
+          <span id="createHint" class="hint"></span>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Update tracking status</h2>
+        <div class="form-grid admin-status-grid">
+          <label class="field">
+            <span>Tracking number</span>
+            <input id="updateTracking" class="input" placeholder="SX-123456-01" />
+          </label>
+          <label class="field">
+            <span>Status</span>
+            <select id="updateStatus" class="select">
+              <option value="Created">Created</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Arrived">Arrived</option>
+              <option value="Out for Delivery">Out for Delivery</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Delayed">Delayed</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Current location</span>
+            <input id="updateLocation" class="input" placeholder="Current hub or city" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="updateShipmentBtn" class="btn btn-primary" type="button">Update shipment</button>
+          <span class="hint">This updates customer tracking and sends a live notification.</span>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Shipments (manage)</h2>
+        <div id="shipmentsAdmin" class="table-wrap"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+  <script src="../assets/js/socket.js"></script>
+  <script src="../assets/js/dashboard.js?v=shipx30"></script>
+</body>
+</html>
+

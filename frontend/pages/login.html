@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand" aria-label="Brand">
+      <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+      <span class="brand-name">shipX AI Logistics</span>
+    </div>
+    <nav class="topnav">
+      <a class="nav-link" href="../index.html">Home</a>
+      <a class="nav-link" href="./register.html">Register</a>
+    </nav>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+  </header>
+
+  <main class="container auth-page">
+    <section class="auth-info card animate-in">
+      <span class="eyebrow">Secure access</span>
+      <h1>Welcome back</h1>
+      <p>Sign in once and your profile, dashboard, shipment history, and tracking tools stay connected to your account.</p>
+      <div class="auth-points">
+        <span>Profile opens without asking login again</span>
+        <span>Customer and admin dashboards stay separate</span>
+        <span>PAN, GST, mobile, and company details stay in your profile</span>
+      </div>
+    </section>
+
+    <section class="auth-wrap card animate-in">
+      <h2 class="auth-title">Login</h2>
+      <p class="auth-sub">Enter your company, email, and password.</p>
+
+      <form id="loginForm" class="auth-form">
+        <label class="field">
+          <span>Company</span>
+          <input name="companyName" type="text" class="input" placeholder="Company name" required />
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input name="email" type="email" class="input" placeholder="you@company.com" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input name="password" type="password" class="input" placeholder="Your password" required />
+        </label>
+
+        <button class="btn btn-primary" type="submit">Sign in</button>
+        <div id="authHint" class="hint" aria-live="polite"></div>
+      </form>
+
+      <div class="auth-footer">
+        <span>New here?</span>
+        <a href="./register.html" class="link">Create an account</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="../assets/js/auth.js?v=shipx30"></script>
+</body>
+</html>

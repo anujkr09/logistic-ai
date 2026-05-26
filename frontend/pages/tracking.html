@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tracking - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/tracking.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/chatbot.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+      <span class="brand-name">shipX AI Logistics</span>
+    </div>
+    <nav class="topnav">
+      <a class="nav-link" href="../index.html">Home</a>
+      <a id="dashboardNavLink" class="nav-link nav-pill" href="./tracking.html">Tracking</a>
+    </nav>
+    <div id="trackingViewerBadge" class="tracking-viewer-badge" hidden>
+      <span id="trackingViewerInitials">-</span>
+      <div>
+        <b id="trackingViewerName">Guest</b>
+        <small id="trackingViewerRole">Tracking viewer</small>
+      </div>
+    </div>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+  </header>
+
+  <main class="container">
+    <section class="tracking-shell">
+      <div class="tracking-search card animate-in">
+        <div class="tracking-search__label">Enter tracking number</div>
+        <form id="trackingForm" class="tracking-search__form">
+          <input id="trackingNumberInput" class="input" placeholder="e.g. SX-DEMO-1001" required />
+          <button class="btn btn-primary" type="submit">Track</button>
+        </form>
+        <div id="trackingError" class="hint" aria-live="polite"></div>
+      </div>
+
+      <div class="tracking-grid">
+        <div class="panel card animate-in">
+          <h2 class="panel-title">Shipment details</h2>
+          <div class="table-wrap">
+            <table class="data-table">
+              <tbody>
+                <tr><th>Tracking</th><td id="tdTracking">-</td></tr>
+                <tr><th>Status</th><td id="tdStatus">-</td></tr>
+                <tr><th>Current location</th><td id="tdLocation">-</td></tr>
+                <tr><th>Route</th><td id="tdRoute">-</td></tr>
+                <tr><th>Transport mode</th><td id="tdMode">-</td></tr>
+                <tr><th>Weather</th><td id="tdWeather">-</td></tr>
+                <tr><th>Delay reason</th><td id="tdDelay">-</td></tr>
+                <tr><th>Estimated delivery</th><td id="tdETA">-</td></tr>
+                <tr><th>ETA confidence</th><td id="tdConfidence">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ai-summary" id="aiSummary">AI will analyze the route after tracking loads.</div>
+
+          <div class="progress-wrap">
+            <div class="progress-top">
+              <span class="muted">Delivery timeline</span>
+              <span id="progressLabel" class="progress-label">-</span>
+            </div>
+            <div id="progressBar" class="progress-bar" aria-label="Progress"></div>
+          </div>
+        </div>
+
+        <div class="panel card animate-in">
+          <h2 class="panel-title">Live map</h2>
+          <div id="map" class="map">Loading map...</div>
+          <div class="tracking-chat-panel">
+            <div class="tracking-chat-head">
+              <div>
+                <span>AI assistant</span>
+                <b>Ask about this shipment</b>
+              </div>
+              <small id="trackingChatContext">Tracking context ready</small>
+            </div>
+            <div class="chatbot-messages tracking-chat-messages" id="chatbotMessages" role="log" aria-live="polite">
+              <div class="chatbot-message bot" data-role="bot">Ask me about this route, delay, ETA, fraud report, or current location.</div>
+            </div>
+            <form class="chatbot-form tracking-chat-form" id="chatbotForm">
+              <input id="chatbotMessage" type="text" placeholder="Ask about this shipment..." aria-label="Ask about this shipment" autocomplete="off" />
+              <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel card animate-in" style="grid-column:1/-1;">
+          <h2 class="panel-title">Delivery timeline</h2>
+          <div id="timeline" class="timeline"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="notification-shelf">
+      <div class="panel card fraud-report-panel">
+        <div class="fraud-report-head">
+          <div>
+            <span class="fraud-report-kicker">Security desk</span>
+            <h2 class="panel-title">Fraud report</h2>
+          </div>
+          <span class="fraud-report-badge">Live</span>
+        </div>
+        <form id="fraudReportForm" class="fraud-report-form">
+          <div class="fraud-report-types">
+            <span>Concern</span>
+            <div class="fraud-type-grid" aria-label="Concern type">
+              <label>
+                <input type="radio" name="fraudType" value="unknown" checked />
+                <span>Not sure</span>
+              </label>
+              <label>
+                <input type="radio" name="fraudType" value="customer" />
+                <span>Customer</span>
+              </label>
+              <label>
+                <input type="radio" name="fraudType" value="delivery_partner" />
+                <span>Delivery</span>
+              </label>
+              <label>
+                <input type="radio" name="fraudType" value="account" />
+                <span>Account</span>
+              </label>
+            </div>
+          </div>
+          <select id="fraudSuspectedParty" class="select fraud-report-select" aria-label="Suspected party">
+            <option value="unknown">Not sure</option>
+            <option value="customer">Customer activity</option>
+            <option value="delivery_partner">Delivery partner activity</option>
+            <option value="account">Account or payment activity</option>
+          </select>
+          <div class="fraud-report-compose">
+            <label class="fraud-field">
+              <span>Incident details</span>
+              <textarea id="fraudDescription" class="input" rows="3" placeholder="Payment request outside shipX, wrong address change, fake delivery proof..." required></textarea>
+            </label>
+            <div class="fraud-report-footer">
+              <span>Admin and affected customer will be notified.</span>
+              <button class="btn btn-primary fraud-report-submit" type="submit">Send report</button>
+            </div>
+          </div>
+        </form>
+        <div id="fraudReportStatus" class="hint" aria-live="polite"></div>
+      </div>
+      <div class="panel card">
+        <h2 class="panel-title">Real-time notifications</h2>
+        <div id="notifications" class="notif-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+  <script src="../assets/js/socket.js"></script>
+  <script>
+    window.GOOGLE_MAPS_API_KEY = window.GOOGLE_MAPS_API_KEY || localStorage.getItem('googleMapsApiKey') || '';
+  </script>
+  <script src="../assets/js/maps.js?v=shipx30"></script>
+  <script src="../assets/js/tracking.js?v=shipx30"></script>
+  <script src="../assets/js/universalChatbot.js?v=shipx30"></script>
+</body>
+</html>

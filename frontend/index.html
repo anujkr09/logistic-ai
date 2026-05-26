@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shipX AI Logistics</title>
+  <meta name="theme-color" content="#4d148c" />
+  <link rel="manifest" href="./manifest.webmanifest?v=shipx30" />
+  <link rel="stylesheet" href="./assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="./assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="./assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="shipx-page">
+  <header class="shipx-header">
+    <div class="shipx-header__inner">
+      <a class="shipx-logo" href="./index.html" aria-label="shipX AI Logistics home">
+        <span>ship</span><strong>X</strong><small>AI</small>
+      </a>
+
+      <nav class="shipx-nav" aria-label="Primary navigation">
+        <div class="shipx-nav__item has-menu">
+          <button class="shipx-nav__button" type="button" aria-haspopup="true">
+            Shipping <span class="chevron" aria-hidden="true"></span>
+          </button>
+          <div class="shipx-menu shipx-mega-menu" role="menu" aria-label="Shipping tools">
+            <div class="shipx-menu__intro">
+              <b>Move shipments</b>
+              <span>Create, price, schedule, and route parcels from one workspace.</span>
+            </div>
+            <div class="shipx-menu__grid">
+              <a class="shipx-menu-card" href="./pages/ship-now.html" role="menuitem"><b>Create shipment</b><span>Start a parcel or freight order.</span></a>
+              <a class="shipx-menu-card" href="./pages/rates-and-transit-times.html" role="menuitem"><b>Plan route</b><span>Compare ETA and service options.</span></a>
+              <a class="shipx-menu-card" href="./pages/schedule-manage-pickups.html" role="menuitem"><b>Pickup desk</b><span>Book, edit, and monitor pickups.</span></a>
+              <a class="shipx-menu-card" href="./pages/ecommerce.html" role="menuitem"><b>Store shipping</b><span>Automate online order movement.</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="shipx-nav__item has-menu">
+          <button class="shipx-nav__button" type="button" aria-haspopup="true">
+            Tracking <span class="chevron" aria-hidden="true"></span>
+          </button>
+          <div class="shipx-menu shipx-mega-menu shipx-tracking-menu" role="menu" aria-label="Tracking tools">
+            <form id="trackingMenuForm" class="tracking-menu-form">
+              <label for="trackingMenuNumber">Track by ID</label>
+              <input id="trackingMenuNumber" type="text" placeholder="SX-8042 or tracking number" />
+              <button type="submit"><span>Track</span><span class="track-arrow" aria-hidden="true"></span></button>
+            </form>
+            <div class="shipx-menu__grid shipx-menu__grid--compact">
+              <a class="shipx-menu-card" href="./pages/tracking.html" role="menuitem"><b>Live map</b><span>See route, mode, weather, and ETA.</span></a>
+              <a class="shipx-menu-card" href="./pages/customer-dashboard.html" role="menuitem"><b>My shipments</b><span>Review active and past deliveries.</span></a>
+              <a class="shipx-menu-card" href="./pages/profile.html" role="menuitem"><b>Alerts</b><span>Manage notifications and updates.</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="shipx-nav__item has-menu">
+          <button class="shipx-nav__button" type="button" aria-haspopup="true">
+            Support <span class="chevron" aria-hidden="true"></span>
+          </button>
+          <div class="shipx-menu shipx-mega-menu shipx-menu--support" role="menu" aria-label="Support tools">
+            <div class="shipx-menu__intro">
+              <b>Support center</b>
+              <span>Get help with deliveries, accounts, customs, and operations.</span>
+            </div>
+            <div class="shipx-menu__grid">
+              <a class="shipx-menu-card" href="./pages/contact.html" role="menuitem"><b>Contact team</b><span>Email support or request a callback.</span></a>
+              <a class="shipx-menu-card" href="./pages/customer-dashboard.html" role="menuitem"><b>Delivery help</b><span>Resolve delays, address changes, and exceptions.</span></a>
+              <a class="shipx-menu-card" href="./pages/packaging-shipping-supplies.html" role="menuitem"><b>Packaging guide</b><span>Prepare parcels for safer movement.</span></a>
+              <a class="shipx-menu-card" href="./pages/quote-heavy-shipment.html" role="menuitem"><b>Heavy freight</b><span>Get help for large or oversized shipments.</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="shipx-nav__item has-menu">
+          <button class="shipx-nav__button" type="button" aria-haspopup="true">
+            Account <span class="chevron" aria-hidden="true"></span>
+          </button>
+          <div class="shipx-menu shipx-mega-menu shipx-menu--account" role="menu" aria-label="Account tools">
+            <div class="shipx-menu__intro">
+              <b>Workspace</b>
+              <span>Manage your profile, dashboards, warehouses, and business settings.</span>
+            </div>
+            <div class="shipx-menu__grid">
+              <a class="shipx-menu-card" href="./pages/register.html" role="menuitem"><b>Open account</b><span>Create a new shipX workspace.</span></a>
+              <a class="shipx-menu-card" href="./pages/login.html" role="menuitem"><b>Sign in</b><span>Access dashboards and shipment history.</span></a>
+              <a class="shipx-menu-card" href="./pages/customer-dashboard.html" role="menuitem"><b>Customer dashboard</b><span>Track orders, alerts, and analytics.</span></a>
+              <a class="shipx-menu-card" href="./pages/admin-dashboard.html" role="menuitem"><b>Admin console</b><span>Operate warehouses and risk workflows.</span></a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="shipx-actions">
+        <button class="install-app-button" type="button" aria-label="Install app">
+          <span class="install-app-button__icon" aria-hidden="true"></span>
+          <span>Install app</span>
+        </button>
+        <a class="shipx-icon-link" href="./pages/login.html" aria-label="Account">
+          <span class="account-icon" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+    <div class="search-overlay" id="searchOverlay" aria-hidden="true">
+      <form id="headerSearchForm" class="header-search-form">
+        <label class="visually-hidden" for="headerSearchInput">Search or Tracking Numbers</label>
+        <input id="headerSearchInput" type="search" placeholder="Search or Tracking Numbers" autocomplete="off" />
+        <button class="btn btn-search" type="submit" aria-label="Search">
+          <span aria-hidden="true">Search</span>
+        </button>
+      </form>
+      <button class="search-close" type="button" id="closeSearch" aria-label="Close search">x</button>
+    </div>
+  </header>
+
+  <main class="shipx-home">
+    <section class="home-hero">
+      <div class="home-hero__copy">
+        <p class="home-kicker">AI logistics for growing teams</p>
+        <h1>Ship faster, track cleaner, and manage every delivery from one workspace.</h1>
+        <p class="home-hero__lead">
+          Create a shipX business account to plan shipments, compare transit options, monitor risk, and keep customers updated without jumping between tools.
+        </p>
+        <div class="home-hero__actions">
+          <a class="home-primary" href="./pages/register.html">Open account</a>
+          <a class="home-secondary" href="./pages/tracking.html">Track shipment</a>
+        </div>
+        <div class="home-proof" aria-label="shipX operational highlights">
+          <span><b>24/7</b> tracking</span>
+          <span><b>AI</b> ETA insights</span>
+          <span><b>Multi-hub</b> routing</span>
+        </div>
+      </div>
+
+      <div class="home-hero__visual" aria-label="Shipment command center preview">
+        <div class="shipment-panel">
+          <div class="shipment-panel__top">
+            <span class="live-dot"></span>
+            <span>Live shipment</span>
+            <b>SX-8042</b>
+          </div>
+          <div class="shipment-route">
+            <div>
+              <span>Origin</span>
+              <b>Mumbai Hub</b>
+            </div>
+            <div class="route-line-preview"><span></span></div>
+            <div>
+              <span>Destination</span>
+              <b>Bengaluru</b>
+            </div>
+          </div>
+          <div class="shipment-map-preview">
+            <span class="map-node map-node--a"></span>
+            <span class="map-node map-node--b"></span>
+            <span class="map-node map-node--c"></span>
+            <span class="map-path"></span>
+            <img src="./assets/img/download.png" alt="" />
+          </div>
+          <div class="shipment-stats">
+            <span><b>92%</b> on time</span>
+            <span><b>18h</b> ETA</span>
+            <span><b>Low</b> risk</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-metrics" aria-label="Platform metrics">
+      <article>
+        <b>2 min</b>
+        <span>average account setup</span>
+      </article>
+      <article>
+        <b>4 modes</b>
+        <span>air, rail, road, last mile</span>
+      </article>
+      <article>
+        <b>1 view</b>
+        <span>orders, warehouses, tracking</span>
+      </article>
+    </section>
+
+    <section class="home-section home-section--split">
+      <div>
+        <p class="home-kicker">Account setup</p>
+        <h2>Start shipping with the right controls from day one.</h2>
+        <p>
+          The account flow collects the business essentials, then unlocks dashboards for shipment creation, warehouse assignment, notifications, and AI recommendations.
+        </p>
+      </div>
+      <div class="setup-steps">
+        <article>
+          <span>01</span>
+          <div>
+            <h3>Create your company profile</h3>
+            <p>Add contact, address, and identity details once.</p>
+          </div>
+        </article>
+        <article>
+          <span>02</span>
+          <div>
+            <h3>Connect shipment operations</h3>
+            <p>Use tracking, pickup, warehouse, and billing workflows from one place.</p>
+          </div>
+        </article>
+        <article>
+          <span>03</span>
+          <div>
+            <h3>Let AI monitor movement</h3>
+            <p>Get ETA signals, route suggestions, and risk alerts as deliveries move.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-section">
+      <div class="section-heading">
+        <p class="home-kicker">What you get</p>
+        <h2>Tools built for daily logistics work.</h2>
+      </div>
+      <div class="feature-grid">
+        <article>
+          <span class="feature-icon">ET</span>
+          <h3>ETA intelligence</h3>
+          <p>Estimate delivery windows using shipment status, route stage, and location context.</p>
+        </article>
+        <article>
+          <span class="feature-icon">WH</span>
+          <h3>Warehouse visibility</h3>
+          <p>See warehouse inventory, assign shipments, and keep operations moving cleanly.</p>
+        </article>
+        <article>
+          <span class="feature-icon">RF</span>
+          <h3>Risk flags</h3>
+          <p>Surface suspicious shipment patterns before they become support escalations.</p>
+        </article>
+        <article>
+          <span class="feature-icon">NT</span>
+          <h3>Customer notifications</h3>
+          <p>Keep customers informed with status updates, account alerts, and delivery messages.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-section home-section--documents">
+      <div>
+        <p class="home-kicker">Before you begin</p>
+        <h2>Keep these business details ready.</h2>
+        <p>These details help shipX create a verified account and prepare your operations dashboard.</p>
+      </div>
+      <ul class="document-list">
+        <li><span></span>Identity verification or PAN details</li>
+        <li><span></span>Registered business address</li>
+        <li><span></span>GST registration status</li>
+        <li><span></span>Importer Exporter Code, when applicable</li>
+      </ul>
+    </section>
+
+    <section class="home-cta">
+      <div>
+        <p class="home-kicker">Ready when you are</p>
+        <h2>Open your shipX account and move your next shipment with more confidence.</h2>
+      </div>
+      <a class="home-primary" href="./pages/register.html">Get started</a>
+    </section>
+  </main>
+
+  <footer class="footer shipx-footer">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h4>shipX</h4>
+        <a href="./pages/register.html">Open an account</a>
+        <a href="./pages/tracking.html">Track shipment</a>
+        <a href="./pages/contact.html">Contact support</a>
+      </div>
+      <div class="footer-column">
+        <h4>Operations</h4>
+        <a href="./pages/ship-now.html">Create shipment</a>
+        <a href="./pages/warehouses.html">Warehouses</a>
+        <a href="./pages/rates-and-transit-times.html">Rates and transit</a>
+      </div>
+      <div class="footer-column">
+        <h4>Dashboards</h4>
+        <a href="./pages/customer-dashboard.html">Customer dashboard</a>
+        <a href="./pages/admin-dashboard.html">Admin dashboard</a>
+        <a href="./pages/profile.html">Profile</a>
+      </div>
+      <div class="footer-column footer-language">
+        <h4>Region</h4>
+        <div class="language-card">
+          <span class="language-icon">IN</span>
+          <div>
+            <div class="language-region">India</div>
+            <select aria-label="Select language">
+              <option>English</option>
+              <option>Hindi</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="chatbot-widget" id="chatbotWidget" aria-hidden="true">
+    <div class="chatbot-card">
+      <div class="chatbot-header">
+        <div>
+          <h3>shipX AI Assistant</h3>
+          <p>Ask about tracking, delays, weather, ETA, accounts, or admin tools.</p>
+        </div>
+        <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">x</button>
+      </div>
+      <div class="chatbot-messages" id="chatbotMessages" role="log" aria-live="polite">
+        <div class="chatbot-message bot">Hi! I'm shipX AI. Ask me about tracking, delay reasons, weather, ETA, accounts, or admin tools.</div>
+      </div>
+      <form class="chatbot-form" id="chatbotForm">
+        <input id="chatbotMessage" type="text" placeholder="Type your message..." aria-label="Type your message" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
+    <span class="chatbot-toggle-icon">AI</span>
+    <span>Chat</span>
+  </button>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <link rel="stylesheet" href="./assets/css/chatbot.css?v=shipx30" />
+  <script src="./assets/js/app.js?v=shipx30"></script>
+  <script src="./assets/js/universalChatbot.js?v=shipx30"></script>
+  <script src="./assets/js/auth.js?v=shipx30"></script>
+</body>
+</html>

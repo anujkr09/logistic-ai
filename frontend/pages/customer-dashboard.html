@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Dashboard - shipX AI Logistics</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/animations.css?v=shipx30" />
+  <link rel="stylesheet" href="../assets/css/responsive.css?v=shipx30" />
+</head>
+<body class="theme-light">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <div class="shell">
+    <aside class="sidebar card">
+      <div class="side-brand">
+        <img src="../assets/img/download.png" alt="shipX" class="brand-logo" />
+        <div>
+          <div class="side-title">shipX AI</div>
+          <div class="side-sub muted">Customer</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <a class="side-link" href="./customer-dashboard.html">Dashboard</a>
+        <a class="side-link" href="./profile.html">Profile</a>
+        <a class="side-link" href="./tracking.html">Track Shipment</a>
+      </nav>
+      <div class="side-card">
+        <span>Live support</span>
+        <strong>AI assistant ready</strong>
+      </div>
+      <div class="side-footer">
+        <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-top">
+        <div>
+          <h1 class="page-title">Customer Dashboard</h1>
+          <p class="page-subtitle">Track shipments, review alerts, and ask AI for delivery updates.</p>
+        </div>
+        <div class="top-actions">
+          <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
+        </div>
+      </header>
+
+      <section class="dashboard-hero card">
+        <div>
+          <span class="eyebrow">shipX customer portal</span>
+          <h2>Real-time shipment visibility</h2>
+          <p>Monitor parcel movement, ETA, notifications, and route intelligence from one focused dashboard.</p>
+        </div>
+        <a class="btn btn-primary" href="./tracking.html">Track now</a>
+      </section>
+
+      <section class="panel card customer-profile-card" style="margin-top:16px;">
+        <div class="profile-head">
+          <div>
+            <h2 class="panel-title">My profile</h2>
+            <p class="page-subtitle">Your account and company verification details.</p>
+          </div>
+          <span id="profileRole" class="badge status-active">Customer</span>
+        </div>
+        <div class="profile-grid">
+          <div class="profile-item"><span>Name</span><strong id="profileName">-</strong></div>
+          <div class="profile-item"><span>Email</span><strong id="profileEmail">-</strong></div>
+          <div class="profile-item"><span>Mobile</span><strong id="profilePhone">-</strong></div>
+          <div class="profile-item"><span>Company</span><strong id="profileCompany">-</strong></div>
+          <div class="profile-item"><span>PAN number</span><strong id="profilePan">-</strong></div>
+          <div class="profile-item"><span>GST number</span><strong id="profileGst">-</strong></div>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Track your shipment</h2>
+        <form id="customerTrackForm" class="customer-track-form">
+          <input id="customerTrackInput" class="input" placeholder="Enter tracking number" required />
+          <button class="btn btn-primary" type="submit">Track</button>
+        </form>
+        <div class="hint">Customer tracking opens your shipment page only. Admin status tools stay in the admin dashboard.</div>
+      </section>
+
+      <section class="grid-2">
+        <div class="panel card">
+          <h2 class="panel-title">Shipment history</h2>
+          <div id="shipmentsTable" class="table-wrap"></div>
+        </div>
+
+        <div class="panel card">
+          <h2 class="panel-title">Notifications</h2>
+          <div id="notifCenter" class="notif-list"></div>
+        </div>
+      </section>
+
+      <section class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">Delivery analytics</h2>
+        <div class="grid-3">
+          <div class="stat">
+            <div class="stat-value" id="statOnTime">-</div>
+            <div class="stat-label muted">On-time rate</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statAvgEta">-</div>
+            <div class="stat-label muted">Avg ETA</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statRisk">-</div>
+            <div class="stat-label muted">Fraud risk</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="panel card" style="margin-top:16px;">
+        <h2 class="panel-title">AI Chatbot</h2>
+        <div class="chat-widget" id="chatWidget">
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-input">
+            <input id="chatInput" placeholder="Ask: Where is my parcel? Why delayed?" />
+            <button class="btn btn-primary" id="chatSend" type="button">Send</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/app.js?v=shipx30"></script>
+  <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+  <script src="../assets/js/socket.js"></script>
+  <script src="../assets/js/dashboard.js?v=shipx30"></script>
+</body>
+</html>
+

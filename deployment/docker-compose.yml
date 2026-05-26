@@ -1,0 +1,58 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  ai-service:
+    build:
+      context: ../ai-service
+      dockerfile: Dockerfile
+    env_file:
+      - path: ../backend/.env
+        required: false
+    environment:
+      AI_PROVIDER: ${AI_PROVIDER:-openai}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    ports:
+      - "8001:8001"
+    depends_on:
+      - mongo
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    env_file:
+      - path: ../backend/.env
+        required: false
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 4000
+      JWT_SECRET: ${JWT_SECRET:-dev_only_secret_for_local_runs}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      MONGODB_URI: mongodb://mongo:27017/shipx_ai_logistics
+      AI_SERVICE_URL: http://ai-service:8001
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      SOCKET_CORS_ORIGIN: ${SOCKET_CORS_ORIGIN:-http://localhost:3000}
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+      - ai-service
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+
