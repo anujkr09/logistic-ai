@@ -485,15 +485,55 @@
 }
 
 @media (min-width: 769px) {
-  .dynamic-app .app-main,
+  .dynamic-app .app-header-inner {
+    max-width: none;
+    margin: 0;
+    padding-left: 148px;
+    padding-right: 28px;
+  }
+
+  .dynamic-app .app-nav {
+    display: none;
+  }
+
+  .dynamic-app .app-main {
+    max-width: none;
+    margin: 0 24px 0 148px;
+    padding: 28px 20px 48px;
+  }
+
   .dynamic-app .app-footer {
-    padding-left: 132px;
+    margin-left: 148px;
+  }
+
+  .dynamic-app .dynamic-panel {
+    box-shadow: 0 14px 40px rgba(23, 32, 51, 0.06);
+  }
+
+  .dynamic-app .dynamic-grid {
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+  }
+
+  .dynamic-app .dynamic-grid.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 769px) and (max-width: 1180px) {
-  .dynamic-app .app-main,
+  .dynamic-app .app-header-inner {
+    padding-left: 112px;
+  }
+
+  .dynamic-app .app-main {
+    margin-left: 104px;
+    margin-right: 16px;
+  }
+
   .dynamic-app .app-footer {
-    padding-left: 104px;
+    margin-left: 104px;
+  }
+
+  .dynamic-app .dynamic-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
   }
 }
