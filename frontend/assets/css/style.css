@@ -1278,6 +1278,20 @@ body{
   }
 
   .shipx-actions .install-app-button {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+  }
+
+  .shipx-actions .install-app-button[hidden] {
+    display: none;
+  }
+
+  .shipx-actions .install-app-button span:not(.install-app-button__icon) {
     display: none;
   }
 
