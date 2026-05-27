@@ -1273,6 +1273,38 @@ body{
     justify-content: space-between;
   }
 
+  .shipx-actions {
+    margin-left: auto;
+  }
+
+  .shipx-actions .install-app-button {
+    display: none;
+  }
+
+  .shipx-icon-link.profile-action-link,
+  .shipx-icon-link[aria-label="Account"],
+  .shipx-icon-link[aria-label="Profile"] {
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #f8fffb;
+    border: 2px solid rgba(255, 255, 255, 0.46);
+    box-shadow: 0 0 0 9px rgba(255, 255, 255, 0.14);
+  }
+
+  .profile-action-avatar {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #4d148c;
+    background: #f8fffb;
+    font-weight: 900;
+  }
+
   .mobile-bottom-nav {
     position: fixed;
     left: 0;

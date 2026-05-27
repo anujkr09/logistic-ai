@@ -79,6 +79,15 @@
   gap: 8px;
 }
 
+.app-profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #172033;
+  text-decoration: none;
+  font-weight: 800;
+}
+
 .app-avatar {
   width: 34px;
   height: 34px;
@@ -394,7 +403,7 @@
   }
 
   .app-header-inner {
-    flex-direction: column;
+    flex-direction: row;
     padding: 14px 16px;
   }
 
@@ -403,12 +412,47 @@
   }
 
   .app-header-inner {
-    align-items: stretch;
+    align-items: center;
   }
 
-  .app-header-inner > .app-logo,
-  .app-header-inner > .app-user {
-    align-self: center;
+  .app-user {
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .app-user .btn,
+  .app-user a.btn,
+  .app-user button {
+    display: none;
+  }
+
+  .app-user > a {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    color: #4d148c;
+    background: #f8fffb;
+    border: 2px solid rgba(255, 255, 255, 0.46);
+    box-shadow: 0 0 0 8px rgba(77, 20, 140, 0.08);
+    font-size: 0;
+  }
+
+  .app-user > a:not(.app-profile-link)::before {
+    content: "A";
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  .app-profile-link .app-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .app-profile-link > span:not(.app-avatar) {
+    display: none;
   }
 
   .hero-dynamic,

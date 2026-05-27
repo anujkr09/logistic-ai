@@ -304,8 +304,7 @@
             </nav>
             <div class="app-user">
               ${signedIn() ? `
-                <span class="app-avatar">${escapeHtml(initials(state.user?.name))}</span>
-                <a href="/profile" data-link>${escapeHtml(state.user?.name || 'Profile')}</a>
+                <a class="app-profile-link" href="/profile" data-link><span class="app-avatar">${escapeHtml(initials(state.user?.name))}</span><span>${escapeHtml(state.user?.name || 'Profile')}</span></a>
                 <button type="button" data-action="logout">Logout</button>
               ` : `
                 <a href="/login" data-link>Login</a>
