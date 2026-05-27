@@ -65,8 +65,33 @@
     gap:8px;
   }
   .shipx-icon-link{
-    width:34px;
-    height:34px;
+    width:40px;
+    height:40px;
+  }
+
+  .shipx-page button.shipx-icon-link{
+    width:40px;
+    height:40px;
+  }
+
+  .shipx-page .search-icon{
+    width:21px;
+    height:21px;
+    border-width:3px;
+  }
+
+  .shipx-page .search-icon::before{
+    left:6px;
+    top:4px;
+    width:9px;
+    border-top-width:3px;
+  }
+
+  .shipx-page .search-icon::after{
+    right:-10px;
+    bottom:-8px;
+    width:15px;
+    height:4px;
   }
   .install-app-button,
   .shipx-page .install-app-button{
