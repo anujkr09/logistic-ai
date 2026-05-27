@@ -1263,6 +1263,16 @@ body{
     padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
   }
 
+  .shipx-nav,
+  .topnav {
+    display: none !important;
+  }
+
+  .shipx-header__inner {
+    min-height: 92px;
+    justify-content: space-between;
+  }
+
   .mobile-bottom-nav {
     position: fixed;
     left: 0;

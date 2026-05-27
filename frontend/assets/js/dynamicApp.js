@@ -801,9 +801,17 @@
       ['Reports', 'Download and print operational reports.', '/reports'],
       ['Support', 'Create tickets and delivery help requests.', '/support?action=add'],
       ['Users', 'Manage workspace users and access.', '/users'],
+      ['Orders', 'Review order intake and fulfillment status.', '/orders'],
+      ['Products', 'Manage inventory and shipping supplies.', '/products'],
       ['Payments', 'Review invoices and payment status.', '/payments'],
       ['Analytics', 'View delivery and support metrics.', '/analytics'],
       ['Warehouses', 'Manage hubs and capacity.', '/warehouses'],
+      ['Plan route', 'Compare ETA and service options.', '/routes'],
+      ['Pickup desk', 'Book, edit, and monitor pickups.', '/pickups'],
+      ['Store shipping', 'Manage ecommerce order movement.', '/stores'],
+      ['Packaging guide', 'Prepare parcels for safer movement.', '/packaging'],
+      ['Heavy freight', 'Manage oversized shipment quotes.', '/freight'],
+      ['Alerts', 'Manage notifications and updates.', '/notifications'],
     ];
     return layout(`
       <section class="dynamic-panel">

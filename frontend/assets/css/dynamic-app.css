@@ -398,6 +398,19 @@
     padding: 14px 16px;
   }
 
+  .app-nav {
+    display: none;
+  }
+
+  .app-header-inner {
+    align-items: stretch;
+  }
+
+  .app-header-inner > .app-logo,
+  .app-header-inner > .app-user {
+    align-self: center;
+  }
+
   .hero-dynamic,
   .dynamic-grid,
   .dynamic-grid.two,
