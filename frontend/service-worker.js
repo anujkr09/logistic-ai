@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shipx-ai-logistics-v35';
+const CACHE_NAME = 'shipx-ai-logistics-v36';
 const APP_SHELL = [
   './',
   './index.html',
@@ -9,7 +9,7 @@ const APP_SHELL = [
   './assets/css/tracking.css?v=shipx31',
   './assets/css/chatbot.css?v=shipx31',
   './assets/css/dashboard.css?v=shipx31',
-  './assets/js/app.js?v=shipx31',
+  './assets/js/app.js?v=shipx32',
   './assets/js/universalChatbot.js?v=shipx31',
   './assets/js/auth.js?v=shipx31',
   './assets/js/maps.js?v=shipx31',

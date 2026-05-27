@@ -93,8 +93,58 @@
   }
 
   function enforceOpenAccountLinks() {
+    const token = localStorage.getItem('token');
+    const role = userRole();
+    const dashboard = pageUrl(isAdminRole(role) ? 'admin-dashboard.html' : 'customer-dashboard.html');
+    const profile = pageUrl('profile.html');
+
+    document.querySelectorAll('.shipx-actions__item').forEach((item) => {
+      if (!item.querySelector('.shipx-signin')) return;
+      item.hidden = Boolean(token);
+      item.setAttribute('aria-hidden', token ? 'true' : 'false');
+    });
+
     document.querySelectorAll('a').forEach((link) => {
       const text = String(link.textContent || '').trim().toLowerCase();
+      const href = String(link.getAttribute('href') || '').toLowerCase();
+      const isLoginLink = href.endsWith('/login.html') || href.endsWith('./login.html') || href === './login.html';
+      const isRegisterLink = href.endsWith('/register.html') || href.endsWith('./register.html') || href === './register.html';
+      const isCreateIdLink = href.endsWith('/create-user-id.html') || href.endsWith('./create-user-id.html') || href === './create-user-id.html';
+      const isAuthAction = isLoginLink || isRegisterLink || isCreateIdLink ||
+        text === 'sign in' ||
+        text === 'log in' ||
+        text === 'open account' ||
+        text === 'open an account' ||
+        text.includes('create user id');
+
+      if (token && isAuthAction) {
+        const menuCard = link.classList.contains('shipx-menu-card');
+        const footerLink = link.closest('.footer');
+        const signInMenuLink = link.closest('.shipx-menu--signin');
+
+        if (signInMenuLink || footerLink) {
+          link.hidden = true;
+          link.setAttribute('aria-hidden', 'true');
+          return;
+        }
+
+        link.hidden = false;
+        link.removeAttribute('aria-hidden');
+        link.href = menuCard ? dashboard : profile;
+        if (menuCard) {
+          const title = link.querySelector('b');
+          const desc = link.querySelector('span');
+          if (title) title.textContent = 'Dashboard';
+          if (desc) desc.textContent = 'Continue to your active workspace.';
+        } else if (text === 'open account' || text === 'open an account' || text === 'sign in' || text === 'log in') {
+          link.textContent = 'Dashboard';
+        }
+        return;
+      }
+
+      link.hidden = false;
+      link.removeAttribute('aria-hidden');
+
       if (text === 'open account' || text === 'open an account') {
         link.href = pageUrl('register.html');
       }
