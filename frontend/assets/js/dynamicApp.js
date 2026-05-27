@@ -1,6 +1,9 @@
 (function () {
   const app = document.getElementById('app');
   const storeKey = 'shipxWorkspace.v2';
+  const apiBase = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+    ? 'http://localhost:4000'
+    : location.origin;
 
   const entityConfig = {
     users: { title: 'Users', singular: 'User', fields: ['name', 'email', 'role', 'status'], filter: 'role', lead: 'Manage workspace access, account roles, and active user status.' },
@@ -40,6 +43,7 @@
     user: readJson('user'),
     token: localStorage.getItem('token') || '',
     db: readDb(),
+    backendReady: false,
   };
 
   function defaultDb() {
@@ -144,6 +148,74 @@
 
   function persist() {
     localStorage.setItem(storeKey, JSON.stringify(state.db));
+  }
+
+  function workspaceSession() {
+    let key = localStorage.getItem('shipxWorkspaceSession');
+    if (!key) {
+      key = `shipx-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      localStorage.setItem('shipxWorkspaceSession', key);
+    }
+    return key;
+  }
+
+  function apiHeaders(json = false) {
+    const headers = { 'X-Workspace-Session': workspaceSession() };
+    if (state.token) headers.Authorization = `Bearer ${state.token}`;
+    if (json) headers['Content-Type'] = 'application/json';
+    return headers;
+  }
+
+  async function workspaceApi(entity, options = {}) {
+    const response = await fetch(`${apiBase}/api/workspace/${entity}${options.id ? `/${encodeURIComponent(options.id)}` : ''}`, {
+      method: options.method || 'GET',
+      headers: apiHeaders(Boolean(options.body)),
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || 'Workspace API failed');
+    state.backendReady = true;
+    return data;
+  }
+
+  async function loadWorkspaceFromMongo() {
+    const entities = Object.keys(entityConfig);
+    const results = await Promise.allSettled(entities.map((entity) => workspaceApi(entity).then((data) => [entity, data.items || []])));
+    let loaded = false;
+    results.forEach((result) => {
+      if (result.status !== 'fulfilled') return;
+      const [entity, items] = result.value;
+      if (Array.isArray(items) && items.length) {
+        state.db[entity] = items;
+        loaded = true;
+      }
+    });
+    if (loaded) persist();
+    return loaded;
+  }
+
+  async function saveWorkspaceItem(entity, record) {
+    try {
+      const data = await workspaceApi(entity, {
+        id: record.id,
+        method: record.id ? 'PUT' : 'POST',
+        body: { data: record },
+      });
+      return data.item || record;
+    } catch (error) {
+      state.backendReady = false;
+      toast('MongoDB save failed, saved locally', 'error');
+      return record;
+    }
+  }
+
+  async function deleteWorkspaceItem(entity, id) {
+    try {
+      await workspaceApi(entity, { id, method: 'DELETE' });
+    } catch (error) {
+      state.backendReady = false;
+      toast('MongoDB delete failed, removed locally', 'error');
+    }
   }
 
   function escapeHtml(value) {
@@ -697,6 +769,7 @@
     const ok = await confirmAction('Delete record', 'Delete this item permanently?');
     if (!ok) return;
     state.db[entity] = state.db[entity].filter((item) => item.id !== id);
+    await deleteWorkspaceItem(entity, id);
     persist();
     toast('Delete success');
     if (normalizePath().startsWith(`/${entity}/`)) go(`/${entity}`);
@@ -776,7 +849,7 @@
       });
     });
 
-    document.getElementById('entityForm')?.addEventListener('submit', (event) => {
+    document.getElementById('entityForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
@@ -784,10 +857,11 @@
       const values = Object.fromEntries(new FormData(form));
       const id = values.id || `${entity}-${Date.now()}`;
       delete values.id;
-      const existing = state.db[entity].findIndex((row) => row.id === id);
-      const record = { id, ...values, updatedAt: new Date().toISOString() };
-      if (existing >= 0) state.db[entity][existing] = { ...state.db[entity][existing], ...record };
-      else state.db[entity].unshift(record);
+    const existing = state.db[entity].findIndex((row) => row.id === id);
+    const record = { id, ...values, updatedAt: new Date().toISOString() };
+    const saved = await saveWorkspaceItem(entity, record);
+    if (existing >= 0) state.db[entity][existing] = { ...state.db[entity][existing], ...saved };
+    else state.db[entity].unshift(saved);
       persist();
       document.getElementById('entityDialog')?.close();
       toast(existing >= 0 ? 'Edit success' : 'Add success');
@@ -891,5 +965,7 @@
   }
 
   window.addEventListener('popstate', render);
-  render();
+  loadWorkspaceFromMongo().catch(() => {
+    state.backendReady = false;
+  }).finally(render);
 })();

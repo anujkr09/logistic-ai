@@ -18,6 +18,7 @@ const fraudRoutes = require('./routes/fraudRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const publicAiRoutes = require('./routes/publicAiRoutes');
 const uiRoutes = require('./routes/uiRoutes');
+const workspaceRoutes = require('./routes/workspaceRoutes');
 const { CORS_ORIGIN } = require('./config/env');
 
 const app = express();
@@ -43,6 +44,7 @@ app.use('/api/fraud', fraudRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/ai/public', publicAiRoutes);
 app.use('/api/ui', uiRoutes);
+app.use('/api/workspace', workspaceRoutes);
 
 const frontendDir = path.resolve(__dirname, '../../frontend');
 const frontendIndex = path.join(frontendDir, 'index.html');
