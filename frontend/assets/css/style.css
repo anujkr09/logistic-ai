@@ -1168,6 +1168,77 @@ body{
   display: none;
 }
 
+.desktop-side-nav {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .desktop-side-nav {
+    position: fixed;
+    left: 16px;
+    top: 96px;
+    z-index: 900;
+    width: 92px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(23, 32, 51, 0.10);
+    border-radius: 8px;
+    box-shadow: 0 18px 44px rgba(23, 32, 51, 0.12);
+  }
+
+  .desktop-side-nav__item {
+    min-height: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 8px;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .desktop-side-nav__item svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .desktop-side-nav__item:hover,
+  .desktop-side-nav__item:focus-visible,
+  .desktop-side-nav__item.active {
+    color: #4d148c;
+    background: #f0ebf7;
+  }
+
+  .shipx-home,
+  .shipx-footer {
+    padding-left: 124px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .desktop-side-nav {
+    left: 8px;
+    width: 78px;
+  }
+
+  .shipx-home,
+  .shipx-footer {
+    padding-left: 96px;
+  }
+}
+
 .chatbot-toggle{
   position:fixed;
   right:24px;
@@ -1206,6 +1277,10 @@ body{
     background: rgba(255, 255, 255, 0.98);
     border-top: 1px solid rgba(23, 32, 51, 0.12);
     box-shadow: 0 -12px 28px rgba(23, 32, 51, 0.12);
+  }
+
+  .desktop-side-nav {
+    display: none !important;
   }
 
   .mobile-bottom-nav__item {

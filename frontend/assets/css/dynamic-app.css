@@ -426,3 +426,17 @@
     padding: 26px 20px;
   }
 }
+
+@media (min-width: 769px) {
+  .dynamic-app .app-main,
+  .dynamic-app .app-footer {
+    padding-left: 132px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .dynamic-app .app-main,
+  .dynamic-app .app-footer {
+    padding-left: 104px;
+  }
+}

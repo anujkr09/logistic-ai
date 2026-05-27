@@ -314,6 +314,7 @@
             </div>
           </div>
         </header>
+        ${desktopSideNav(active)}
         <main class="app-main">
           ${breadcrumbs(crumbs.length ? crumbs : [['Dashboard', '/'], [pageTitle(active), active]])}
           ${content}
@@ -349,6 +350,28 @@
           ? normalized === '/'
           : normalized === href || normalized.startsWith(`${href}/`) || (href === '/shipping' && ['/routes', '/pickups', '/stores', '/packaging', '/freight'].includes(normalized));
         return `<a class="mobile-bottom-nav__item ${isActive ? 'active' : ''}" href="${href}" data-link aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${pathData}"></path></svg>
+          <span>${label}</span>
+        </a>`;
+      }).join('')}
+    </nav>`;
+  }
+
+  function desktopSideNav(activePath = normalizePath()) {
+    const items = [
+      ['Home', '/', 'home', 'M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.5z'],
+      ['Shipping', '/shipping', 'shipping', 'M4 7h16v10H4z M7 7V5h10v2 M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'],
+      ['Tracking', '/tracking', 'tracking', 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
+      ['Shipments', '/shipments', 'shipments', 'M4 7l8-4 8 4-8 4-8-4z M4 7v10l8 4 8-4V7 M12 11v10'],
+      ['More', '/more', 'more', 'M5 5h5v5H5z M14 5h5v5h-5z M5 14h5v5H5z M14 14h5v5h-5z'],
+    ];
+    const normalized = activePath === '/orders' ? '/shipments' : activePath;
+    return `<nav class="desktop-side-nav" aria-label="Desktop side navigation">
+      ${items.map(([label, href, key, pathData]) => {
+        const isActive = href === '/'
+          ? normalized === '/'
+          : normalized === href || normalized.startsWith(`${href}/`) || (href === '/shipping' && ['/routes', '/pickups', '/stores', '/packaging', '/freight'].includes(normalized));
+        return `<a class="desktop-side-nav__item ${isActive ? 'active' : ''}" href="${href}" data-link aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${pathData}"></path></svg>
           <span>${label}</span>
         </a>`;
