@@ -26,7 +26,9 @@
     '/alerts': '/notifications',
     '/create-user-id': '/register',
     '/customer-dashboard': '/dashboard',
+    '/home': '/',
     '/ship-now': '/shipments',
+    '/shipping': '/shipping',
     '/tracking': '/tracking',
     '/shipping-services': '/shipments',
     '/shipping-tools': '/analytics',
@@ -316,6 +318,7 @@
           ${breadcrumbs(crumbs.length ? crumbs : [['Dashboard', '/'], [pageTitle(active), active]])}
           ${content}
         </main>
+        ${bottomNav(active)}
         <footer class="app-footer">shipX AI Logistics workspace</footer>
       </div>
       <dialog id="confirmDialog" class="confirm-dialog">
@@ -329,6 +332,28 @@
         </form>
       </dialog>
     `;
+  }
+
+  function bottomNav(activePath = normalizePath()) {
+    const items = [
+      ['Home', '/', 'home', 'M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.5z'],
+      ['Shipping', '/shipping', 'shipping', 'M4 7h16v10H4z M7 7V5h10v2 M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'],
+      ['Tracking', '/tracking', 'tracking', 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
+      ['Shipments', '/shipments', 'shipments', 'M4 7l8-4 8 4-8 4-8-4z M4 7v10l8 4 8-4V7 M12 11v10'],
+      ['More', '/more', 'more', 'M5 5h5v5H5z M14 5h5v5h-5z M5 14h5v5H5z M14 14h5v5h-5z'],
+    ];
+    const normalized = activePath === '/orders' ? '/shipments' : activePath;
+    return `<nav class="mobile-bottom-nav" aria-label="Mobile bottom navigation">
+      ${items.map(([label, href, key, pathData]) => {
+        const isActive = href === '/'
+          ? normalized === '/'
+          : normalized === href || normalized.startsWith(`${href}/`) || (href === '/shipping' && ['/routes', '/pickups', '/stores', '/packaging', '/freight'].includes(normalized));
+        return `<a class="mobile-bottom-nav__item ${isActive ? 'active' : ''}" href="${href}" data-link aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${pathData}"></path></svg>
+          <span>${label}</span>
+        </a>`;
+      }).join('')}
+    </nav>`;
   }
 
   function initials(name) {
@@ -390,6 +415,31 @@
           </article>`).join('')}
       </section>
     `, '/');
+  }
+
+  function shippingPage() {
+    const cards = [
+      ['Create shipment', 'Start a parcel or freight order with origin, destination, and status.', '/shipments?action=add'],
+      ['Plan route', 'Compare ETA and service options before dispatch.', '/routes'],
+      ['Pickup desk', 'Book, edit, and monitor pickup slots.', '/pickups'],
+      ['Store shipping', 'Move ecommerce orders into fulfillment.', '/stores'],
+      ['Packaging guide', 'Prepare parcels with handling and package readiness.', '/packaging'],
+      ['Heavy freight', 'Request and manage oversized shipment quotes.', '/freight'],
+    ];
+    return layout(`
+      <section class="dynamic-panel">
+        <p class="home-kicker">Shipping workspace</p>
+        <h1>Shipping</h1>
+        <p class="muted-text">Create shipments, plan routes, schedule pickups, manage store orders, prepare packaging, and handle freight from one mobile-friendly page.</p>
+      </section>
+      <section class="dynamic-grid">
+        ${cards.map(([title, text, href]) => `<article class="dynamic-card actionable-card" tabindex="0" data-card-href="${href}">
+          <h3>${title}</h3>
+          <p class="muted-text">${text}</p>
+          <a href="${href}" data-link>Open</a>
+        </article>`).join('')}
+      </section>
+    `, '/shipping', [['Dashboard', '/'], ['Shipping', '/shipping']]);
   }
 
   function loginPage() {
@@ -721,6 +771,38 @@
     `, '/profile');
   }
 
+  function morePage() {
+    const items = [
+      ['Profile', 'Manage account details and role.', '/profile'],
+      ['Settings', 'Update alerts and workspace preferences.', '/settings'],
+      ['Reports', 'Download and print operational reports.', '/reports'],
+      ['Support', 'Create tickets and delivery help requests.', '/support?action=add'],
+      ['Users', 'Manage workspace users and access.', '/users'],
+      ['Payments', 'Review invoices and payment status.', '/payments'],
+      ['Analytics', 'View delivery and support metrics.', '/analytics'],
+      ['Warehouses', 'Manage hubs and capacity.', '/warehouses'],
+    ];
+    return layout(`
+      <section class="dynamic-panel">
+        <p class="home-kicker">More tools</p>
+        <h1>More</h1>
+        <p class="muted-text">Remaining workspace features, account tools, reports, support, and session actions.</p>
+      </section>
+      <section class="dynamic-grid">
+        ${items.map(([title, text, href]) => `<article class="dynamic-card actionable-card" tabindex="0" data-card-href="${href}">
+          <h3>${title}</h3>
+          <p class="muted-text">${text}</p>
+          <a href="${href}" data-link>Open</a>
+        </article>`).join('')}
+        <article class="dynamic-card">
+          <h3>Logout</h3>
+          <p class="muted-text">End the current session after confirmation.</p>
+          <button class="table-action" type="button" data-action="logout">Logout</button>
+        </article>
+      </section>
+    `, '/more', [['Dashboard', '/'], ['More', '/more']]);
+  }
+
   function sumAmounts(rows) {
     return rows.reduce((sum, row) => sum + Number(row.amount || 0), 0).toLocaleString();
   }
@@ -953,10 +1035,12 @@
       else if (path === '/dashboard') app.innerHTML = dashboardPage(false);
       else if (path === '/admin') app.innerHTML = dashboardPage(true);
       else if (path === '/tracking') app.innerHTML = trackingPage();
+      else if (path === '/shipping') app.innerHTML = shippingPage();
       else if (path === '/analytics') app.innerHTML = analyticsPage();
       else if (path === '/reports') app.innerHTML = reportsPage();
       else if (path === '/settings') app.innerHTML = settingsPage();
       else if (path === '/profile') app.innerHTML = profilePage();
+      else if (path === '/more') app.innerHTML = morePage();
       else if (entityConfig[segments[0]] && segments[1]) app.innerHTML = detailPage(segments[0], decodeURIComponent(segments[1]));
       else if (entityConfig[segments[0]]) app.innerHTML = entityPage(segments[0]);
       else app.innerHTML = notFoundPage();
