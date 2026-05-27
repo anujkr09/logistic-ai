@@ -244,6 +244,148 @@
   text-align: center;
 }
 
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #667085;
+  font-size: 14px;
+}
+
+.breadcrumbs a {
+  color: #4d148c;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.page-head-row,
+.list-toolbar,
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.list-toolbar {
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.list-toolbar .input,
+.list-toolbar .select {
+  max-width: 240px;
+}
+
+.actionable-card,
+.stat-button {
+  text-align: left;
+  cursor: pointer;
+}
+
+.stat-button {
+  width: 100%;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  background: #fff;
+  font: inherit;
+}
+
+.stat-value {
+  font-size: 34px;
+  font-weight: 900;
+  color: #4d148c;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.table-action,
+.link {
+  border: 0;
+  background: transparent;
+  color: #4d148c;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 4px 0;
+}
+
+.table-action.danger,
+.btn-secondary.danger {
+  color: #b42318;
+}
+
+.entity-dialog,
+.confirm-dialog {
+  width: min(560px, calc(100vw - 32px));
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(23, 32, 51, 0.24);
+  padding: 24px;
+}
+
+.entity-dialog::backdrop,
+.confirm-dialog::backdrop {
+  background: rgba(23, 32, 51, 0.38);
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.loading-state {
+  background: #fff;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.loading-state::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 10px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f0ebf7, #fff, #f0ebf7);
+}
+
+.empty-state.compact {
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.feature-workflow {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.45fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.feature-workflow ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #536078;
+}
+
+.feature-workflow li + li {
+  margin-top: 8px;
+}
+
+.toast[data-tone="error"] {
+  background: #b42318;
+}
+
 @media (max-width: 860px) {
   .app-header-inner,
   .app-user,
@@ -261,6 +403,23 @@
   .dynamic-grid.two,
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .page-head-row,
+  .list-toolbar,
+  .list-item,
+  .feature-workflow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .feature-workflow {
+    display: flex;
+  }
+
+  .list-toolbar .input,
+  .list-toolbar .select {
+    max-width: none;
   }
 
   .dynamic-hero-copy {

@@ -92,6 +92,109 @@
     return inPages ? `./${page}` : `./pages/${page}`;
   }
 
+  function redirectLegacyStaticPage() {
+    const legacyRoutes = {
+      'admin-dashboard.html': '/admin',
+      'contact.html': '/support?action=add',
+      'create-user-id.html': '/register',
+      'customer-dashboard.html': '/dashboard',
+      'ecommerce.html': '/stores',
+      'login.html': '/login',
+      'packaging-shipping-supplies.html': '/packaging',
+      'profile.html': '/profile',
+      'quote-heavy-shipment.html': '/freight',
+      'rates-and-transit-times.html': '/routes',
+      'register.html': '/register',
+      'schedule-manage-pickups.html': '/pickups',
+      'ship-now.html': '/shipments?action=add',
+      'shipping-services.html': '/shipments',
+      'shipping-tools.html': '/analytics',
+      'shipx-one-stop-shop.html': '/dashboard',
+      'tracking.html': `/tracking${location.search || ''}`,
+      'warehouses.html': '/warehouses',
+    };
+    const page = location.pathname.split('/').pop();
+    if (!location.pathname.includes('/pages/') || !legacyRoutes[page]) return false;
+    location.replace(legacyRoutes[page]);
+    return true;
+  }
+
+  if (redirectLegacyStaticPage()) return;
+
+  function workspaceUrl(path) {
+    return path.startsWith('/') ? path : `/${path}`;
+  }
+
+  function linkTitle(link) {
+    return String(link.querySelector('b')?.textContent || link.textContent || '').trim().toLowerCase();
+  }
+
+  function setMenuCard(link, href, title, description) {
+    link.href = workspaceUrl(href);
+    const titleNode = link.querySelector('b');
+    const descNode = link.querySelector('span');
+    if (titleNode && title) titleNode.textContent = title;
+    if (descNode && description) descNode.textContent = description;
+  }
+
+  function remapVisibleFeatureLinks() {
+    const titleRoutes = {
+      'create shipment': ['/shipments?action=add'],
+      'plan route': ['/routes'],
+      'pickup desk': ['/pickups'],
+      'store shipping': ['/stores'],
+      'live map': ['/tracking'],
+      'my shipments': ['/shipments'],
+      'alerts': ['/notifications'],
+      'contact team': ['/support?action=add'],
+      'delivery help': ['/support?filter=Open'],
+      'packaging guide': ['/packaging'],
+      'heavy freight': ['/freight'],
+      'customer dashboard': ['/dashboard'],
+      'admin console': ['/admin'],
+      'dashboard': [isAdminRole() ? '/admin' : '/dashboard'],
+      'profile': ['/profile'],
+      'track shipment': ['/tracking'],
+      'contact support': ['/support?action=add'],
+      'rates and transit': ['/routes'],
+      'warehouses': ['/warehouses'],
+      'open an account': ['/register'],
+      'open account': ['/register'],
+      'sign in': ['/login'],
+      'get started': ['/register'],
+    };
+
+    document.querySelectorAll('a').forEach((link) => {
+      const title = linkTitle(link);
+      const route = titleRoutes[title]?.[0];
+      if (!route) return;
+      link.href = workspaceUrl(route);
+    });
+
+    document.querySelectorAll('.shipx-menu-card').forEach((link) => {
+      const title = linkTitle(link);
+      if (title === 'dashboard' && link.closest('.shipx-menu--account')) {
+        const cards = [...link.closest('.shipx-menu__grid')?.querySelectorAll('.shipx-menu-card') || []];
+        const index = cards.indexOf(link);
+        if (index === 0) setMenuCard(link, '/profile', 'Profile', 'Manage your active account details.');
+        if (index === 1) setMenuCard(link, '/settings', 'Settings', 'Update alerts and workspace preferences.');
+      }
+    });
+  }
+
+  function setupLanguageSelector() {
+    document.querySelectorAll('.language-card select').forEach((select) => {
+      const stored = localStorage.getItem('shipxLanguage');
+      if (stored && [...select.options].some((option) => option.value === stored || option.textContent === stored)) {
+        select.value = stored;
+      }
+      select.addEventListener('change', () => {
+        localStorage.setItem('shipxLanguage', select.value);
+        showToast(`Language saved: ${select.value}`);
+      });
+    });
+  }
+
   function enforceOpenAccountLinks() {
     const token = localStorage.getItem('token');
     const role = userRole();
@@ -134,8 +237,18 @@
         if (menuCard) {
           const title = link.querySelector('b');
           const desc = link.querySelector('span');
-          if (title) title.textContent = 'Dashboard';
-          if (desc) desc.textContent = 'Continue to your active workspace.';
+          if (isRegisterLink || text === 'open account' || text === 'open an account') {
+            link.href = workspaceUrl('/profile');
+            if (title) title.textContent = 'Profile';
+            if (desc) desc.textContent = 'Manage your active account details.';
+          } else if (isLoginLink || text === 'sign in' || text === 'log in') {
+            link.href = workspaceUrl('/settings');
+            if (title) title.textContent = 'Settings';
+            if (desc) desc.textContent = 'Update alerts and workspace preferences.';
+          } else {
+            if (title) title.textContent = 'Dashboard';
+            if (desc) desc.textContent = 'Continue to your active workspace.';
+          }
         } else if (text === 'open account' || text === 'open an account' || text === 'sign in' || text === 'log in') {
           link.textContent = 'Dashboard';
         }
@@ -286,6 +399,8 @@
     ensureProfileAction();
     refreshProfileIdentity();
     enforceOpenAccountLinks();
+    remapVisibleFeatureLinks();
+    setupLanguageSelector();
 
     document.querySelectorAll('a').forEach((link) => {
       const text = (link.textContent || '').trim().toLowerCase();
@@ -323,6 +438,8 @@
   ensureProfileAction();
   refreshProfileIdentity();
   enforceOpenAccountLinks();
+  remapVisibleFeatureLinks();
+  setupLanguageSelector();
 
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
@@ -416,7 +533,7 @@
       event.preventDefault();
       const trackingNumber = document.getElementById('trackingNumber')?.value?.trim();
       if (!trackingNumber) return;
-      location.href = `./pages/tracking.html?tracking=${encodeURIComponent(trackingNumber)}`;
+      location.href = `/tracking?tracking=${encodeURIComponent(trackingNumber)}`;
     });
   }
 
@@ -426,8 +543,8 @@
       event.preventDefault();
       const trackingNumber = document.getElementById('trackingMenuNumber')?.value?.trim();
       location.href = trackingNumber
-        ? `./pages/tracking.html?tracking=${encodeURIComponent(trackingNumber)}`
-        : './pages/tracking.html';
+        ? `/tracking?tracking=${encodeURIComponent(trackingNumber)}`
+        : '/tracking';
     });
   }
 
@@ -467,8 +584,8 @@
       event.preventDefault();
       const query = document.getElementById('headerSearchInput')?.value?.trim();
       location.href = query
-        ? `./pages/tracking.html?search=${encodeURIComponent(query)}`
-        : './pages/tracking.html';
+        ? `/tracking?search=${encodeURIComponent(query)}`
+        : '/tracking';
     });
   }
 
