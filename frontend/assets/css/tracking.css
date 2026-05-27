@@ -1617,25 +1617,31 @@ body:has(.tracking-shell) .bg-grid{
   .map{
     height:auto;
     min-height:0;
-    overflow:visible;
+    overflow:hidden;
     background:#eef5f7;
   }
 
   .google-map-shell{
     min-height:0;
     height:auto;
-    padding-top:360px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
   }
 
   .google-map-canvas,
   .leaflet-map-shell .leaflet-container{
+    position:relative;
+    inset:auto;
+    flex:0 0 auto;
+    width:100%;
     min-height:0;
-    height:360px;
+    height:clamp(320px, 70vh, 430px);
   }
 
   .route-map{
-    min-height:360px;
-    height:360px;
+    min-height:clamp(320px, 70vh, 430px);
+    height:clamp(320px, 70vh, 430px);
   }
 
   .route-map .map-provider-badge{
@@ -1705,7 +1711,10 @@ body:has(.tracking-shell) .bg-grid{
   }
 
   .google-map-overlay{
-    position:static;
+    position:relative;
+    left:auto;
+    right:auto;
+    bottom:auto;
     padding:10px;
   }
 
@@ -1771,14 +1780,14 @@ body:has(.tracking-shell) .bg-grid{
   }
 
   .google-map-shell{
-    padding-top:320px;
+    padding-top:0;
   }
 
   .google-map-canvas,
   .leaflet-map-shell .leaflet-container,
   .route-map{
-    height:320px;
-    min-height:320px;
+    height:clamp(300px, 68vh, 390px);
+    min-height:300px;
   }
 
   .map-route-panel{

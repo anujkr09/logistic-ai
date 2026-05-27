@@ -534,6 +534,11 @@ async function renderGoogleMap(element, location, shipment = {}, empty = false) 
     map.fitBounds(bounds, 64);
   }
 
+  setTimeout(() => {
+    maps.event.trigger(map, 'resize');
+    if (points.length > 1) map.fitBounds(bounds, 64);
+  }, 120);
+
   const state = buildMapState(location, shipment, empty);
   overlay.innerHTML = `
     <div class="google-map-summary">
@@ -611,7 +616,13 @@ async function renderLeafletMap(element, location, shipment = {}, empty = false)
     ${routeCorridorTemplate(state)}
   `;
 
-  setTimeout(() => map.invalidateSize(), 80);
+  const refreshLeafletSize = () => {
+    map.invalidateSize();
+    if (bounds.length > 1) map.fitBounds(bounds, { padding: [30, 30] });
+  };
+  setTimeout(refreshLeafletSize, 80);
+  setTimeout(refreshLeafletSize, 260);
+  window.addEventListener('resize', refreshLeafletSize, { passive: true, once: true });
 }
 
 function renderProviderMap(element, location, shipment = {}, empty = false) {

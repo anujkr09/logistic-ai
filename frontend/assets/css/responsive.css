@@ -108,6 +108,129 @@
   }
 }
 
+@media (max-width: 900px){
+  .shipx-page .account-hero{
+    grid-template-columns:1fr;
+    width:calc(100% - 28px);
+    gap:22px;
+    padding:48px 0;
+  }
+
+  .shipx-page .account-hero::before{
+    inset:18px 0;
+  }
+
+  .shipx-page .account-hero::after{
+    grid-column:1;
+    grid-row:auto;
+    min-height:190px;
+    margin:0 22px 0;
+    font-size:58px;
+  }
+
+  .shipx-page .account-hero[data-dynamic-page]{
+    grid-template-columns:1fr;
+  }
+
+  .shipx-page .account-hero[data-dynamic-page]::after{
+    display:none;
+  }
+
+  .service-hero-copy,
+  .service-hero-visual{
+    grid-column:1;
+  }
+
+  .service-hero-copy{
+    margin-left:22px;
+    margin-right:22px;
+  }
+
+  .service-hero-visual{
+    min-height:240px;
+    margin:0 22px;
+  }
+
+  .shipx-page .account-hero > h1,
+  .shipx-page .account-hero > p,
+  .shipx-page .account-hero > a,
+  .shipx-page .account-hero > hr,
+  .shipx-page .account-hero > form,
+  .shipx-page .account-hero > div:not(.account-hero__visual),
+  .shipx-page .account-hero__lead,
+  .shipx-page .account-hero__note,
+  .service-hero-actions{
+    margin-left:22px;
+    margin-right:22px;
+  }
+
+  .service-dynamic-section{
+    width:calc(100% - 28px);
+  }
+
+  .service-metrics,
+  .service-card-grid{
+    grid-template-columns:1fr;
+  }
+
+  .service-workflow,
+  .service-checklist{
+    grid-template-columns:1fr;
+    flex-direction:column;
+  }
+
+  .service-checklist ul{
+    grid-template-columns:1fr;
+    min-width:0;
+  }
+}
+
+@media (max-width: 520px){
+  .shipx-page .account-hero h1{
+    font-size:34px;
+  }
+
+  .shipx-page .account-hero__lead{
+    font-size:20px;
+  }
+
+  .shipx-page .signup-button{
+    width:calc(100% - 44px);
+    min-height:54px;
+    font-size:15px;
+  }
+
+  .service-hero-actions{
+    align-items:stretch;
+    flex-direction:column;
+  }
+
+  .service-hero-actions .signup-button,
+  .service-secondary-action{
+    width:100%;
+  }
+
+  .service-hero-copy,
+  .service-hero-visual{
+    margin-left:16px;
+    margin-right:16px;
+  }
+
+  .service-hero-visual{
+    min-height:210px;
+    padding:14px;
+  }
+
+  .service-visual-card{
+    padding:12px;
+  }
+
+  .service-workflow,
+  .service-checklist{
+    padding:16px;
+  }
+}
+
 /* Cross-device stability layer */
 html,
 body{
@@ -394,35 +517,43 @@ button,
   .map{
     min-height:0;
     height:auto;
-    overflow:visible;
+    overflow:hidden;
     background:#eef5f7;
   }
 
   .google-map-shell{
     min-height:0;
     height:auto;
-    padding-top:360px;
-    overflow:visible;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
     background:#eef5f7;
   }
 
   .google-map-canvas{
-    inset:0 0 auto 0;
+    position:relative;
+    inset:auto;
+    flex:0 0 auto;
+    width:100%;
     min-height:0;
-    height:360px;
+    height:clamp(320px, 70vh, 430px);
   }
 
   .leaflet-map-shell .leaflet-container{
     min-height:0;
-    height:360px;
+    height:clamp(320px, 70vh, 430px);
   }
 
   .google-map-overlay{
-    position:static;
+    position:relative;
+    left:auto;
+    right:auto;
+    bottom:auto;
     display:grid;
     gap:8px;
     padding:8px;
     background:#eef5f7;
+    z-index:1;
   }
 
   .google-map-summary,
@@ -445,8 +576,8 @@ button,
   }
 
   .route-map{
-    min-height:360px;
-    height:360px;
+    min-height:clamp(320px, 70vh, 430px);
+    height:clamp(320px, 70vh, 430px);
     overflow:hidden;
   }
 
@@ -458,7 +589,7 @@ button,
   }
 
   .route-map .pin-label{
-    max-width:120px;
+    max-width:min(34vw, 120px);
     padding:7px 9px;
   }
 
@@ -563,17 +694,18 @@ button,
   }
 
   .google-map-shell{
-    padding-top:320px;
+    padding-top:0;
   }
 
   .google-map-canvas,
   .leaflet-map-shell .leaflet-container,
   .route-map{
-    height:320px;
+    height:clamp(300px, 68vh, 390px);
+    min-height:300px;
   }
 
   .route-map{
-    min-height:320px;
+    min-height:300px;
   }
 
   .map-route-panel{
