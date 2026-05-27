@@ -441,6 +441,21 @@
   remapVisibleFeatureLinks();
   setupLanguageSelector();
 
+  function isStandaloneApp() {
+    return window.matchMedia?.('(display-mode: standalone)').matches ||
+      window.matchMedia?.('(display-mode: fullscreen)').matches ||
+      window.navigator.standalone === true;
+  }
+
+  function setInstallButtonVisible(show) {
+    if (!installAppButton) return;
+    const visible = Boolean(show) && !isStandaloneApp();
+    installAppButton.hidden = !visible;
+    installAppButton.setAttribute('aria-disabled', visible ? 'false' : 'true');
+  }
+
+  setInstallButtonVisible(false);
+
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const nextTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
@@ -460,17 +475,20 @@
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault();
     deferredInstallPrompt = event;
-    if (installAppButton) {
-      installAppButton.hidden = false;
-      installAppButton.removeAttribute('aria-disabled');
-    }
+    setInstallButtonVisible(true);
   });
 
   window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
-    if (installAppButton) installAppButton.hidden = true;
+    setInstallButtonVisible(false);
     showToast('shipX AI app installed.');
   });
+
+  window.matchMedia?.('(display-mode: standalone)').addEventListener?.('change', () => {
+    setInstallButtonVisible(Boolean(deferredInstallPrompt));
+  });
+  window.addEventListener('pageshow', () => setInstallButtonVisible(Boolean(deferredInstallPrompt)));
+  window.addEventListener('focus', () => setInstallButtonVisible(Boolean(deferredInstallPrompt)));
 
   function downloadAppShortcut() {
     if (location.protocol === 'http:' || location.protocol === 'https:') {
@@ -513,9 +531,12 @@
       const choice = await deferredInstallPrompt.userChoice;
       deferredInstallPrompt = null;
       if (choice.outcome === 'accepted') {
+        setInstallButtonVisible(false);
         showToast('Installing shipX AI app...');
         return;
       }
+      setInstallButtonVisible(false);
+      return;
     }
 
     downloadAppShortcut();
