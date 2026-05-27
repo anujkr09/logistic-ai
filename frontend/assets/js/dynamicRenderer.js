@@ -25,7 +25,7 @@
   function renderText(targetId, text) {
     const t = el(targetId);
     if (!t) return;
-    t.textContent = text ?? 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
+    t.textContent = text ?? '-';
   }
 
   function renderHtml(targetId, html) {
@@ -242,7 +242,7 @@
               </div>
               <div class="warehouse-body">
                 <div class="warehouse-row"><span class="muted">Inventory</span><b>${inventory.summary || 'Available'}</b></div>
-                <div class="warehouse-row"><span class="muted">Location</span><b>${w.address || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â'}</b></div>
+                <div class="warehouse-row"><span class="muted">Location</span><b>${w.address || '-'}</b></div>
               </div>
             </div>
           `;

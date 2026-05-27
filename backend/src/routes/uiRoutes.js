@@ -70,6 +70,201 @@ const pageSchemas = {
   },
 };
 
+const servicePageSchemas = {
+  'ship-now': {
+    page: 'ship-now',
+    title: 'Ship Now',
+    kicker: 'Shipment desk',
+    lead: 'Create a shipment from live account, route, and pickup data.',
+    note: 'Choose package details, schedule collection, and hand off to dashboard workflows without rebuilding this page.',
+    primaryAction: { label: 'Start shipping', href: './register.html' },
+    secondaryAction: { label: 'Track shipment', href: './tracking.html' },
+    metrics: [
+      { value: '3 steps', label: 'details, pickup, confirm' },
+      { value: 'AI ETA', label: 'dynamic route estimate' },
+      { value: 'Live', label: 'dashboard sync' },
+    ],
+    cards: [
+      { title: 'Package details', text: 'Capture origin, destination, weight, and service preference.' },
+      { title: 'Pickup planning', text: 'Schedule collections and route handoff from the same workspace.' },
+      { title: 'Status updates', text: 'Shipment state stays connected to tracking and notifications.' },
+    ],
+  },
+  'rates-and-transit-times': {
+    page: 'rates-and-transit-times',
+    title: 'Rates and Transit Times',
+    kicker: 'Route planning',
+    lead: 'Compare service windows using operational data and AI confidence signals.',
+    note: 'Dynamic content can be changed from this schema without editing the page markup.',
+    primaryAction: { label: 'View transit options', href: './tracking.html' },
+    secondaryAction: { label: 'Create shipment', href: './ship-now.html' },
+    metrics: [
+      { value: '4 modes', label: 'air, rail, road, last mile' },
+      { value: 'ETA', label: 'AI-assisted planning' },
+      { value: 'Risk', label: 'delay context' },
+    ],
+    cards: [
+      { title: 'Transit windows', text: 'Show expected delivery bands for each movement option.' },
+      { title: 'Cost context', text: 'Keep rate copy ready for backend pricing data.' },
+      { title: 'Route confidence', text: 'Surface weather, distance, and delay signals.' },
+    ],
+  },
+  'schedule-manage-pickups': {
+    page: 'schedule-manage-pickups',
+    title: 'Schedule and Manage Pickups',
+    kicker: 'Pickup desk',
+    lead: 'Coordinate pickup requests, edits, and handoffs from one dynamic view.',
+    note: 'Connected dashboards can reuse the same pickup state as the public page.',
+    primaryAction: { label: 'Manage pickups', href: './customer-dashboard.html' },
+    secondaryAction: { label: 'Create shipment', href: './ship-now.html' },
+    metrics: [
+      { value: 'Today', label: 'pickup slots' },
+      { value: 'Live', label: 'status updates' },
+      { value: 'Hub', label: 'warehouse handoff' },
+    ],
+    cards: [
+      { title: 'Slot selection', text: 'Show available collection windows by city or warehouse.' },
+      { title: 'Reschedule flow', text: 'Make pickup edits without losing shipment context.' },
+      { title: 'Driver handoff', text: 'Keep pickup status visible for operations teams.' },
+    ],
+  },
+  ecommerce: {
+    page: 'ecommerce',
+    title: 'Ecommerce Shipping',
+    kicker: 'Store operations',
+    lead: 'Centralize online order movement, tracking, and customer notifications.',
+    note: 'The page is now driven by schema and ready for store/channel data.',
+    primaryAction: { label: 'Enable ecommerce', href: './register.html' },
+    secondaryAction: { label: 'Open dashboard', href: './customer-dashboard.html' },
+    metrics: [
+      { value: 'Orders', label: 'ready for API sync' },
+      { value: 'Labels', label: 'shipping workflow' },
+      { value: 'Alerts', label: 'customer updates' },
+    ],
+    cards: [
+      { title: 'Order intake', text: 'Prepare marketplace and storefront orders for fulfillment.' },
+      { title: 'Fulfillment rules', text: 'Route orders by service, city, inventory, or warehouse.' },
+      { title: 'Customer visibility', text: 'Send tracking updates and exception notices.' },
+    ],
+  },
+  'packaging-shipping-supplies': {
+    page: 'packaging-shipping-supplies',
+    title: 'Packaging and Shipping Supplies',
+    kicker: 'Packaging guide',
+    lead: 'Serve dynamic packaging guidance by shipment type, risk, and destination.',
+    note: 'Operations can later replace these schema cards with inventory-backed supplies.',
+    primaryAction: { label: 'Prepare package', href: './ship-now.html' },
+    secondaryAction: { label: 'Contact support', href: './contact.html' },
+    metrics: [
+      { value: 'Safe', label: 'handling guidance' },
+      { value: 'Labels', label: 'address accuracy' },
+      { value: 'Ready', label: 'pickup prep' },
+    ],
+    cards: [
+      { title: 'Box selection', text: 'Match package size and protection to the shipment profile.' },
+      { title: 'Label checks', text: 'Make addresses and tracking IDs easy to scan.' },
+      { title: 'Handling notes', text: 'Capture fragile, cold-chain, or oversized instructions.' },
+    ],
+  },
+  'quote-heavy-shipment': {
+    page: 'quote-heavy-shipment',
+    title: 'Quote Heavy Shipment',
+    kicker: 'Freight planning',
+    lead: 'Collect freight details and route signals for large or oversized shipments.',
+    note: 'The dynamic schema keeps quote copy and cards editable from backend code.',
+    primaryAction: { label: 'Request quote', href: './contact.html' },
+    secondaryAction: { label: 'Plan route', href: './rates-and-transit-times.html' },
+    metrics: [
+      { value: 'Freight', label: 'oversized support' },
+      { value: 'Hub', label: 'warehouse planning' },
+      { value: 'Risk', label: 'AI review' },
+    ],
+    cards: [
+      { title: 'Dimensions', text: 'Capture size, weight, handling, and loading constraints.' },
+      { title: 'Route review', text: 'Compare freight movement options before booking.' },
+      { title: 'Exception care', text: 'Flag risk, insurance, and customs requirements early.' },
+    ],
+  },
+  'shipping-services': {
+    page: 'shipping-services',
+    title: 'Shipping Services',
+    kicker: 'Service catalog',
+    lead: 'Browse service options from a schema-driven catalog.',
+    note: 'Add or change services centrally and this page updates without markup edits.',
+    primaryAction: { label: 'View all services', href: './ship-now.html' },
+    secondaryAction: { label: 'Compare transit', href: './rates-and-transit-times.html' },
+    metrics: [
+      { value: 'Domestic', label: 'parcel and freight' },
+      { value: 'Global', label: 'cross-border ready' },
+      { value: 'AI', label: 'routing context' },
+    ],
+    cards: [
+      { title: 'Express', text: 'Fast parcel movement for urgent deliveries.' },
+      { title: 'Standard', text: 'Reliable service for everyday shipments.' },
+      { title: 'Freight', text: 'Support for heavy, palletized, and large movement.' },
+    ],
+  },
+  'shipping-tools': {
+    page: 'shipping-tools',
+    title: 'Shipping Tools',
+    kicker: 'Operations toolkit',
+    lead: 'Use dynamic tools for tracking, pickup, routing, account, and warehouse workflows.',
+    note: 'This page now renders reusable tool cards from data.',
+    primaryAction: { label: 'View tools', href: './register.html' },
+    secondaryAction: { label: 'Track shipment', href: './tracking.html' },
+    metrics: [
+      { value: 'Track', label: 'live shipment lookup' },
+      { value: 'Plan', label: 'route and pickup' },
+      { value: 'Manage', label: 'account workspace' },
+    ],
+    cards: [
+      { title: 'Tracking', text: 'Find shipment status and AI delivery context.' },
+      { title: 'Pickup manager', text: 'Coordinate package collection and changes.' },
+      { title: 'Warehouse view', text: 'Connect shipments to inventory and hubs.' },
+    ],
+  },
+  'shipx-one-stop-shop': {
+    page: 'shipx-one-stop-shop',
+    title: 'shipX One Stop Shop',
+    kicker: 'Unified workspace',
+    lead: 'Bring quotes, shipment creation, tracking, and support into one dynamic experience.',
+    note: 'The visible page is now assembled from schema data and shared components.',
+    primaryAction: { label: 'Explore services', href: './customer-dashboard.html' },
+    secondaryAction: { label: 'Open account', href: './register.html' },
+    metrics: [
+      { value: 'One', label: 'workspace' },
+      { value: 'Live', label: 'shipment context' },
+      { value: 'AI', label: 'operational assist' },
+    ],
+    cards: [
+      { title: 'Create', text: 'Start shipments and collect operational details.' },
+      { title: 'Monitor', text: 'Track status, ETA, delay, and fraud signals.' },
+      { title: 'Resolve', text: 'Use support and dashboards to handle exceptions.' },
+    ],
+  },
+  contact: {
+    page: 'contact',
+    title: 'Contact shipX',
+    kicker: 'Support center',
+    lead: 'Get help with shipments, account access, pickup changes, and exceptions.',
+    note: 'Support content is now dynamic and can be backed by tickets or CRM data later.',
+    primaryAction: { label: 'Email support', href: 'mailto:support@shipxlogistics.example' },
+    secondaryAction: { label: 'Track first', href: './tracking.html' },
+    metrics: [
+      { value: '24/7', label: 'tracking context' },
+      { value: 'Fast', label: 'shipment lookup' },
+      { value: 'Team', label: 'support routing' },
+    ],
+    cards: [
+      { title: 'Shipment issue', text: 'Share tracking IDs so support can see current movement.' },
+      { title: 'Account help', text: 'Resolve login, profile, company, and dashboard questions.' },
+      { title: 'Operational support', text: 'Get help with pickups, freight, packaging, and delays.' },
+    ],
+  },
+};
+
+Object.assign(pageSchemas, servicePageSchemas);
+
 router.get('/schema/:page', requireAuth, async (req, res) => {
   const page = String(req.params.page || '').trim();
   // allow auth pages without token? We'll still requireAuth for now for simplicity.

@@ -45,16 +45,16 @@
     if (!statOnTime || !statAvgEta || !statRisk) return;
 
     // Don't overwrite if already filled by inline script.
-    const anyFilled = [statOnTime, statAvgEta, statRisk].some((x) => (x.textContent || '').trim() !== 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â');
+    const anyFilled = [statOnTime, statAvgEta, statRisk].some((x) => (x.textContent || '').trim() !== '-');
     if (anyFilled) return;
 
     try {
       const token = getToken();
       if (!token) return;
       const data = await loadCustomerAnalytics({});
-      statOnTime.textContent = data.onTimeRate ?? 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
-      statAvgEta.textContent = data.avgEta ?? 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
-      statRisk.textContent = data.fraudRisk ?? 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
+      statOnTime.textContent = data.onTimeRate ?? '-';
+      statAvgEta.textContent = data.avgEta ?? '-';
+      statRisk.textContent = data.fraudRisk ?? '-';
     } catch (e) {
       // silent
     }

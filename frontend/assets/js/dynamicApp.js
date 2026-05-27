@@ -22,6 +22,19 @@
     '/contact': ['Contact Support', 'Use tracking context, shipment IDs, and account details to get faster support.'],
   };
 
+  const publicInfoPageKeys = new Set([
+    '/shipping-services',
+    '/shipping-tools',
+    '/ship-now',
+    '/rates-and-transit-times',
+    '/schedule-manage-pickups',
+    '/ecommerce',
+    '/packaging-shipping-supplies',
+    '/quote-heavy-shipment',
+    '/shipx-one-stop-shop',
+    '/contact',
+  ]);
+
   function readJson(key) {
     try {
       return JSON.parse(localStorage.getItem(key) || 'null');
@@ -97,6 +110,7 @@
     let path = location.pathname.replace(/\/+$/, '') || '/';
     path = path.replace('/app.html', '/').replace('/index.html', '/');
     path = path.replace(/^\/pages\/(.+)\.html$/, '/$1');
+    path = path.replace(/^\/(.+)\.html$/, '/$1');
     if (path === '/admin-dashboard') return '/admin';
     if (path === '/customer-dashboard') return '/dashboard';
     return path;
@@ -426,7 +440,41 @@
     `, '/profile');
   }
 
-  function infoPage(path) {
+  async function loadPublicInfoPage(path) {
+    const key = path.replace(/^\//, '');
+    if (!publicInfoPageKeys.has(path)) return null;
+    try {
+      const res = await fetch(`${apiBase}/api/ui/public-schema/${encodeURIComponent(key)}`);
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data?.title) return data;
+    } catch {}
+    return null;
+  }
+
+  async function infoPage(path) {
+    const schema = await loadPublicInfoPage(path);
+    if (schema) {
+      return layout(`
+        <section class="dynamic-panel">
+          <p class="home-kicker">${escapeHtml(schema.kicker || 'shipX workspace')}</p>
+          <h1>${escapeHtml(schema.title)}</h1>
+          <p class="muted-text">${escapeHtml(schema.lead || schema.note || '')}</p>
+          <div class="dynamic-actions">
+            <a class="btn btn-primary" href="${escapeHtml(schema.primaryAction?.href || '/tracking')}" data-link>${escapeHtml(schema.primaryAction?.label || 'Get started')}</a>
+            <a class="btn-secondary" href="${escapeHtml(schema.secondaryAction?.href || (state.token ? dashboardPath() : '/login'))}" data-link>${escapeHtml(schema.secondaryAction?.label || 'Open dashboard')}</a>
+          </div>
+        </section>
+        <section class="dynamic-grid">
+          ${(schema.cards || []).map((card) => `
+            <article class="dynamic-card">
+              <h3>${escapeHtml(card.title)}</h3>
+              <p class="muted-text">${escapeHtml(card.text)}</p>
+            </article>
+          `).join('')}
+        </section>
+      `, path);
+    }
+
     const page = infoPages[path] || ['Page', 'This dynamic page is ready to connect to backend managed content.'];
     return layout(`
       <section class="dynamic-panel">
@@ -453,7 +501,7 @@
       else if (path === '/admin') app.innerHTML = await adminPage();
       else if (path === '/warehouses') app.innerHTML = await warehousesPage();
       else if (path === '/profile') app.innerHTML = await profilePage();
-      else app.innerHTML = infoPage(path);
+      else app.innerHTML = await infoPage(path);
       bindPage();
     } catch (error) {
       app.innerHTML = layout(`<div class="dynamic-panel"><h1>Something needs attention</h1><p class="muted-text">${escapeHtml(error.message)}</p></div>`, path);

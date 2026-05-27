@@ -46,6 +46,7 @@ app.use('/api/ui', uiRoutes);
 
 const frontendDir = path.resolve(__dirname, '../../frontend');
 const frontendIndex = path.join(frontendDir, 'index.html');
+const frontendApp = path.join(frontendDir, 'app.html');
 
 if (fs.existsSync(frontendIndex)) {
   app.use(express.static(frontendDir, {
@@ -62,7 +63,7 @@ if (fs.existsSync(frontendIndex)) {
     if (req.path.startsWith('/api/')) return next();
     if (!req.accepts('html')) return next();
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    return res.sendFile(frontendIndex);
+    return res.sendFile(fs.existsSync(frontendApp) ? frontendApp : frontendIndex);
   });
 }
 

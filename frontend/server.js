@@ -4,7 +4,7 @@ const fs = require('fs');
 const app = express();
 
 const PORT = process.env.PORT || process.env.FRONTEND_PORT || 3000;
-const fallbackFile = path.join(__dirname, 'index.html');
+const fallbackFile = path.join(__dirname, 'app.html');
 
 app.set('trust proxy', true);
 

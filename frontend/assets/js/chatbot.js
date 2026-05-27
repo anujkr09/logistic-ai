@@ -49,7 +49,7 @@
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data?.message || 'Chat failed');
 
-      appendBubble(data.reply || 'Ã¢â‚¬â€', 'bot');
+      appendBubble(data.reply || '-', 'bot');
     } catch (e) {
       appendBubble('AI service unavailable', 'bot');
     }
