@@ -772,7 +772,7 @@
     const current = shipment.currentLocation || shipment.origin || 'Current';
     const destination = shipment.destination || 'Destination';
     const status = shipment.status || 'Tracking';
-    const map = trackingMapEmbed(origin, current, destination);
+    const map = trackingMapEmbed(origin, current, destination, weather);
     return `
       <div class="tracking-route-preview" aria-label="Route from ${escapeHtml(origin)} to ${escapeHtml(destination)}">
         ${map || `
@@ -795,7 +795,7 @@
     `;
   }
 
-  function trackingMapEmbed(origin, current, destination) {
+  function trackingMapEmbed(origin, current, destination, weather = {}) {
     const points = [origin, current, destination].map(cityPoint).filter(Boolean);
     if (!points.length) return '';
     const focus = cityPoint(current) || points[Math.floor(points.length / 2)];
@@ -812,6 +812,11 @@
     return `
       <div class="tracking-map-embed">
         <iframe title="Shipment route map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${src}"></iframe>
+        <div class="tracking-map-weather">
+          <span>Weather</span>
+          <strong>${escapeHtml(weather.label || 'Operational')}</strong>
+          <small>${escapeHtml(weather.detail || 'Weather is suitable for movement.')}</small>
+        </div>
         <div class="tracking-map-legend">
           <span><b>A</b>${escapeHtml(origin)}</span>
           <span><b>Now</b>${escapeHtml(current)}</span>

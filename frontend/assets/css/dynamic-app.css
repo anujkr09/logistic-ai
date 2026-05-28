@@ -1079,6 +1079,7 @@
 }
 
 .dynamic-app .tracking-map-embed {
+  position: relative;
   overflow: hidden;
   border-radius: 8px;
   border: 1px solid rgba(23, 32, 51, 0.10);
@@ -1090,6 +1091,34 @@
   width: 100%;
   min-height: 320px;
   border: 0;
+}
+
+.dynamic-app .tracking-map-weather {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  max-width: min(360px, calc(100% - 24px));
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(23, 32, 51, 0.12);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+}
+
+.dynamic-app .tracking-map-weather span,
+.dynamic-app .tracking-map-weather small {
+  display: block;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dynamic-app .tracking-map-weather strong {
+  display: block;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.2;
 }
 
 .dynamic-app .tracking-map-legend {

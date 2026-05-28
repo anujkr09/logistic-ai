@@ -33,7 +33,16 @@ const authLimiter = rateLimit({
   max: Number(process.env.AUTH_RATE_LIMIT_MAX || 30),
 });
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      'script-src': ["'self'", 'https://cdn.socket.io'],
+      'img-src': ["'self'", 'data:', 'https:'],
+      'connect-src': ["'self'", 'https:', 'wss:'],
+      'frame-src': ["'self'", 'https://www.openstreetmap.org'],
+    },
+  },
+}));
 app.use(cors({
   origin: CORS_ORIGIN === '*' ? '*' : CORS_ORIGIN.split(',').map((origin) => origin.trim()),
   credentials: CORS_ORIGIN !== '*',
