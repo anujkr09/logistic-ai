@@ -317,7 +317,7 @@
         </header>
         ${desktopSideNav(active)}
         <main id="app-main" class="app-main">
-          ${breadcrumbs(crumbs.length ? crumbs : [['Dashboard', '/'], [pageTitle(active), active]])}
+          ${breadcrumbs(crumbs.length ? crumbs : [['Home', '/'], [pageTitle(active), active]])}
           ${content}
         </main>
         ${bottomNav(active)}
@@ -466,7 +466,7 @@
           <a href="${href}" data-link>Open</a>
         </article>`).join('')}
       </section>
-    `, '/shipping', [['Dashboard', '/'], ['Shipping', '/shipping']]);
+    `, '/shipping', [['Home', '/'], ['Shipping', '/shipping']]);
   }
 
   function loginPage() {
@@ -597,7 +597,7 @@
       </section>
       ${featureWorkflow(entity)}
       ${entityForm(entity)}
-    `, `/${entity}`, [['Dashboard', '/'], [cfg.title, `/${entity}`]]);
+    `, `/${entity}`, [['Home', '/'], [cfg.title, `/${entity}`]]);
   }
 
   function featureWorkflow(entity) {
@@ -693,7 +693,7 @@
         </tbody></table>
       </section>
       ${entityForm(entity)}
-    `, `/${entity}`, [['Dashboard', '/'], [cfg.title, `/${entity}`], ['Details', `/${entity}/${id}`]]);
+    `, `/${entity}`, [['Home', '/'], [cfg.title, `/${entity}`], ['Details', `/${entity}/${id}`]]);
   }
 
   function trackingPage() {
@@ -724,19 +724,72 @@
       return;
     }
     if (hint) hint.textContent = '';
+    const createdAt = trackingDate(shipment.createdAt || shipment.updatedAt);
+    const eta = trackingDate(shipment.eta || shipment.estimatedDelivery || shipment.updatedAt || shipment.createdAt);
+    const updatedAt = trackingDate(shipment.updatedAt || shipment.createdAt);
+    const weather = trackingWeather(shipment);
+    const issue = shipmentIssue(shipment, state.db.support || []);
     result.innerHTML = `
-      <div class="dynamic-panel"><h2>${escapeHtml(shipment.trackingNumber)}</h2><p><span class="status-pill">${escapeHtml(shipment.status)}</span></p>
-        <table class="data-table"><tbody>
+      <div class="dynamic-panel tracking-detail-panel"><h2>${escapeHtml(shipment.trackingNumber)}</h2><p><span class="status-pill">${escapeHtml(shipment.status)}</span></p>
+        <table class="data-table tracking-detail-table"><tbody>
+          <tr><th>Created</th><td>${escapeHtml(createdAt)}</td></tr>
+          <tr><th>Last update</th><td>${escapeHtml(updatedAt)}</td></tr>
           <tr><th>Origin</th><td>${escapeHtml(shipment.origin)}</td></tr>
           <tr><th>Destination</th><td>${escapeHtml(shipment.destination)}</td></tr>
           <tr><th>Current location</th><td>${escapeHtml(shipment.currentLocation || shipment.origin)}</td></tr>
-          <tr><th>ETA</th><td>${escapeHtml(new Date(shipment.eta).toLocaleString())}</td></tr>
+          <tr><th>ETA / time</th><td>${escapeHtml(eta)}</td></tr>
+          <tr><th>Weather</th><td>${escapeHtml(weather.label)} - ${escapeHtml(weather.detail)}</td></tr>
+          <tr><th>Issue</th><td>${escapeHtml(issue)}</td></tr>
         </tbody></table></div>
+      <div class="dynamic-panel tracking-map-panel">
+        <h2>Route map</h2>
+        ${trackingMapPreview(shipment, weather)}
+      </div>
       <div class="dynamic-panel"><h2>Actions</h2><div class="dynamic-actions">
         <a class="btn btn-primary" href="/shipments/${encodeURIComponent(shipment.id)}" data-link>View shipment</a>
         <button class="btn-secondary" type="button" data-action="print">Print</button>
         <button class="btn-secondary" type="button" data-entity="shipments" data-action="download">Download</button>
       </div></div>`;
+  }
+
+  function trackingDate(value) {
+    if (!value) return 'Not available';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
+  }
+
+  function trackingWeather(shipment = {}) {
+    const routeText = `${shipment.origin || ''} ${shipment.destination || ''} ${shipment.currentLocation || ''}`;
+    const warm = /delhi|jaipur|bhopal|mumbai/i.test(routeText);
+    const rainy = /chennai|bengaluru|kolkata|kochi/i.test(routeText);
+    if (rainy) return { label: 'Rain watch', detail: 'Light rain may affect scan timing near the route.' };
+    if (warm) return { label: 'Clear and warm', detail: 'No severe weather alert on this route.' };
+    return { label: 'Operational', detail: 'Weather is suitable for normal movement.' };
+  }
+
+  function trackingMapPreview(shipment = {}, weather = trackingWeather(shipment)) {
+    const origin = shipment.origin || 'Origin';
+    const current = shipment.currentLocation || shipment.origin || 'Current';
+    const destination = shipment.destination || 'Destination';
+    const status = shipment.status || 'Tracking';
+    return `
+      <div class="tracking-route-preview" aria-label="Route from ${escapeHtml(origin)} to ${escapeHtml(destination)}">
+        <div class="tracking-route-preview__map">
+          <span class="route-pin route-pin--origin">A</span>
+          <span class="route-pin route-pin--current">Now</span>
+          <span class="route-pin route-pin--destination">B</span>
+          <span class="route-path"></span>
+        </div>
+        <div class="tracking-route-preview__grid">
+          <div><span>From</span><strong>${escapeHtml(origin)}</strong></div>
+          <div><span>Current</span><strong>${escapeHtml(current)}</strong></div>
+          <div><span>To</span><strong>${escapeHtml(destination)}</strong></div>
+          <div><span>Status</span><strong>${escapeHtml(status)}</strong></div>
+          <div><span>Weather</span><strong>${escapeHtml(weather.label)}</strong></div>
+          <div><span>ETA</span><strong>${escapeHtml(trackingDate(shipment.eta || shipment.estimatedDelivery || shipment.updatedAt || shipment.createdAt))}</strong></div>
+        </div>
+      </div>
+    `;
   }
 
   function analyticsPage() {
@@ -801,7 +854,7 @@
         <h2>Issues and support</h2>
         <div class="table-responsive">${reportTable(['Ticket', 'Subject', 'Priority', 'Status', 'Related data'], report.issues)}</div>
       </section>
-    `, '/data-center', [['Dashboard', '/'], ['Data Center', '/data-center']]);
+    `, '/data-center', [['Home', '/'], ['Data Center', '/data-center']]);
   }
 
   function customerMatches(row) {
@@ -976,7 +1029,7 @@
           <button class="table-action" type="button" data-action="logout">Logout</button>
         </article>
       </section>
-    `, '/more', [['Dashboard', '/'], ['More', '/more']]);
+    `, '/more', [['Home', '/'], ['More', '/more']]);
   }
 
   function sumAmounts(rows) {
@@ -1119,7 +1172,8 @@
       const id = values.id || `${entity}-${Date.now()}`;
       delete values.id;
     const existing = state.db[entity].findIndex((row) => row.id === id);
-    const record = { id, ...values, updatedAt: new Date().toISOString() };
+    const now = new Date().toISOString();
+    const record = { id, ...values, createdAt: state.db[entity][existing]?.createdAt || now, updatedAt: now };
     const saved = await saveWorkspaceItem(entity, record);
     if (existing >= 0) state.db[entity][existing] = { ...state.db[entity][existing], ...saved };
     else state.db[entity].unshift(saved);

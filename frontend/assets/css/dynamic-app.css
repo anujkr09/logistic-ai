@@ -1043,6 +1043,127 @@
   overflow-wrap: anywhere;
 }
 
+.dynamic-app #trackingResult {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+.dynamic-app #trackingResult > .dynamic-panel:last-child {
+  grid-column: 1 / -1;
+}
+
+.dynamic-app .tracking-detail-panel,
+.dynamic-app .tracking-map-panel {
+  min-height: 100%;
+}
+
+.dynamic-app .tracking-detail-table {
+  min-width: 0;
+}
+
+.dynamic-app .tracking-route-preview {
+  display: grid;
+  gap: 16px;
+}
+
+.dynamic-app .tracking-route-preview__map {
+  position: relative;
+  min-height: 240px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(23, 32, 51, 0.10);
+  background:
+    linear-gradient(90deg, rgba(23, 32, 51, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(23, 32, 51, 0.05) 1px, transparent 1px),
+    linear-gradient(135deg, #eef7ff, #f8fafc 45%, #edfdf7);
+  background-size: 32px 32px, 32px 32px, auto;
+}
+
+.dynamic-app .route-path {
+  position: absolute;
+  left: 16%;
+  right: 14%;
+  top: 52%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4d148c, #0e8f87);
+  transform: rotate(-7deg);
+  box-shadow: 0 10px 24px rgba(77, 20, 140, 0.22);
+}
+
+.dynamic-app .route-pin {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4d148c;
+  border: 2px solid currentColor;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+}
+
+.dynamic-app .route-pin--origin {
+  left: 10%;
+  top: 58%;
+}
+
+.dynamic-app .route-pin--current {
+  left: 46%;
+  top: 38%;
+  color: #0e8f87;
+}
+
+.dynamic-app .route-pin--destination {
+  right: 9%;
+  top: 45%;
+  color: #ff6600;
+}
+
+.dynamic-app .tracking-route-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dynamic-app .tracking-route-preview__grid div {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+}
+
+.dynamic-app .tracking-route-preview__grid span {
+  display: block;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dynamic-app .tracking-route-preview__grid strong {
+  display: block;
+  margin-top: 4px;
+  color: #111827;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .dynamic-app #trackingResult,
+  .dynamic-app .tracking-route-preview__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dynamic-app .tracking-route-preview__map {
+    min-height: 210px;
+  }
+}
+
 .dynamic-app .list-item {
   padding: 12px 0;
   border-bottom: 1px solid rgba(23, 32, 51, 0.08);
