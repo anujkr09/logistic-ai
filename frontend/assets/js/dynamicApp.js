@@ -772,14 +772,17 @@
     const current = shipment.currentLocation || shipment.origin || 'Current';
     const destination = shipment.destination || 'Destination';
     const status = shipment.status || 'Tracking';
+    const map = trackingMapEmbed(origin, current, destination);
     return `
       <div class="tracking-route-preview" aria-label="Route from ${escapeHtml(origin)} to ${escapeHtml(destination)}">
-        <div class="tracking-route-preview__map">
-          <span class="route-pin route-pin--origin">A</span>
-          <span class="route-pin route-pin--current">Now</span>
-          <span class="route-pin route-pin--destination">B</span>
-          <span class="route-path"></span>
-        </div>
+        ${map || `
+          <div class="tracking-route-preview__map">
+            <span class="route-pin route-pin--origin">A</span>
+            <span class="route-pin route-pin--current">Now</span>
+            <span class="route-pin route-pin--destination">B</span>
+            <span class="route-path"></span>
+          </div>
+        `}
         <div class="tracking-route-preview__grid">
           <div><span>From</span><strong>${escapeHtml(origin)}</strong></div>
           <div><span>Current</span><strong>${escapeHtml(current)}</strong></div>
@@ -790,6 +793,63 @@
         </div>
       </div>
     `;
+  }
+
+  function trackingMapEmbed(origin, current, destination) {
+    const points = [origin, current, destination].map(cityPoint).filter(Boolean);
+    if (!points.length) return '';
+    const focus = cityPoint(current) || points[Math.floor(points.length / 2)];
+    const lats = points.map((point) => point.lat);
+    const lons = points.map((point) => point.lon);
+    const pad = Math.max(0.75, Math.min(4, Math.max(maxDiff(lats), maxDiff(lons)) * 0.35));
+    const bbox = [
+      Math.min(...lons) - pad,
+      Math.min(...lats) - pad,
+      Math.max(...lons) + pad,
+      Math.max(...lats) + pad,
+    ].map((value) => value.toFixed(4)).join('%2C');
+    const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${focus.lat.toFixed(4)}%2C${focus.lon.toFixed(4)}`;
+    return `
+      <div class="tracking-map-embed">
+        <iframe title="Shipment route map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${src}"></iframe>
+        <div class="tracking-map-legend">
+          <span><b>A</b>${escapeHtml(origin)}</span>
+          <span><b>Now</b>${escapeHtml(current)}</span>
+          <span><b>B</b>${escapeHtml(destination)}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function maxDiff(values) {
+    return Math.max(...values) - Math.min(...values);
+  }
+
+  function cityPoint(value) {
+    const text = String(value || '').toLowerCase();
+    const points = [
+      ['delhi', 28.6139, 77.2090],
+      ['new delhi', 28.6139, 77.2090],
+      ['bhopal', 23.2599, 77.4126],
+      ['mumbai', 19.0760, 72.8777],
+      ['bengaluru', 12.9716, 77.5946],
+      ['bangalore', 12.9716, 77.5946],
+      ['chennai', 13.0827, 80.2707],
+      ['kolkata', 22.5726, 88.3639],
+      ['hyderabad', 17.3850, 78.4867],
+      ['pune', 18.5204, 73.8567],
+      ['jaipur', 26.9124, 75.7873],
+      ['ahmedabad', 23.0225, 72.5714],
+      ['lucknow', 26.8467, 80.9462],
+      ['indore', 22.7196, 75.8577],
+      ['surat', 21.1702, 72.8311],
+      ['nagpur', 21.1458, 79.0882],
+      ['noida', 28.5355, 77.3910],
+      ['gurgaon', 28.4595, 77.0266],
+      ['gurugram', 28.4595, 77.0266],
+    ];
+    const match = points.find(([name]) => text.includes(name));
+    return match ? { lat: match[1], lon: match[2] } : null;
   }
 
   function analyticsPage() {

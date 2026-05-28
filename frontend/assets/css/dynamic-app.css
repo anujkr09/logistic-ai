@@ -1078,6 +1078,48 @@
   background-size: 32px 32px, 32px 32px, auto;
 }
 
+.dynamic-app .tracking-map-embed {
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(23, 32, 51, 0.10);
+  background: #eef2f7;
+}
+
+.dynamic-app .tracking-map-embed iframe {
+  display: block;
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+}
+
+.dynamic-app .tracking-map-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px;
+  background: #ffffff;
+  border-top: 1px solid rgba(23, 32, 51, 0.08);
+}
+
+.dynamic-app .tracking-map-legend span {
+  min-width: 0;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.dynamic-app .tracking-map-legend b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  min-height: 24px;
+  margin-right: 6px;
+  border-radius: 999px;
+  background: #f0ebf7;
+  color: #4d148c;
+}
+
 .dynamic-app .route-path {
   position: absolute;
   left: 16%;
@@ -1161,6 +1203,14 @@
 
   .dynamic-app .tracking-route-preview__map {
     min-height: 210px;
+  }
+
+  .dynamic-app .tracking-map-embed iframe {
+    min-height: 280px;
+  }
+
+  .dynamic-app .tracking-map-legend {
+    grid-template-columns: 1fr;
   }
 }
 
