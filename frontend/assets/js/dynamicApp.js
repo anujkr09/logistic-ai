@@ -772,15 +772,18 @@
     const current = shipment.currentLocation || shipment.origin || 'Current';
     const destination = shipment.destination || 'Destination';
     const status = shipment.status || 'Tracking';
-    const map = trackingMapEmbed(origin, current, destination, weather);
+    const mode = trackingMode(shipment);
+    const progress = trackingProgress(shipment);
+    const map = trackingMapEmbed(origin, current, destination, weather, mode, progress);
     return `
       <div class="tracking-route-preview" aria-label="Route from ${escapeHtml(origin)} to ${escapeHtml(destination)}">
         ${map || `
-          <div class="tracking-route-preview__map">
+          <div class="tracking-route-preview__map route-overlay-surface">
             <span class="route-pin route-pin--origin">A</span>
-            <span class="route-pin route-pin--current">Now</span>
+            <span class="route-pin route-pin--current">${escapeHtml(mode.icon)}</span>
             <span class="route-pin route-pin--destination">B</span>
             <span class="route-path"></span>
+            <span class="route-path-progress" style="width:${progress}%"></span>
           </div>
         `}
         <div class="tracking-route-preview__grid">
@@ -788,6 +791,7 @@
           <div><span>Current</span><strong>${escapeHtml(current)}</strong></div>
           <div><span>To</span><strong>${escapeHtml(destination)}</strong></div>
           <div><span>Status</span><strong>${escapeHtml(status)}</strong></div>
+          <div><span>Mode</span><strong>${escapeHtml(mode.icon)} ${escapeHtml(mode.label)}</strong></div>
           <div><span>Weather</span><strong>${escapeHtml(weather.label)}</strong></div>
           <div><span>ETA</span><strong>${escapeHtml(trackingDate(shipment.eta || shipment.estimatedDelivery || shipment.updatedAt || shipment.createdAt))}</strong></div>
         </div>
@@ -795,7 +799,7 @@
     `;
   }
 
-  function trackingMapEmbed(origin, current, destination, weather = {}) {
+  function trackingMapEmbed(origin, current, destination, weather = {}, mode = trackingMode(), progress = 35) {
     const points = [origin, current, destination].map(cityPoint).filter(Boolean);
     if (!points.length) return '';
     const focus = cityPoint(current) || points[Math.floor(points.length / 2)];
@@ -812,10 +816,25 @@
     return `
       <div class="tracking-map-embed">
         <iframe title="Shipment route map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${src}"></iframe>
-        <div class="tracking-map-weather">
-          <span>Weather</span>
-          <strong>${escapeHtml(weather.label || 'Operational')}</strong>
-          <small>${escapeHtml(weather.detail || 'Weather is suitable for movement.')}</small>
+        <div class="route-overlay route-overlay--map" aria-hidden="true">
+          <div class="route-line-track">
+            <span class="route-line-fill" style="width:${progress}%"></span>
+          </div>
+          <span class="route-stop route-stop--origin">A</span>
+          <span class="route-vehicle" style="left:${progress}%">${escapeHtml(mode.icon)}</span>
+          <span class="route-stop route-stop--destination">B</span>
+        </div>
+        <div class="tracking-map-badges">
+          <div class="tracking-map-weather">
+            <span>Weather</span>
+            <strong>${escapeHtml(weather.label || 'Operational')}</strong>
+            <small>${escapeHtml(weather.detail || 'Weather is suitable for movement.')}</small>
+          </div>
+          <div class="tracking-map-mode">
+            <span>Transport</span>
+            <strong>${escapeHtml(mode.icon)} ${escapeHtml(mode.label)}</strong>
+            <small>${escapeHtml(mode.detail)}</small>
+          </div>
         </div>
         <div class="tracking-map-legend">
           <span><b>A</b>${escapeHtml(origin)}</span>
@@ -824,6 +843,24 @@
         </div>
       </div>
     `;
+  }
+
+  function trackingMode(shipment = {}) {
+    const text = `${shipment.service || ''} ${shipment.mode || ''} ${shipment.transportMode || ''} ${shipment.status || ''} ${shipment.origin || ''} ${shipment.destination || ''}`.toLowerCase();
+    if (/air|plane|flight|express/.test(text)) return { icon: '✈', label: 'Plane', detail: 'Fast air movement for long distance delivery.' };
+    if (/rail|train/.test(text)) return { icon: '▰', label: 'Train', detail: 'Rail linehaul between major hubs.' };
+    if (/bike|local|courier|last mile|out for delivery/.test(text)) return { icon: '⌁', label: 'Bike', detail: 'Local last-mile movement.' };
+    return { icon: '▣', label: 'Truck', detail: 'Road linehaul and hub movement.' };
+  }
+
+  function trackingProgress(shipment = {}) {
+    const status = String(shipment.status || '').toLowerCase();
+    if (status.includes('deliver')) return 100;
+    if (status.includes('out for delivery')) return 82;
+    if (status.includes('arrived')) return 68;
+    if (status.includes('transit')) return 52;
+    if (status.includes('created')) return 18;
+    return 35;
   }
 
   function maxDiff(values) {

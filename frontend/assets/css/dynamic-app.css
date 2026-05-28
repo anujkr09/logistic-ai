@@ -1089,16 +1089,25 @@
 .dynamic-app .tracking-map-embed iframe {
   display: block;
   width: 100%;
-  min-height: 320px;
+  min-height: 360px;
   border: 0;
 }
 
-.dynamic-app .tracking-map-weather {
+.dynamic-app .tracking-map-badges {
   position: absolute;
   top: 12px;
   left: 12px;
+  right: 12px;
   z-index: 2;
-  max-width: min(360px, calc(100% - 24px));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  pointer-events: none;
+}
+
+.dynamic-app .tracking-map-weather,
+.dynamic-app .tracking-map-mode {
+  min-width: 0;
   padding: 10px 12px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.94);
@@ -1107,18 +1116,89 @@
 }
 
 .dynamic-app .tracking-map-weather span,
-.dynamic-app .tracking-map-weather small {
+.dynamic-app .tracking-map-weather small,
+.dynamic-app .tracking-map-mode span,
+.dynamic-app .tracking-map-mode small {
   display: block;
   color: #667085;
   font-size: 12px;
   font-weight: 800;
 }
 
-.dynamic-app .tracking-map-weather strong {
+.dynamic-app .tracking-map-weather strong,
+.dynamic-app .tracking-map-mode strong {
   display: block;
   color: #111827;
   font-size: 16px;
   line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.dynamic-app .route-overlay {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  bottom: 74px;
+  z-index: 2;
+  height: 72px;
+  pointer-events: none;
+}
+
+.dynamic-app .route-line-track {
+  position: absolute;
+  left: 38px;
+  right: 38px;
+  top: 34px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+}
+
+.dynamic-app .route-line-fill {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4d148c, #0e8f87);
+}
+
+.dynamic-app .route-stop,
+.dynamic-app .route-vehicle {
+  position: absolute;
+  top: 20px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4d148c;
+  border: 2px solid currentColor;
+  font-size: 14px;
+  font-weight: 950;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.20);
+}
+
+.dynamic-app .route-stop--origin {
+  left: 0;
+}
+
+.dynamic-app .route-stop--destination {
+  right: 0;
+  color: #ff6600;
+}
+
+.dynamic-app .route-vehicle {
+  top: 10px;
+  transform: translateX(-50%);
+  min-width: 48px;
+  height: 48px;
+  color: #0e8f87;
+  font-size: 22px;
 }
 
 .dynamic-app .tracking-map-legend {
@@ -1159,6 +1239,18 @@
   background: linear-gradient(90deg, #4d148c, #0e8f87);
   transform: rotate(-7deg);
   box-shadow: 0 10px 24px rgba(77, 20, 140, 0.22);
+}
+
+.dynamic-app .route-path-progress {
+  position: absolute;
+  left: 16%;
+  top: 52%;
+  height: 8px;
+  max-width: 70%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4d148c, #0e8f87);
+  transform: rotate(-7deg);
+  z-index: 1;
 }
 
 .dynamic-app .route-pin {
@@ -1235,11 +1327,25 @@
   }
 
   .dynamic-app .tracking-map-embed iframe {
-    min-height: 280px;
+    min-height: 330px;
   }
 
   .dynamic-app .tracking-map-legend {
     grid-template-columns: 1fr;
+  }
+
+  .dynamic-app .tracking-map-badges {
+    position: static;
+    grid-template-columns: 1fr;
+    padding: 10px;
+    background: #ffffff;
+    border-top: 1px solid rgba(23, 32, 51, 0.08);
+  }
+
+  .dynamic-app .route-overlay {
+    left: 6%;
+    right: 6%;
+    bottom: 134px;
   }
 }
 
