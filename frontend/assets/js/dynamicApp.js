@@ -321,7 +321,6 @@
           ${content}
         </main>
         ${bottomNav(active)}
-        <footer class="app-footer">shipX AI Logistics workspace</footer>
       </div>
       <dialog id="confirmDialog" class="confirm-dialog">
         <form method="dialog">
@@ -394,11 +393,7 @@
   }
 
   function breadcrumbs(items) {
-    return `<nav class="breadcrumbs" aria-label="Breadcrumb">
-      ${items.map(([label, href], index) => index === items.length - 1
-        ? `<span>${escapeHtml(label)}</span>`
-        : `<a href="${href}" data-link>${escapeHtml(label)}</a><span aria-hidden="true">/</span>`).join('')}
-    </nav>`;
+    return '';
   }
 
   function homePage() {
@@ -800,22 +795,24 @@
   }
 
   function trackingMapEmbed(origin, current, destination, weather = {}, mode = trackingMode(), progress = 35) {
-    const points = [origin, current, destination].map(cityPoint).filter(Boolean);
-    if (!points.length) return '';
-    const focus = cityPoint(current) || points[Math.floor(points.length / 2)];
-    const lats = points.map((point) => point.lat);
-    const lons = points.map((point) => point.lon);
-    const pad = Math.max(0.75, Math.min(4, Math.max(maxDiff(lats), maxDiff(lons)) * 0.35));
-    const bbox = [
-      Math.min(...lons) - pad,
-      Math.min(...lats) - pad,
-      Math.max(...lons) + pad,
-      Math.max(...lats) + pad,
-    ].map((value) => value.toFixed(4)).join('%2C');
-    const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${focus.lat.toFixed(4)}%2C${focus.lon.toFixed(4)}`;
+    const originPoint = cityPoint(origin);
+    const currentPoint = cityPoint(current) || originPoint;
+    const destinationPoint = cityPoint(destination);
+    if (!originPoint || !destinationPoint) return '';
+    const [originPos, currentPos, destinationPos] = projectRoutePoints([originPoint, currentPoint, destinationPoint]);
+    const linePoints = `${originPos.x},${originPos.y} ${currentPos.x},${currentPos.y} ${destinationPos.x},${destinationPos.y}`;
     return `
       <div class="tracking-map-embed">
-        <iframe title="Shipment route map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${src}"></iframe>
+        <div class="tracking-map-canvas" role="img" aria-label="Shipment route from ${escapeHtml(origin)} to ${escapeHtml(destination)}">
+          <svg class="tracking-map-route-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <polyline class="tracking-map-route-shadow" points="${linePoints}"></polyline>
+            <polyline class="tracking-map-route-base" points="${linePoints}"></polyline>
+            <polyline class="tracking-map-route-progress" points="${originPos.x},${originPos.y} ${currentPos.x},${currentPos.y}"></polyline>
+          </svg>
+          <span class="map-city map-city--origin" style="left:${originPos.x}%;top:${originPos.y}%"><b>A</b>${escapeHtml(origin)}</span>
+          <span class="map-city map-city--current" style="left:${currentPos.x}%;top:${currentPos.y}%"><b>${escapeHtml(mode.icon)}</b>${escapeHtml(current)}</span>
+          <span class="map-city map-city--destination" style="left:${destinationPos.x}%;top:${destinationPos.y}%"><b>B</b>${escapeHtml(destination)}</span>
+        </div>
         <div class="route-overlay route-overlay--map" aria-hidden="true">
           <div class="route-line-track">
             <span class="route-line-fill" style="width:${progress}%"></span>
@@ -847,10 +844,10 @@
 
   function trackingMode(shipment = {}) {
     const text = `${shipment.service || ''} ${shipment.mode || ''} ${shipment.transportMode || ''} ${shipment.status || ''} ${shipment.origin || ''} ${shipment.destination || ''}`.toLowerCase();
-    if (/air|plane|flight|express/.test(text)) return { icon: '✈', label: 'Plane', detail: 'Fast air movement for long distance delivery.' };
-    if (/rail|train/.test(text)) return { icon: '▰', label: 'Train', detail: 'Rail linehaul between major hubs.' };
-    if (/bike|local|courier|last mile|out for delivery/.test(text)) return { icon: '⌁', label: 'Bike', detail: 'Local last-mile movement.' };
-    return { icon: '▣', label: 'Truck', detail: 'Road linehaul and hub movement.' };
+    if (/air|plane|flight|express/.test(text)) return { icon: 'AIR', label: 'Plane', detail: 'Fast air movement for long distance delivery.' };
+    if (/rail|train/.test(text)) return { icon: 'RAIL', label: 'Train', detail: 'Rail linehaul between major hubs.' };
+    if (/bike|local|courier|last mile|out for delivery/.test(text)) return { icon: 'BIKE', label: 'Bike', detail: 'Local last-mile movement.' };
+    return { icon: 'TRK', label: 'Truck', detail: 'Road linehaul and hub movement.' };
   }
 
   function trackingProgress(shipment = {}) {
@@ -865,6 +862,25 @@
 
   function maxDiff(values) {
     return Math.max(...values) - Math.min(...values);
+  }
+
+  function projectRoutePoints(points) {
+    const lats = points.map((point) => point.lat);
+    const lons = points.map((point) => point.lon);
+    const latSpan = Math.max(maxDiff(lats), 0.5);
+    const lonSpan = Math.max(maxDiff(lons), 0.5);
+    const minLat = Math.min(...lats) - latSpan * 0.25;
+    const maxLat = Math.max(...lats) + latSpan * 0.25;
+    const minLon = Math.min(...lons) - lonSpan * 0.25;
+    const maxLon = Math.max(...lons) + lonSpan * 0.25;
+    return points.map((point) => ({
+      x: clamp(8 + ((point.lon - minLon) / (maxLon - minLon)) * 84, 8, 92).toFixed(2),
+      y: clamp(12 + (1 - ((point.lat - minLat) / (maxLat - minLat))) * 76, 12, 88).toFixed(2),
+    }));
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
   }
 
   function cityPoint(value) {
