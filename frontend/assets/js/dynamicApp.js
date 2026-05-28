@@ -290,12 +290,14 @@
       ['Users', '/users'],
       ['Payments', '/payments'],
       ['Analytics', '/analytics'],
+      ['Data Center', '/data-center'],
       ['Reports', '/reports'],
       ['Support', '/support'],
       ['Settings', '/settings'],
     ];
     return `
       <div class="app-shell">
+        <a class="skip-link" href="#app-main">Skip to content</a>
         <header class="app-header">
           <div class="app-header-inner">
             <a href="/" class="app-logo" data-link><span>ship</span><strong>X</strong><small>AI</small></a>
@@ -314,7 +316,7 @@
           </div>
         </header>
         ${desktopSideNav(active)}
-        <main class="app-main">
+        <main id="app-main" class="app-main">
           ${breadcrumbs(crumbs.length ? crumbs : [['Dashboard', '/'], [pageTitle(active), active]])}
           ${content}
         </main>
@@ -340,6 +342,7 @@
       ['Shipping', '/shipping', 'shipping', 'M4 7h16v10H4z M7 7V5h10v2 M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'],
       ['Tracking', '/tracking', 'tracking', 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
       ['Shipments', '/shipments', 'shipments', 'M4 7l8-4 8 4-8 4-8-4z M4 7v10l8 4 8-4V7 M12 11v10'],
+      ['Data', '/data-center', 'data', 'M4 5h16v4H4z M4 10h16v4H4z M4 15h16v4H4z'],
       ['More', '/more', 'more', 'M5 5h5v5H5z M14 5h5v5h-5z M5 14h5v5H5z M14 14h5v5h-5z'],
     ];
     const normalized = activePath === '/orders' ? '/shipments' : activePath;
@@ -362,6 +365,7 @@
       ['Shipping', '/shipping', 'shipping', 'M4 7h16v10H4z M7 7V5h10v2 M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'],
       ['Tracking', '/tracking', 'tracking', 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
       ['Shipments', '/shipments', 'shipments', 'M4 7l8-4 8 4-8 4-8-4z M4 7v10l8 4 8-4V7 M12 11v10'],
+      ['Data', '/data-center', 'data', 'M4 5h16v4H4z M4 10h16v4H4z M4 15h16v4H4z'],
       ['More', '/more', 'more', 'M5 5h5v5H5z M14 5h5v5h-5z M5 14h5v5H5z M14 14h5v5h-5z'],
     ];
     const normalized = activePath === '/orders' ? '/shipments' : activePath;
@@ -403,6 +407,7 @@
       ['Orders', 'Manage ecommerce and pickup orders with status filters.', '/orders'],
       ['Products', 'Maintain shipping supplies and product inventory.', '/products'],
       ['Analytics', 'Review delivery, revenue, fraud, and SLA metrics.', '/analytics'],
+      ['Data Center', 'See orders, deliveries, tracking, issues, payments, invoices, and export data.', '/data-center'],
       ['Support', 'Open and resolve delivery or account tickets.', '/support'],
       ['Settings', 'Control profile, notifications, and workspace preferences.', '/settings'],
     ];
@@ -425,7 +430,7 @@
             <div><b>${state.db.orders.length}</b><p class="muted-text">Orders</p></div>
             <div><b>${state.db.support.filter((x) => x.status !== 'Resolved').length}</b><p class="muted-text">Open tickets</p></div>
           </div>
-          <button class="btn-secondary" type="button" data-action="print">Print snapshot</button>
+          <button class="btn-secondary snapshot-print-button" type="button" data-action="print">Print snapshot</button>
         </div>
       </section>
       <section class="dynamic-grid">
@@ -436,7 +441,7 @@
             <a href="${href}" data-link>Open ${title}</a>
           </article>`).join('')}
       </section>
-    `, '/');
+    `, '/', [['Home', '/']]);
   }
 
   function shippingPage() {
@@ -474,8 +479,8 @@
         </div>
         <div class="dynamic-panel">
           <form id="loginForm" class="dynamic-form">
-            <label class="field"><span>Email</span><input class="input" name="email" type="email" required value="admin@shipx.test" /></label>
-            <label class="field"><span>Password</span><input class="input" name="password" type="password" required minlength="4" value="demo123" /></label>
+            <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" inputmode="email" required /></label>
+            <label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="current-password" required minlength="4" /></label>
             <label class="field"><span>Role</span><select class="select" name="role"><option value="admin">Admin</option><option value="customer">Customer</option></select></label>
             <button class="btn btn-primary" type="submit">Login</button>
             <div id="authHint" class="hint" role="alert"></div>
@@ -759,6 +764,146 @@
     `, '/reports');
   }
 
+  function dataCenterPage() {
+    if (!requireLogin()) return '';
+    const report = buildDataCenterReport();
+    const scopeLabel = isAdmin() ? 'Admin full workspace' : 'Customer account';
+    return layout(`
+      <section class="dynamic-panel">
+        <div class="page-head-row">
+          <div>
+            <p class="home-kicker">${scopeLabel}</p>
+            <h1>Data Center</h1>
+            <p class="muted-text">Orders, delivered counts, tracking movement, route origin and destination, issues, payment invoices, and customer activity in one exportable place.</p>
+          </div>
+          <div class="dynamic-actions">
+            <button class="btn btn-primary" type="button" data-action="download-data-center">Export data</button>
+            <button class="btn-secondary" type="button" data-action="print">Print</button>
+          </div>
+        </div>
+      </section>
+      <section class="dynamic-grid data-center-stats">
+        ${report.stats.map(([label, value]) => `<article class="dynamic-card"><h3>${escapeHtml(label)}</h3><p class="stat-value">${escapeHtml(value)}</p></article>`).join('')}
+      </section>
+      <section class="dynamic-panel">
+        <h2>Tracking and delivery movement</h2>
+        <div class="table-responsive">${reportTable(['Tracking no.', 'From', 'To', 'Current', 'Status', 'ETA / time', 'Issue'], report.shipments)}</div>
+      </section>
+      <section class="dynamic-panel">
+        <h2>Orders taken and delivered</h2>
+        <div class="table-responsive">${reportTable(['Order no.', 'Customer', 'Status', 'Amount', 'Payment', 'Invoice'], report.orders)}</div>
+      </section>
+      <section class="dynamic-panel">
+        <h2>Payments and invoices</h2>
+        <div class="table-responsive">${reportTable(['Invoice', 'Customer', 'Amount', 'Status', 'Payment date', 'Linked order'], report.payments)}</div>
+      </section>
+      <section class="dynamic-panel">
+        <h2>Issues and support</h2>
+        <div class="table-responsive">${reportTable(['Ticket', 'Subject', 'Priority', 'Status', 'Related data'], report.issues)}</div>
+      </section>
+    `, '/data-center', [['Dashboard', '/'], ['Data Center', '/data-center']]);
+  }
+
+  function customerMatches(row) {
+    if (isAdmin()) return true;
+    const user = state.user || {};
+    const haystack = [
+      row.customer,
+      row.email,
+      row.customerEmail,
+      row.name,
+      row.companyName,
+      row.store,
+    ].filter(Boolean).join(' ').toLowerCase();
+    const needles = [user.email, user.name, user.companyName].filter(Boolean).map((value) => String(value).toLowerCase());
+    return !haystack || needles.some((needle) => haystack.includes(needle));
+  }
+
+  function buildDataCenterReport() {
+    const orders = (state.db.orders || []).filter(customerMatches);
+    const shipments = (state.db.shipments || []).filter(customerMatches);
+    const payments = (state.db.payments || []).filter(customerMatches);
+    const issues = (state.db.support || []).filter(customerMatches);
+    const delivered = shipments.filter((row) => String(row.status).toLowerCase() === 'delivered').length;
+    const openIssues = issues.filter((row) => String(row.status).toLowerCase() !== 'resolved').length;
+    const paid = payments.filter((row) => String(row.status).toLowerCase() === 'paid').length;
+    const totalPayment = payments.reduce((sum, row) => sum + Number(row.amount || 0), 0).toLocaleString();
+
+    return {
+      stats: [
+        ['Orders', orders.length],
+        ['Delivered', delivered],
+        ['In transit', shipments.filter((row) => String(row.status).toLowerCase().includes('transit')).length],
+        ['Open issues', openIssues],
+        ['Paid invoices', paid],
+        ['Payment total', totalPayment],
+      ],
+      shipments: shipments.map((row) => [
+        row.trackingNumber || row.id,
+        row.origin || '-',
+        row.destination || '-',
+        row.currentLocation || row.origin || '-',
+        row.status || '-',
+        row.eta || row.estimatedDelivery || row.updatedAt || '-',
+        shipmentIssue(row, issues),
+      ]),
+      orders: orders.map((row, index) => {
+        const payment = payments[index % Math.max(payments.length, 1)] || {};
+        return [
+          row.orderNo || row.id,
+          row.customer || state.user?.name || '-',
+          row.status || '-',
+          row.total || row.amount || payment.amount || '-',
+          payment.status || 'Pending',
+          payment.invoiceNo || `INV-${row.orderNo || row.id}`,
+        ];
+      }),
+      payments: payments.map((row, index) => [
+        row.invoiceNo || `INV-${index + 1}`,
+        row.customer || state.user?.name || '-',
+        row.amount || '-',
+        row.status || '-',
+        row.updatedAt || row.createdAt || '-',
+        orders[index % Math.max(orders.length, 1)]?.orderNo || '-',
+      ]),
+      issues: issues.map((row) => [
+        row.ticketNo || row.id,
+        row.subject || row.message || '-',
+        row.priority || '-',
+        row.status || '-',
+        row.relatedData || row.customer || '-',
+      ]),
+      raw: { orders, shipments, payments, issues },
+    };
+  }
+
+  function shipmentIssue(shipment, issues) {
+    if (shipment.fraud?.isFlagged) return 'Fraud flagged';
+    const related = issues.find((issue) => {
+      const text = `${issue.subject || ''} ${issue.message || ''} ${issue.ticketNo || ''}`.toLowerCase();
+      return text.includes(String(shipment.trackingNumber || shipment.id || '').toLowerCase());
+    });
+    if (related) return related.subject || related.status || 'Support issue';
+    return String(shipment.status).toLowerCase() === 'delivered' ? 'No issue' : 'Monitoring';
+  }
+
+  function reportTable(headers, rows) {
+    if (!rows.length) return '<div class="empty-state">No data available for this account.</div>';
+    return `<table class="data-table data-center-table">
+      <thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(formatReportCell(cell))}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  function formatReportCell(value) {
+    if (!value) return '-';
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+    return value;
+  }
+
   function settingsPage() {
     if (!requireLogin()) return '';
     const s = state.db.settings;
@@ -797,6 +942,7 @@
     const items = [
       ['Profile', 'Manage account details and role.', '/profile'],
       ['Settings', 'Update alerts and workspace preferences.', '/settings'],
+      ['Data Center', 'Orders, deliveries, tracking movement, issues, payments, invoices, and export.', '/data-center'],
       ['Reports', 'Download and print operational reports.', '/reports'],
       ['Support', 'Create tickets and delivery help requests.', '/support?action=add'],
       ['Users', 'Manage workspace users and access.', '/users'],
@@ -940,6 +1086,9 @@
     document.querySelectorAll('[data-action="download-report"]').forEach((button) => {
       button.addEventListener('click', () => downloadJson(`${button.dataset.report}.json`, state.db));
     });
+    document.querySelector('[data-action="download-data-center"]')?.addEventListener('click', () => {
+      downloadJson('shipx-data-center-export.json', buildDataCenterReport());
+    });
 
     document.querySelectorAll('[data-action="add"]').forEach((button) => button.addEventListener('click', () => openEntityDialog(button.dataset.entity)));
     document.querySelectorAll('[data-action="edit"]').forEach((button) => button.addEventListener('click', () => openEntityDialog(button.dataset.entity, button.dataset.id)));
@@ -1057,7 +1206,7 @@
   function render() {
     const path = normalizePath();
     const segments = path.split('/').filter(Boolean);
-    app.innerHTML = '<div class="app-main"><div class="loading-state">Loading...</div></div>';
+    app.innerHTML = loadingShell();
     setTimeout(() => {
       if (path === '/') app.innerHTML = homePage();
       else if (path === '/login') app.innerHTML = loginPage();
@@ -1067,6 +1216,7 @@
       else if (path === '/tracking') app.innerHTML = trackingPage();
       else if (path === '/shipping') app.innerHTML = shippingPage();
       else if (path === '/analytics') app.innerHTML = analyticsPage();
+      else if (path === '/data-center') app.innerHTML = dataCenterPage();
       else if (path === '/reports') app.innerHTML = reportsPage();
       else if (path === '/settings') app.innerHTML = settingsPage();
       else if (path === '/profile') app.innerHTML = profilePage();
@@ -1076,6 +1226,21 @@
       else app.innerHTML = notFoundPage();
       bindPage();
     }, 120);
+  }
+
+  function loadingShell() {
+    return `
+      <div class="app-splash" role="status" aria-live="polite">
+        <div class="app-splash__brand"><span>ship</span><strong>X</strong><small>AI</small></div>
+        <div class="app-splash__panel">
+          <div class="app-splash__line app-splash__line--wide"></div>
+          <div class="app-splash__line"></div>
+          <div class="app-splash__grid">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   window.addEventListener('popstate', render);

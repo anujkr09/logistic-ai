@@ -57,6 +57,12 @@
     return [phone.countryCode, phone.number].filter(Boolean).join(' ') || '-';
   }
 
+  function formatDate(value) {
+    if (!value) return '-';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '-' : date.toLocaleString();
+  }
+
   function initials(name, fallback = 'SX') {
     const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
     if (!parts.length) return fallback;
@@ -126,12 +132,21 @@
     setText('profileAvatar', initials(user.name));
     setText('profileName', user.name);
     setText('profileEmail', user.email);
+    setText('profileRoleDetail', label);
     setText('profilePhone', formatPhone(phone));
+    setText('profilePhoneCode', phone.countryCode);
     setText('profileCountry', phone.country);
     setText('profileCompany', user.companyName);
     setText('profilePan', user.panNumber);
     setText('profileGst', user.gstNumber);
     setText('profileAccountType', label);
+    setText('profileCompanyPlan', user.companyPlan);
+    setText('profileCompanyStatus', user.companyStatus);
+    setText('profileUserId', user.id);
+    setText('profileCompanyId', user.companyId);
+    setText('profileStatus', user.status);
+    setText('profileCreatedAt', formatDate(user.createdAt));
+    setText('profileUpdatedAt', formatDate(user.updatedAt));
     fillEditForm(user);
   }
 

@@ -43,11 +43,11 @@
       <form id="registerForm" class="auth-form">
         <label class="field">
           <span>Name</span>
-          <input name="name" type="text" class="input" placeholder="Your full name" required />
+          <input name="name" type="text" class="input" placeholder="Your full name" autocomplete="name" required />
         </label>
         <label class="field">
           <span>Email</span>
-          <input name="email" type="email" class="input" placeholder="you@company.com" required />
+          <input name="email" type="email" class="input" placeholder="you@company.com" autocomplete="email" inputmode="email" required />
         </label>
         <label class="field">
           <span>Account type</span>
@@ -72,26 +72,26 @@
         <label class="field">
           <span>Mobile number</span>
           <div class="phone-field">
-            <input name="phoneCountryCode" id="phoneCountryCode" class="input phone-code" value="+91" readonly aria-label="Country code" />
-            <input name="phoneNumber" type="tel" class="input" placeholder="9876543210" inputmode="tel" required />
+            <input name="phoneCountryCode" id="phoneCountryCode" class="input phone-code" value="+91" readonly aria-label="Country code" autocomplete="tel-country-code" />
+            <input name="phoneNumber" type="tel" class="input" placeholder="9876543210" inputmode="tel" autocomplete="tel-national" required />
           </div>
         </label>
         <label class="field">
           <span>Password</span>
-          <input name="password" type="password" class="input" placeholder="Minimum 6 characters" required />
+          <input name="password" type="password" class="input" placeholder="Minimum 6 characters" autocomplete="new-password" required />
         </label>
         <label class="field">
           <span>Company</span>
-          <input name="companyName" type="text" class="input" placeholder="Company name" required />
+          <input name="companyName" type="text" class="input" placeholder="Company name" autocomplete="organization" required />
           <small class="field-help">If this company already exists, PAN/GST must match the registered details.</small>
         </label>
         <label class="field">
           <span>PAN number</span>
-          <input name="panNumber" type="text" class="input" placeholder="ABCDE1234F" maxlength="10" required />
+          <input name="panNumber" type="text" class="input" placeholder="ABCDE1234F" maxlength="10" autocapitalize="characters" autocomplete="off" required />
         </label>
         <label class="field">
           <span>GST number</span>
-          <input name="gstNumber" type="text" class="input" placeholder="07ABCDE1234F1Z5" maxlength="15" required />
+          <input name="gstNumber" type="text" class="input" placeholder="07ABCDE1234F1Z5" maxlength="15" autocapitalize="characters" autocomplete="off" required />
           <small class="field-help">Example: first 2 digits are state code, next 10 characters must be your PAN.</small>
         </label>
 
@@ -108,7 +108,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="../assets/js/app.js?v=shipx32"></script>
-  <script src="../assets/js/auth.js?v=shipx30"></script>
+  <script src="../assets/js/app.js?v=shipx33"></script>
+  <script src="../assets/js/auth.js?v=shipx32"></script>
 </body>
 </html>

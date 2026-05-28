@@ -26,6 +26,15 @@
     window.__showToast?.(message);
   }
 
+  function setFormBusy(form, busy, busyText) {
+    const button = form?.querySelector('button[type="submit"]');
+    if (!button) return;
+    if (!button.dataset.defaultText) button.dataset.defaultText = button.textContent.trim();
+    button.disabled = Boolean(busy);
+    button.setAttribute('aria-busy', busy ? 'true' : 'false');
+    button.textContent = busy ? busyText : button.dataset.defaultText;
+  }
+
   function dashboardFor(role) {
     return role === 'admin' || role === 'warehouse_manager'
       ? './admin-dashboard.html'
@@ -57,7 +66,11 @@
         return;
       }
 
-      if (hint) hint.textContent = 'Signing in...';
+      if (hint) {
+        hint.textContent = 'Signing in...';
+        hint.classList.add('is-loading');
+      }
+      setFormBusy(form, true, 'Signing in...');
 
       try {
         const response = await fetch(`${apiBase}/api/auth/login`, {
@@ -77,6 +90,9 @@
       } catch (error) {
         const offline = error?.message === 'Failed to fetch';
         if (hint) hint.textContent = offline ? 'Backend server is not running on port 4000' : error?.message || 'Login error';
+      } finally {
+        setFormBusy(form, false);
+        hint?.classList.remove('is-loading');
       }
     });
   }
@@ -155,7 +171,11 @@
         return;
       }
 
-      if (hint) hint.textContent = 'Creating account...';
+      if (hint) {
+        hint.textContent = 'Creating account...';
+        hint.classList.add('is-loading');
+      }
+      setFormBusy(form, true, 'Creating account...');
 
       try {
         const response = await fetch(`${apiBase}/api/auth/register`, {
@@ -179,6 +199,9 @@
             ? 'Backend server is not running on port 4000'
             : error?.message || 'Registration error';
         }
+      } finally {
+        setFormBusy(form, false);
+        hint?.classList.remove('is-loading');
       }
     });
   }

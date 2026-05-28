@@ -8,8 +8,20 @@ const fallbackFile = path.join(__dirname, 'app.html');
 
 app.set('trust proxy', true);
 
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
+  next();
+});
+
+app.get('/health', (req, res) => {
+  res.json({ ok: true, app: 'shipX AI Logistics frontend' });
+});
+
 app.get('/download-app', (req, res) => {
-  const appUrl = `${req.protocol}://${req.get('host')}/index.html`;
+  const appUrl = `${req.protocol}://${req.get('host')}/app.html`;
   const launcher = `<!doctype html>
 <html lang="en">
 <head>
@@ -35,8 +47,10 @@ app.use(express.static(path.join(__dirname), {
   setHeaders(res, filePath) {
     const name = path.basename(filePath);
     const ext = path.extname(filePath);
-    if (name === 'service-worker.js' || ext === '.html' || ext === '.webmanifest' || ext === '.js') {
+    if (name === 'service-worker.js' || ext === '.html' || ext === '.webmanifest' || ext === '.js' || ext === '.css') {
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    } else if (['.png', '.jpg', '.jpeg', '.webp', '.svg', '.ico', '.woff2'].includes(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     }
   }
 }));

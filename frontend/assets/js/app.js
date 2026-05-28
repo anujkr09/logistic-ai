@@ -46,6 +46,20 @@
 
   migrateLegacyBranding();
 
+  function ensureSkipLink() {
+    if (document.querySelector('.skip-link')) return;
+    const target = document.querySelector('main, .main, #app');
+    if (!target) return;
+    if (!target.id) target.id = 'mainContent';
+    const link = document.createElement('a');
+    link.className = 'skip-link';
+    link.href = `#${target.id}`;
+    link.textContent = 'Skip to content';
+    document.body.prepend(link);
+  }
+
+  ensureSkipLink();
+
   if ('MutationObserver' in window) {
     const brandObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -292,6 +306,16 @@
     return role ? role.replace(/_/g, ' ') : 'User';
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }[char]));
+  }
+
   function renderProfileIdentity(user = getStoredUser()) {
     document.querySelectorAll('[data-profile-identity]').forEach((identity) => {
       const token = localStorage.getItem('token');
@@ -355,11 +379,13 @@
 
     const token = localStorage.getItem('token');
     const user = getStoredUser();
-    const userInitials = initials(user.name);
+    const displayName = user.name || user.email || '';
+    const userInitials = initials(displayName);
+    const roleText = roleLabel(user.role || userRole());
     link.href = token ? pageUrl('profile.html') : pageUrl('login.html');
-    link.title = token ? `${user.name || 'Profile'} (${isAdminRole(user.role) ? 'Admin' : 'Customer'})` : 'Login or profile';
+    link.title = token ? `Open ${displayName || 'your'} profile` : 'Login or profile';
     link.innerHTML = token && userInitials
-      ? `<span class="profile-action-avatar" aria-hidden="true">${userInitials}</span><span class="visually-hidden">Profile</span>`
+      ? `<span class="profile-action-avatar" aria-hidden="true">${escapeHtml(userInitials)}</span><span class="profile-action-text"><strong>${escapeHtml(displayName || 'Profile')}</strong><small>${escapeHtml(roleText)}</small></span>`
       : '<span class="account-icon" aria-hidden="true"></span><span class="visually-hidden">Account</span>';
   }
 
@@ -501,7 +527,7 @@
       return;
     }
 
-    const appUrl = new URL('index.html', appRootUrl).href;
+    const appUrl = new URL('app.html', appRootUrl).href;
     const launcher = `<!doctype html>
 <html lang="en">
 <head>

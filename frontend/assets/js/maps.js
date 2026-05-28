@@ -628,10 +628,13 @@ async function renderLeafletMap(element, location, shipment = {}, empty = false)
 function renderProviderMap(element, location, shipment = {}, empty = false) {
   if (googleMapsApiKey()) {
     return renderGoogleMap(element, location, shipment, empty)
-      .catch(() => renderLeafletMap(element, location, shipment, empty));
+      .catch((error) => {
+        renderFallbackMap(element, location, shipment, empty, 'Smart route preview');
+        throw error;
+      });
   }
 
-  return renderLeafletMap(element, location, shipment, empty);
+  return Promise.reject(new Error('Google Maps API key missing'));
 }
 
 function renderFallbackMap(element, location, shipment = {}, empty = false, reason = '') {
@@ -641,6 +644,12 @@ function renderFallbackMap(element, location, shipment = {}, empty = false, reas
 }
 
 function upgradeToProviderMap(element, location, shipment = {}, empty = false) {
+  if (!googleMapsApiKey()) {
+    const providerBadge = element.querySelector('.map-provider-badge');
+    if (providerBadge) providerBadge.textContent = 'Smart route preview';
+    return;
+  }
+
   renderProviderMap(element, location, shipment, empty)
     .catch(() => {
       const providerBadge = element.querySelector('.map-provider-badge');

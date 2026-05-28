@@ -43,15 +43,15 @@
       <form id="loginForm" class="auth-form">
         <label class="field">
           <span>Company</span>
-          <input name="companyName" type="text" class="input" placeholder="Company name" required />
+          <input name="companyName" type="text" class="input" placeholder="Company name" autocomplete="organization" required />
         </label>
         <label class="field">
           <span>Email</span>
-          <input name="email" type="email" class="input" placeholder="you@company.com" required />
+          <input name="email" type="email" class="input" placeholder="you@company.com" autocomplete="email" inputmode="email" required />
         </label>
         <label class="field">
           <span>Password</span>
-          <input name="password" type="password" class="input" placeholder="Your password" required />
+          <input name="password" type="password" class="input" placeholder="Your password" autocomplete="current-password" required />
         </label>
 
         <button class="btn btn-primary" type="submit">Sign in</button>
@@ -67,7 +67,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="../assets/js/app.js?v=shipx32"></script>
-  <script src="../assets/js/auth.js?v=shipx30"></script>
+  <script src="../assets/js/app.js?v=shipx33"></script>
+  <script src="../assets/js/auth.js?v=shipx32"></script>
 </body>
 </html>

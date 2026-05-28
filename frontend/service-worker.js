@@ -1,19 +1,23 @@
-const CACHE_NAME = 'shipx-ai-logistics-v36';
+const CACHE_NAME = 'shipx-ai-logistics-v39';
 const APP_SHELL = [
   './',
   './index.html',
-  './manifest.webmanifest?v=shipx31',
+  './app.html',
+  './manifest.webmanifest?v=dynamic1',
   './assets/css/style.css?v=shipx34',
   './assets/css/animations.css?v=shipx31',
   './assets/css/responsive.css?v=shipx34',
+  './assets/css/dynamic-app.css?v=dynamic3',
   './assets/css/tracking.css?v=shipx31',
   './assets/css/chatbot.css?v=shipx31',
   './assets/css/dashboard.css?v=shipx31',
-  './assets/js/app.js?v=shipx32',
+  './assets/js/app.js?v=shipx33',
+  './assets/js/dynamicApp.js?v=dynamic1',
   './assets/js/universalChatbot.js?v=shipx31',
-  './assets/js/auth.js?v=shipx31',
-  './assets/js/maps.js?v=shipx31',
-  './assets/js/tracking.js?v=shipx31',
+  './assets/js/auth.js?v=shipx32',
+  './assets/js/maps.js?v=shipx32',
+  './assets/js/profile.js?v=shipx31',
+  './assets/js/tracking.js?v=shipx32',
   './assets/js/dynamicServicePages.js?v=shipx32',
   './assets/img/app-icon-192.png',
   './assets/img/app-icon-512.png',
@@ -47,7 +51,7 @@ self.addEventListener('fetch', (event) => {
   if (isNavigation) {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match('./app.html').then((cached) => cached || caches.match('./index.html')))
     );
     return;
   }
@@ -59,6 +63,6 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./app.html') || caches.match('./index.html')))
   );
 });

@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const { rateLimit } = require('./middleware/rateLimitMiddleware');
 
 const authRoutes = require('./routes/authRoutes');
 const shipmentRoutes = require('./routes/shipmentRoutes');
@@ -23,6 +24,14 @@ const { CORS_ORIGIN } = require('./config/env');
 
 const app = express();
 
+const apiLimiter = rateLimit({
+  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
+  max: Number(process.env.RATE_LIMIT_MAX || 180),
+});
+const authLimiter = rateLimit({
+  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
+  max: Number(process.env.AUTH_RATE_LIMIT_MAX || 30),
+});
 
 app.use(helmet());
 app.use(cors({
@@ -34,6 +43,8 @@ app.use(morgan('dev'));
 
 app.get('/health', (req, res) => res.json({ ok: true }));
 
+app.use('/api/auth', authLimiter);
+app.use('/api', apiLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/shipments', shipmentRoutes);
 app.use('/api/warehouses', warehouseRoutes);

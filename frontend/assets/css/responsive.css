@@ -457,6 +457,14 @@ button,
     gap:6px;
   }
 
+  .profile-action-text strong{
+    max-width:108px;
+  }
+
+  .profile-action-text small{
+    display:none;
+  }
+
   .home-hero h1{
     font-size:clamp(34px, 11vw, 42px);
     line-height:1.02;
@@ -735,6 +743,328 @@ button,
 
   .map-route-panel{
     max-height:190px;
+  }
+}
+
+/* Professional responsive alignment layer */
+.container,
+.shipx-home,
+.home-hero,
+.home-section,
+.home-metrics,
+.home-cta,
+.shell,
+.notification-shelf,
+.service-dynamic-section{
+  width:min(100% - 32px, 1180px);
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.shell{
+  max-width:1360px;
+}
+
+.card,
+.panel,
+.dashboard-hero,
+.stat,
+.mini-card,
+.benefit-card,
+.warehouse-card,
+.dynamic-card,
+.service-card-grid article,
+.service-metrics article,
+.profile-item,
+.notif-item{
+  border-radius:8px;
+  min-width:0;
+}
+
+.panel,
+.dashboard-hero,
+.tracking-search,
+.service-card-grid article,
+.service-metrics article{
+  padding:clamp(16px, 2vw, 24px);
+}
+
+.grid-2,
+.grid-3,
+.grid-4,
+.feature-grid,
+.service-card-grid,
+.service-metrics,
+.profile-grid,
+.warehouses-grid,
+.form-grid,
+.home-metrics,
+.shipment-stats,
+.benefits-grid{
+  display:grid;
+  gap:clamp(12px, 1.5vw, 18px);
+  align-items:stretch;
+}
+
+.grid-2{
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+}
+
+.grid-3,
+.profile-grid,
+.service-card-grid,
+.service-metrics{
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+}
+
+.grid-4,
+.feature-grid,
+.benefits-grid{
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+}
+
+.form-grid,
+.warehouses-grid{
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.main-top,
+.dashboard-hero,
+.panel-head,
+.profile-head,
+.list-toolbar,
+.fraud-report-head{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  justify-content:space-between;
+}
+
+.top-actions,
+.form-actions,
+.dynamic-actions,
+.home-hero__actions,
+.service-hero-actions,
+.list-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+}
+
+.table-wrap,
+.table-responsive{
+  width:100%;
+  max-width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+.data-table{
+  width:100%;
+  min-width:640px;
+}
+
+.data-table th,
+.data-table td{
+  vertical-align:top;
+}
+
+.profile-item,
+.stat,
+.service-card-grid article,
+.feature-grid article,
+.warehouse-card,
+.dynamic-card{
+  display:flex;
+  flex-direction:column;
+}
+
+.profile-item strong,
+.stat-value,
+.warehouse-name,
+.dynamic-card h3,
+.service-card-grid h2{
+  overflow-wrap:anywhere;
+}
+
+@media (min-width: 1181px){
+  .container,
+  .shipx-home,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta,
+  .service-dynamic-section{
+    width:min(100% - 48px, 1180px);
+  }
+
+  .shell,
+  .notification-shelf{
+    width:min(100% - 48px, 1360px);
+  }
+}
+
+@media (max-width: 1180px){
+  .grid-4,
+  .feature-grid,
+  .benefits-grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-grid,
+  .service-card-grid,
+  .service-metrics{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px){
+  .container,
+  .shipx-home,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta,
+  .shell,
+  .notification-shelf,
+  .service-dynamic-section{
+    width:min(100% - 28px, 860px);
+  }
+
+  .shell,
+  .tracking-grid,
+  .home-hero,
+  .home-section--split,
+  .home-section--documents,
+  .shipx-page .account-hero{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    width:100%;
+  }
+
+  .side-nav{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 680px){
+  .container,
+  .shipx-home,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta,
+  .shell,
+  .notification-shelf,
+  .service-dynamic-section{
+    width:calc(100% - 24px);
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .feature-grid,
+  .service-card-grid,
+  .service-metrics,
+  .profile-grid,
+  .warehouses-grid,
+  .form-grid,
+  .home-metrics,
+  .shipment-stats,
+  .benefits-grid,
+  .dynamic-grid,
+  .dynamic-grid.two{
+    grid-template-columns:1fr;
+  }
+
+  .main-top,
+  .dashboard-hero,
+  .panel-head,
+  .profile-head,
+  .list-toolbar,
+  .fraud-report-head{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .top-actions,
+  .form-actions,
+  .dynamic-actions,
+  .home-hero__actions,
+  .service-hero-actions,
+  .list-controls{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .home-primary,
+  .home-secondary,
+  .signup-button,
+  .service-secondary-action,
+  .dashboard-hero .btn{
+    width:100%;
+    min-width:0;
+  }
+
+  .panel,
+  .card,
+  .dashboard-hero,
+  .tracking-search,
+  .service-card-grid article,
+  .service-metrics article{
+    padding:16px;
+  }
+
+  .data-table{
+    min-width:560px;
+  }
+
+  .side-nav{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media (max-width: 430px){
+  .container,
+  .shipx-home,
+  .home-hero,
+  .home-section,
+  .home-metrics,
+  .home-cta,
+  .shell,
+  .notification-shelf,
+  .service-dynamic-section{
+    width:calc(100% - 18px);
+  }
+
+  .panel,
+  .card,
+  .dashboard-hero,
+  .tracking-search,
+  .service-card-grid article,
+  .service-metrics article{
+    padding:14px;
+  }
+
+  .page-title,
+  .panel-title{
+    font-size:clamp(20px, 6vw, 24px);
+    line-height:1.18;
+  }
+
+  .side-nav{
+    grid-template-columns:1fr;
+  }
+
+  .data-table{
+    min-width:500px;
   }
 }
 

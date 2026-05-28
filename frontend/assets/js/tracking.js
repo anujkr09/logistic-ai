@@ -226,7 +226,10 @@
 
   async function loadTracking(trackingNumber) {
     if (!trackingNumber) return;
-    if (error) error.textContent = 'Loading shipment...';
+    if (error) {
+      error.textContent = 'Checking shipment status...';
+      error.classList.add('is-loading');
+    }
 
     try {
       const response = await fetch(`${apiBase}/api/shipments/track/${encodeURIComponent(trackingNumber)}`);
@@ -237,10 +240,14 @@
       subscribeTracking(trackingNumber);
       window.__MAP_INIT?.();
       window.__MAP_UPDATE?.(data.currentLocation, data);
-      if (error) error.textContent = '';
+      if (error) {
+        error.classList.remove('is-loading');
+        error.textContent = '';
+      }
       window.__showToast?.('Tracking loaded');
     } catch (err) {
       if (error) {
+        error.classList.remove('is-loading');
         const message = err?.message || 'Error';
         error.textContent = message === 'Shipment not found'
           ? 'Tracking number nahi mila. Exact number check karo, ya admin dashboard se pehle shipment create karo.'

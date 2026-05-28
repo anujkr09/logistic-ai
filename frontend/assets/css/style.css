@@ -1298,14 +1298,26 @@ body{
   .shipx-icon-link.profile-action-link,
   .shipx-icon-link[aria-label="Account"],
   .shipx-icon-link[aria-label="Profile"] {
-    width: 56px;
+    width: auto;
+    max-width: min(56vw, 220px);
+    padding: 6px 12px 6px 6px;
     height: 56px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
     background: #f8fffb;
     border: 2px solid rgba(255, 255, 255, 0.46);
     box-shadow: 0 0 0 9px rgba(255, 255, 255, 0.14);
+  }
+
+  .shipx-icon-link[aria-label="Account"]:not(.profile-action-link),
+  .shipx-icon-link[aria-label="Profile"]:not(.profile-action-link) {
+    width: 56px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
   }
 
   .profile-action-avatar {
@@ -1317,6 +1329,14 @@ body{
     color: #4d148c;
     background: #f8fffb;
     font-weight: 900;
+  }
+
+  .profile-action-text{
+    color:#4d148c;
+  }
+
+  .profile-action-text strong{
+    max-width:124px;
   }
 
   .mobile-bottom-nav {
@@ -1902,12 +1922,19 @@ body.theme-dark .chatbot-message.user{
 }
 
 .shipx-page .profile-action-link{
-  width:42px;
+  width:auto;
+  min-width:42px;
   height:42px;
+  max-width:230px;
+  padding:4px 12px 4px 5px;
+  gap:8px;
   border-radius:999px;
   text-decoration:none;
   border:1px solid rgba(255,255,255,.34);
   background:rgba(255,255,255,.10);
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-start;
   transition:transform .2s ease, border-color .2s ease, background .2s ease;
 }
 
@@ -1930,6 +1957,37 @@ body.theme-dark .chatbot-message.user{
   font-size:12px;
   font-weight:950;
   letter-spacing:.02em;
+  flex:0 0 auto;
+}
+
+.profile-action-text{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  line-height:1.1;
+  color:#fff;
+}
+
+.profile-action-text strong,
+.profile-action-text small{
+  display:block;
+  max-width:150px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.profile-action-text strong{
+  font-size:13px;
+  font-weight:950;
+}
+
+.profile-action-text small{
+  margin-top:2px;
+  font-size:10px;
+  font-weight:850;
+  opacity:.82;
 }
 
 .shipx-page .install-app-button{
@@ -2933,5 +2991,54 @@ body.theme-dark .shipment-map-preview,body.theme-dark .shipment-stats span{backg
   .shipx-menu__grid,
   .shipx-menu__grid--compact{
     grid-template-columns:1fr;
+  }
+}
+
+/* Professional accessibility and state helpers */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10000;
+  transform: translateY(-160%);
+  border-radius: 8px;
+  background: #121826;
+  color: #ffffff;
+  padding: 10px 14px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid rgba(77, 20, 140, 0.35);
+  outline-offset: 2px;
+}
+
+.hint.is-loading::before,
+.tracking-error.is-loading::before {
+  content: "";
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -0.12em;
+  animation: spin 0.75s linear infinite;
+}
+
+button[aria-busy="true"],
+.btn[aria-busy="true"] {
+  cursor: progress;
+  opacity: 0.82;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -44,12 +44,17 @@ function publicUser(user, company) {
     id: String(user._id),
     email: user.email,
     role: user.role,
+    status: user.status,
     companyId: String(user.companyId),
     companyName: company.name,
+    companyPlan: company.plan || '',
+    companyStatus: company.status || '',
     name: user.name,
     panNumber: company.panNumber || '',
     gstNumber: company.gstNumber || '',
     phone: user.phone || {},
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   };
 }
 
