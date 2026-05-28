@@ -1112,3 +1112,26 @@
     min-width: 620px;
   }
 }
+
+.dynamic-app .chatbot-toggle {
+  z-index: 1250;
+}
+
+.dynamic-app .chatbot-widget {
+  z-index: 1260;
+}
+
+@media (max-width: 768px) {
+  .dynamic-app .chatbot-toggle {
+    right: 14px;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dynamic-app .chatbot-widget {
+    right: 10px;
+    left: 10px;
+    bottom: calc(156px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+  }
+}
