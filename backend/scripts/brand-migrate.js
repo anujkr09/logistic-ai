@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
-const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/zyraviq_ai_logistics';
+const mongoUri = process.env.MONGODB_URI;
 const legacyLower = ['sh', 'ipx'].join('');
 const legacyDisplay = ['sh', 'ipX'].join('');
 const legacyTitle = ['Sh', 'ipX'].join('');
@@ -41,7 +41,20 @@ function changed(a, b) {
   return JSON.stringify(a) !== JSON.stringify(b);
 }
 
+function maskMongoUri(uri) {
+  try {
+    const parsed = new URL(uri);
+    if (parsed.password) parsed.password = '***';
+    if (parsed.username) parsed.username = '***';
+    return parsed.toString();
+  } catch {
+    return 'set';
+  }
+}
+
 async function updateDatabase(uri) {
+  if (!uri) throw new Error('MONGODB_URI is required to run brand migration');
+
   const client = new MongoClient(uri, { serverSelectionTimeoutMS: 5000 });
   await client.connect();
   const db = client.db();
@@ -69,7 +82,7 @@ async function updateDatabase(uri) {
 }
 
 (async () => {
-  console.log(`Updating DB from MONGODB_URI: ${mongoUri}`);
+  console.log(`Updating DB from MONGODB_URI: ${maskMongoUri(mongoUri)}`);
   const updated = await updateDatabase(mongoUri);
   console.log(JSON.stringify({ updated }, null, 2));
 })().catch((error) => {

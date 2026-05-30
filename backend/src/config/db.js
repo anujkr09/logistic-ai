@@ -7,11 +7,14 @@ const Shipment = require('../models/Shipment');
 const Notification = require('../models/Notification');
 const Analytics = require('../models/Analytics');
 const WorkspaceItem = require('../models/WorkspaceItem');
+const { MONGODB_URI } = require('./env');
 
 async function connectMongo() {
-  const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/zyraviq_ai_logistics';
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is required to connect MongoDB');
+  }
 
-  await mongoose.connect(uri, {
+  await mongoose.connect(MONGODB_URI, {
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 5000,
   });
