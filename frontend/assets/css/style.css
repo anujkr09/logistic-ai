@@ -33,7 +33,7 @@ body{
   min-height:100vh;
 }
 
-.shipx-page{
+.zyraviq-page{
   --bg:#ffffff;
   --panel:#ffffff;
   --panel2:#f7f7f7;
@@ -47,11 +47,11 @@ body{
   color:#2b2b2b;
 }
 
-.shipx-page .bg-grid {
+.zyraviq-page .bg-grid {
   display:none;
 }
 
-.shipx-page.theme-light {
+.zyraviq-page.theme-light {
   --bg:#ffffff;
   --panel:#ffffff;
   --panel2:#f7f7f7;
@@ -65,7 +65,7 @@ body{
   color:#2b2b2b;
 }
 
-.shipx-page.theme-dark {
+.zyraviq-page.theme-dark {
   --bg:#070a1a;
   --panel:#0f1631;
   --panel2:#131c39;
@@ -78,7 +78,7 @@ body{
   color:#f8fafc;
 }
 
-.shipx-header{
+.zyraviq-header{
   position:sticky;
   top:0;
   z-index:50;
@@ -87,7 +87,7 @@ body{
 }
 
 
-.shipx-header__inner{
+.zyraviq-header__inner{
   max-width:930px;
   min-height:90px;
   margin:0 auto;
@@ -97,7 +97,7 @@ body{
   padding:0 18px;
 }
 
-.shipx-logo{
+.zyraviq-logo{
   display:inline-flex;
   align-items:flex-end;
   color:#fff;
@@ -109,13 +109,13 @@ body{
   white-space:nowrap;
 }
 
-.shipx-logo strong{
+.zyraviq-logo strong{
   color:var(--primary2);
   font-weight:950;
 }
 
 
-.shipx-logo small{
+.zyraviq-logo small{
   align-self:center;
   margin-left:3px;
   color:var(--primary2);
@@ -125,18 +125,18 @@ body{
 }
 
 
-.shipx-nav{
+.zyraviq-nav{
   display:flex;
   align-self:stretch;
   align-items:stretch;
 }
 
-.shipx-nav__item{
+.zyraviq-nav__item{
   position:relative;
   display:flex;
 }
 
-.shipx-nav__button{
+.zyraviq-nav__button{
   height:100%;
   border:0;
   background:transparent;
@@ -148,8 +148,8 @@ body{
   cursor:pointer;
 }
 
-.shipx-nav__item:hover .shipx-nav__button,
-.shipx-nav__item:focus-within .shipx-nav__button{
+.zyraviq-nav__item:hover .zyraviq-nav__button,
+.zyraviq-nav__item:focus-within .zyraviq-nav__button{
   background:#fff;
   color:#4d148c;
 }
@@ -164,7 +164,7 @@ body{
   transform:rotate(45deg) translateY(-3px);
 }
 
-.shipx-menu{
+.zyraviq-menu{
   position:absolute;
   top:100%;
   left:0;
@@ -175,16 +175,16 @@ body{
   display:none;
 }
 
-.shipx-menu--small{
+.zyraviq-menu--small{
   width:245px;
 }
 
-.shipx-menu--support,
-.shipx-menu--account{
+.zyraviq-menu--support,
+.zyraviq-menu--account{
   width:280px;
 }
 
-.shipx-menu__header{
+.zyraviq-menu__header{
   padding:18px 16px;
   font-size:13px;
 
@@ -196,30 +196,30 @@ body{
   border-bottom:1px solid #e6e6e6;
 }
 
-.shipx-menu__cta{
+.zyraviq-menu__cta{
   font-weight:900;
   text-transform:uppercase;
   color:#006fcf;
 }
 
-.shipx-menu__cta:hover,
-.shipx-menu__cta:focus{
+.zyraviq-menu__cta:hover,
+.zyraviq-menu__cta:focus{
   background:#f7f7f7;
   color:#003f7f;
 }
 
-.shipx-tracking-menu{
+.zyraviq-tracking-menu{
   width:300px;
   left:50%;
   transform:translateX(-50%);
 }
 
-.shipx-nav__item:hover .shipx-menu,
-.shipx-nav__item:focus-within .shipx-menu{
+.zyraviq-nav__item:hover .zyraviq-menu,
+.zyraviq-nav__item:focus-within .zyraviq-menu{
   display:block;
 }
 
-.shipx-menu a{
+.zyraviq-menu a{
   display:flex;
   align-items:center;
   min-height:73px;
@@ -231,14 +231,14 @@ body{
   font-weight:450;
 }
 
-.shipx-menu a:hover,
-.shipx-menu a:focus{
+.zyraviq-menu a:hover,
+.zyraviq-menu a:focus{
   background:#f7f7f7;
   color:#4d148c;
   outline:none;
 }
 
-.shipx-menu .shipx-menu__all{
+.zyraviq-menu .zyraviq-menu__all{
   min-height:70px;
   color:#0078ad;
   font-weight:900;
@@ -336,7 +336,7 @@ body{
   transform:rotate(-45deg);
 }
 
-.shipx-actions{
+.zyraviq-actions{
   margin-left:auto;
   display:flex;
   align-items:center;
@@ -345,23 +345,23 @@ body{
   position:relative;
 }
 
-.shipx-actions__item{
+.zyraviq-actions__item{
   position:relative;
   display:flex;
   align-items:center;
 }
 
-.shipx-actions .shipx-menu{
+.zyraviq-actions .zyraviq-menu{
   right:0;
   left:auto;
 }
 
-.shipx-actions__item:hover .shipx-menu,
-.shipx-actions__item:focus-within .shipx-menu{
+.zyraviq-actions__item:hover .zyraviq-menu,
+.zyraviq-actions__item:focus-within .zyraviq-menu{
   display:block;
 }
 
-.shipx-icon-link{
+.zyraviq-icon-link{
   width:38px;
   height:38px;
   display:grid;
@@ -563,7 +563,7 @@ body{
   overflow:hidden;
 }
 
-.shipx-page .container{
+.zyraviq-page .container{
   max-width:1230px;
   padding-top:0;
 }
@@ -824,7 +824,7 @@ body{
   outline-offset:3px;
 }
 
-.shipx-original-content{
+.zyraviq-original-content{
   display:none;
 }
 
@@ -1221,8 +1221,8 @@ body{
     background: #f0ebf7;
   }
 
-  .shipx-home,
-  .shipx-footer {
+  .zyraviq-home,
+  .zyraviq-footer {
     padding-left: 124px;
   }
 }
@@ -1233,8 +1233,8 @@ body{
     width: 78px;
   }
 
-  .shipx-home,
-  .shipx-footer {
+  .zyraviq-home,
+  .zyraviq-footer {
     padding-left: 96px;
   }
 }
@@ -1263,21 +1263,21 @@ body{
     padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
   }
 
-  .shipx-nav,
+  .zyraviq-nav,
   .topnav {
     display: none !important;
   }
 
-  .shipx-header__inner {
+  .zyraviq-header__inner {
     min-height: 92px;
     justify-content: space-between;
   }
 
-  .shipx-actions {
+  .zyraviq-actions {
     margin-left: auto;
   }
 
-  .shipx-actions .install-app-button {
+  .zyraviq-actions .install-app-button {
     width: 48px;
     height: 48px;
     min-width: 48px;
@@ -1287,17 +1287,17 @@ body{
     border-radius: 50%;
   }
 
-  .shipx-actions .install-app-button[hidden] {
+  .zyraviq-actions .install-app-button[hidden] {
     display: none;
   }
 
-  .shipx-actions .install-app-button span:not(.install-app-button__icon) {
+  .zyraviq-actions .install-app-button span:not(.install-app-button__icon) {
     display: none;
   }
 
-  .shipx-icon-link.profile-action-link,
-  .shipx-icon-link[aria-label="Account"],
-  .shipx-icon-link[aria-label="Profile"] {
+  .zyraviq-icon-link.profile-action-link,
+  .zyraviq-icon-link[aria-label="Account"],
+  .zyraviq-icon-link[aria-label="Profile"] {
     width: auto;
     max-width: min(56vw, 220px);
     padding: 6px 12px 6px 6px;
@@ -1311,8 +1311,8 @@ body{
     box-shadow: 0 0 0 9px rgba(255, 255, 255, 0.14);
   }
 
-  .shipx-icon-link[aria-label="Account"]:not(.profile-action-link),
-  .shipx-icon-link[aria-label="Profile"]:not(.profile-action-link) {
+  .zyraviq-icon-link[aria-label="Account"]:not(.profile-action-link),
+  .zyraviq-icon-link[aria-label="Profile"]:not(.profile-action-link) {
     width: 56px;
     padding: 0;
     display: grid;
@@ -1403,6 +1403,43 @@ body{
 @media (min-width: 769px) {
   .mobile-bottom-nav {
     display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-bottom-nav {
+    min-height: calc(72px + env(safe-area-inset-bottom, 0px));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 3px;
+    padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-bottom-nav__item {
+    width: 100%;
+    min-width: 0;
+    min-height: 58px;
+    padding: 6px 2px;
+    overflow: hidden;
+  }
+
+  .mobile-bottom-nav__item svg {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+  }
+
+  .mobile-bottom-nav__item span {
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px;
+    line-height: 1.1;
   }
 }
 
@@ -1547,7 +1584,7 @@ body{
 }
 
 .theme-light,
-.shipx-page{
+.zyraviq-page{
   --bg:#f5f2fb;
   --panel:#ffffff;
   --panel2:#f8fafc;
@@ -1560,7 +1597,7 @@ body{
 }
 
 .theme-dark,
-.shipx-page.theme-dark{
+.zyraviq-page.theme-dark{
   --bg:#120b22;
   --panel:#1b1230;
   --panel2:#24183d;
@@ -1682,13 +1719,13 @@ body.theme-dark{
   box-shadow:0 0 0 4px rgba(77,20,140,.10);
 }
 
-.shipx-header,
+.zyraviq-header,
 .chatbot-header{
   background:linear-gradient(135deg, var(--brand-purple), #6d28d9 58%, #8b2dbe);
 }
 
-.shipx-logo strong,
-.shipx-logo small{
+.zyraviq-logo strong,
+.zyraviq-logo small{
   color:#99f6e4;
 }
 
@@ -1798,8 +1835,8 @@ body.theme-dark .chatbot-message.user{
   color:#ffffff;
 }
 
-/* shipX screenshot-style header */
-.shipx-page .shipx-header{
+/* ZYRAVIQ screenshot-style header */
+.zyraviq-page .zyraviq-header{
   position:sticky;
   top:0;
   z-index:80;
@@ -1809,7 +1846,7 @@ body.theme-dark .chatbot-message.user{
   box-shadow:none;
 }
 
-.shipx-page .shipx-header__inner{
+.zyraviq-page .zyraviq-header__inner{
   max-width:980px;
   min-height:76px;
   height:76px;
@@ -1818,33 +1855,33 @@ body.theme-dark .chatbot-message.user{
   align-items:center;
 }
 
-.shipx-page .shipx-logo{
+.zyraviq-page .zyraviq-logo{
   font-size:31px;
   letter-spacing:-1.6px;
   align-items:flex-end;
 }
 
-.shipx-page .shipx-logo span{
+.zyraviq-page .zyraviq-logo span{
   color:#fff;
 }
 
-.shipx-page .shipx-logo strong,
-.shipx-page .shipx-logo small{
+.zyraviq-page .zyraviq-logo strong,
+.zyraviq-page .zyraviq-logo small{
   color:#0e8f87;
 }
 
-.shipx-page .shipx-logo small{
+.zyraviq-page .zyraviq-logo small{
   font-size:7px;
   margin-left:2px;
   margin-bottom:4px;
 }
 
-.shipx-page .shipx-nav{
+.zyraviq-page .zyraviq-nav{
   height:76px;
   gap:0;
 }
 
-.shipx-page .shipx-nav__button{
+.zyraviq-page .zyraviq-nav__button{
   min-height:76px;
   height:76px;
   padding:0 18px;
@@ -1856,13 +1893,13 @@ body.theme-dark .chatbot-message.user{
   gap:4px;
 }
 
-.shipx-page .shipx-nav__item:hover .shipx-nav__button,
-.shipx-page .shipx-nav__item:focus-within .shipx-nav__button{
+.zyraviq-page .zyraviq-nav__item:hover .zyraviq-nav__button,
+.zyraviq-page .zyraviq-nav__item:focus-within .zyraviq-nav__button{
   background:#4d148c;
   color:#fff;
 }
 
-.shipx-page .chevron{
+.zyraviq-page .chevron{
   width:7px;
   height:7px;
   margin-left:1px;
@@ -1870,7 +1907,7 @@ body.theme-dark .chatbot-message.user{
   transform:rotate(45deg) translateY(-2px);
 }
 
-.shipx-page .shipx-actions{
+.zyraviq-page .zyraviq-actions{
   height:76px;
   margin-left:auto;
   gap:14px;
@@ -1878,11 +1915,11 @@ body.theme-dark .chatbot-message.user{
   align-self:stretch;
 }
 
-.shipx-page .shipx-actions__item{
+.zyraviq-page .zyraviq-actions__item{
   height:76px;
 }
 
-.shipx-page .shipx-icon-link{
+.zyraviq-page .zyraviq-icon-link{
   width:30px;
   height:40px;
   border-radius:0;
@@ -1892,7 +1929,7 @@ body.theme-dark .chatbot-message.user{
   background:transparent;
 }
 
-.shipx-page button.shipx-icon-link{
+.zyraviq-page button.zyraviq-icon-link{
   width:44px;
   height:44px;
   border:0;
@@ -1904,15 +1941,15 @@ body.theme-dark .chatbot-message.user{
   transition:color .18s ease, transform .18s ease;
 }
 
-.shipx-page .shipx-icon-link:hover,
-.shipx-page .shipx-icon-link:focus{
+.zyraviq-page .zyraviq-icon-link:hover,
+.zyraviq-page .zyraviq-icon-link:focus{
   background:transparent;
   color:#0e8f87;
   outline:none;
 }
 
-.shipx-page button.shipx-icon-link:hover,
-.shipx-page button.shipx-icon-link:focus{
+.zyraviq-page button.zyraviq-icon-link:hover,
+.zyraviq-page button.zyraviq-icon-link:focus{
   color:#000;
   background:transparent;
   box-shadow:none;
@@ -1921,7 +1958,7 @@ body.theme-dark .chatbot-message.user{
   transform:translateY(-1px);
 }
 
-.shipx-page .profile-action-link{
+.zyraviq-page .profile-action-link{
   width:auto;
   min-width:42px;
   height:42px;
@@ -1938,8 +1975,8 @@ body.theme-dark .chatbot-message.user{
   transition:transform .2s ease, border-color .2s ease, background .2s ease;
 }
 
-.shipx-page .profile-action-link:hover,
-.shipx-page .profile-action-link:focus{
+.zyraviq-page .profile-action-link:hover,
+.zyraviq-page .profile-action-link:focus{
   background:rgba(255,255,255,.18);
   border-color:rgba(255,255,255,.68);
   color:#fff;
@@ -1990,15 +2027,15 @@ body.theme-dark .chatbot-message.user{
   opacity:.82;
 }
 
-.shipx-page .install-app-button{
+.zyraviq-page .install-app-button{
   min-width:clamp(44px, 12vw, 146px);
   min-height:40px;
   height:40px;
   box-shadow:0 10px 24px rgba(14,143,135,.22);
 }
 
-.shipx-page .install-app-button:hover,
-.shipx-page .install-app-button:focus{
+.zyraviq-page .install-app-button:hover,
+.zyraviq-page .install-app-button:focus{
   background:linear-gradient(135deg, #14b8a6, #0e8f87);
   box-shadow:0 14px 30px rgba(14,143,135,.34);
   transform:translateY(-1px);
@@ -2006,14 +2043,14 @@ body.theme-dark .chatbot-message.user{
   outline-offset:2px;
 }
 
-.shipx-page .account-icon{
+.zyraviq-page .account-icon{
   width:24px;
   height:24px;
   border:0;
   border-radius:0;
 }
 
-.shipx-page .account-icon::before{
+.zyraviq-page .account-icon::before{
   left:8px;
   top:1px;
   width:8px;
@@ -2022,7 +2059,7 @@ body.theme-dark .chatbot-message.user{
   border-radius:50%;
 }
 
-.shipx-page .account-icon::after{
+.zyraviq-page .account-icon::after{
   left:4px;
   bottom:1px;
   width:16px;
@@ -2033,13 +2070,13 @@ body.theme-dark .chatbot-message.user{
   border-bottom:0;
 }
 
-.shipx-page .search-icon{
+.zyraviq-page .search-icon{
   width:25px;
   height:25px;
   border-width:4px;
 }
 
-.shipx-page .search-icon::before{
+.zyraviq-page .search-icon::before{
   left:7px;
   top:5px;
   width:10px;
@@ -2047,14 +2084,14 @@ body.theme-dark .chatbot-message.user{
   border-top-width:4px;
 }
 
-.shipx-page .search-icon::after{
+.zyraviq-page .search-icon::after{
   right:-12px;
   bottom:-10px;
   width:17px;
   height:5px;
 }
 
-.shipx-page .shipx-menu{
+.zyraviq-page .zyraviq-menu{
   top:76px;
   background:#fff;
   color:#333;
@@ -2062,7 +2099,7 @@ body.theme-dark .chatbot-message.user{
   box-shadow:0 8px 20px rgba(0,0,0,.16);
 }
 
-.shipx-page .shipx-menu a{
+.zyraviq-page .zyraviq-menu a{
   min-height:56px;
   padding:0 16px;
   color:#0078bd;
@@ -2074,18 +2111,18 @@ body.theme-dark .chatbot-message.user{
   text-transform:none;
 }
 
-.shipx-page .shipx-menu a:hover,
-.shipx-page .shipx-menu a:focus{
+.zyraviq-page .zyraviq-menu a:hover,
+.zyraviq-page .zyraviq-menu a:focus{
   background:#f6f6f6;
   color:#4d148c;
 }
 
-.shipx-page .shipx-menu .shipx-menu__all{
+.zyraviq-page .zyraviq-menu .zyraviq-menu__all{
   min-height:56px;
   color:#0078bd;
 }
 
-.shipx-page .account-hero{
+.zyraviq-page .account-hero{
   position:relative;
   display:grid;
   grid-template-columns:minmax(0,1.05fr) minmax(280px,.65fr);
@@ -2097,7 +2134,7 @@ body.theme-dark .chatbot-message.user{
   margin:0 auto;
 }
 
-.shipx-page .account-hero::before{
+.zyraviq-page .account-hero::before{
   content:"";
   position:absolute;
   inset:44px 0 52px;
@@ -2108,7 +2145,7 @@ body.theme-dark .chatbot-message.user{
   z-index:-1;
 }
 
-.shipx-page .account-hero::after{
+.zyraviq-page .account-hero::after{
   content:"AI";
   grid-column:2;
   grid-row:1 / span 5;
@@ -2132,11 +2169,11 @@ body.theme-dark .chatbot-message.user{
   box-shadow:inset 0 0 0 10px rgba(255,255,255,.72);
 }
 
-.shipx-page .account-hero[data-dynamic-page]::after{
+.zyraviq-page .account-hero[data-dynamic-page]::after{
   display:none;
 }
 
-.shipx-page .account-hero[data-dynamic-page]{
+.zyraviq-page .account-hero[data-dynamic-page]{
   grid-template-columns:minmax(0, 1fr) minmax(300px, .72fr);
   gap:26px;
 }
@@ -2226,57 +2263,57 @@ body.theme-dark .chatbot-message.user{
   font-weight:850;
 }
 
-.shipx-page .account-hero > h1,
-.shipx-page .account-hero > p,
-.shipx-page .account-hero > a,
-.shipx-page .account-hero > hr,
-.shipx-page .account-hero > form,
-.shipx-page .account-hero > div:not(.account-hero__visual){
+.zyraviq-page .account-hero > h1,
+.zyraviq-page .account-hero > p,
+.zyraviq-page .account-hero > a,
+.zyraviq-page .account-hero > hr,
+.zyraviq-page .account-hero > form,
+.zyraviq-page .account-hero > div:not(.account-hero__visual){
   grid-column:1;
   margin-left:34px;
 }
 
-.shipx-page .account-hero h1{
+.zyraviq-page .account-hero h1{
   max-width:680px;
   margin-bottom:18px;
   color:#122033;
 }
 
-.shipx-page .account-hero__lead,
-.shipx-page .account-hero__note{
+.zyraviq-page .account-hero__lead,
+.zyraviq-page .account-hero__note{
   max-width:660px;
   margin-right:0;
   margin-left:34px;
 }
 
-.shipx-page .account-hero__lead{
+.zyraviq-page .account-hero__lead{
   color:#26384d;
   font-weight:700;
 }
 
-.shipx-page .account-hero__note{
+.zyraviq-page .account-hero__note{
   margin-bottom:28px;
   color:#526174;
   font-style:normal;
 }
 
-.shipx-page .account-hero[data-dynamic-page] > .service-hero-copy{
+.zyraviq-page .account-hero[data-dynamic-page] > .service-hero-copy{
   grid-column:1;
   margin-left:34px;
 }
 
-.shipx-page .account-hero[data-dynamic-page] > .service-hero-visual{
+.zyraviq-page .account-hero[data-dynamic-page] > .service-hero-visual{
   grid-column:2;
   margin-left:0;
 }
 
-.shipx-page .account-hero[data-dynamic-page] .service-hero-copy h1,
-.shipx-page .account-hero[data-dynamic-page] .service-hero-copy p,
-.shipx-page .account-hero[data-dynamic-page] .service-hero-actions{
+.zyraviq-page .account-hero[data-dynamic-page] .service-hero-copy h1,
+.zyraviq-page .account-hero[data-dynamic-page] .service-hero-copy p,
+.zyraviq-page .account-hero[data-dynamic-page] .service-hero-actions{
   margin-left:0;
 }
 
-.shipx-page .signup-button{
+.zyraviq-page .signup-button{
   min-width:0;
   width:max-content;
   min-height:56px;
@@ -2290,8 +2327,8 @@ body.theme-dark .chatbot-message.user{
   box-shadow:0 14px 30px rgba(14,143,135,.22);
 }
 
-.shipx-page .signup-button:hover,
-.shipx-page .signup-button:focus{
+.zyraviq-page .signup-button:hover,
+.zyraviq-page .signup-button:focus{
   background:#4d148c;
 }
 
@@ -2489,13 +2526,13 @@ body.theme-dark .chatbot-message.user{
 }
 
 @media (max-width: 980px){
-  .shipx-page .shipx-header,
-  .shipx-page .shipx-header__inner{
+  .zyraviq-page .zyraviq-header,
+  .zyraviq-page .zyraviq-header__inner{
     height:auto;
     min-height:76px;
   }
 
-  .shipx-page .shipx-header__inner{
+  .zyraviq-page .zyraviq-header__inner{
     max-width:none;
     gap:16px;
   }
@@ -2503,7 +2540,7 @@ body.theme-dark .chatbot-message.user{
 
 /* Dark mode readability fixes */
 body.theme-dark,
-body.theme-dark.shipx-page{
+body.theme-dark.zyraviq-page{
   --bg:#120b22;
   --panel:#1b1230;
   --panel2:#24183d;
@@ -2514,7 +2551,7 @@ body.theme-dark.shipx-page{
   color:#fbf8ff;
 }
 
-body.theme-dark.shipx-page .container,
+body.theme-dark.zyraviq-page .container,
 body.theme-dark .container,
 body.theme-dark .main,
 body.theme-dark .shell{
@@ -2586,14 +2623,14 @@ body.theme-dark .footer-language .language-card{
   box-shadow:0 24px 58px rgba(0,0,0,.32);
 }
 
-body.theme-dark.shipx-page .account-hero::before,
-body.theme-dark .shipx-page .account-hero::before{
+body.theme-dark.zyraviq-page .account-hero::before,
+body.theme-dark .zyraviq-page .account-hero::before{
   background:linear-gradient(135deg, rgba(124,58,237,.20), rgba(34,197,94,.10)), #18102b;
   border-color:rgba(255,255,255,.12);
 }
 
-body.theme-dark.shipx-page .account-hero::after,
-body.theme-dark .shipx-page .account-hero::after{
+body.theme-dark.zyraviq-page .account-hero::after,
+body.theme-dark .zyraviq-page .account-hero::after{
   background:
     linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px),
     linear-gradient(0deg, rgba(34,197,94,.10) 1px, transparent 1px),
@@ -2652,18 +2689,18 @@ body.theme-dark .service-checklist li{
   color:#fbf8ff;
 }
 
-body.theme-dark.shipx-page button.shipx-icon-link,
-body.theme-dark .shipx-page button.shipx-icon-link{
+body.theme-dark.zyraviq-page button.zyraviq-icon-link,
+body.theme-dark .zyraviq-page button.zyraviq-icon-link{
   color:#000;
   border-color:transparent;
   background:transparent;
   box-shadow:none;
 }
 
-body.theme-dark.shipx-page button.shipx-icon-link:hover,
-body.theme-dark.shipx-page button.shipx-icon-link:focus,
-body.theme-dark .shipx-page button.shipx-icon-link:hover,
-body.theme-dark .shipx-page button.shipx-icon-link:focus{
+body.theme-dark.zyraviq-page button.zyraviq-icon-link:hover,
+body.theme-dark.zyraviq-page button.zyraviq-icon-link:focus,
+body.theme-dark .zyraviq-page button.zyraviq-icon-link:hover,
+body.theme-dark .zyraviq-page button.zyraviq-icon-link:focus{
   color:#000;
   background:transparent;
   outline-color:rgba(0,0,0,.18);
@@ -2728,19 +2765,19 @@ body.theme-dark .footer-column a:focus{
   color:#ffffff;
 }
 
-/* shipX custom home */
-.shipx-page{background:#f5f7fb;color:#162033}
-.shipx-page .shipx-header{height:72px;background:#17324d;border-bottom:1px solid rgba(255,255,255,.10);box-shadow:0 10px 28px rgba(16,33,51,.12)}
-.shipx-page .shipx-header__inner{width:min(1180px,calc(100% - 40px));max-width:none;height:72px;min-height:72px;padding:0}
-.shipx-page .shipx-logo{font-size:30px;letter-spacing:-1.2px}
-.shipx-page .shipx-logo strong,.shipx-page .shipx-logo small{color:#14b8a6}
-.shipx-page .shipx-nav,.shipx-page .shipx-actions,.shipx-page .shipx-actions__item{height:72px}
-.shipx-page .shipx-nav__button{height:72px;min-height:72px;padding:0 15px;font-size:13px;font-weight:800}
-.shipx-page .shipx-nav__item:hover .shipx-nav__button,.shipx-page .shipx-nav__item:focus-within .shipx-nav__button{background:rgba(255,255,255,.08);color:#fff}
-.shipx-page .shipx-menu{top:72px;border-radius:0 0 8px 8px;overflow:hidden}
-.shipx-page .install-app-button{background:#14b8a6;box-shadow:none}
+/* ZYRAVIQ custom home */
+.zyraviq-page{background:#f5f7fb;color:#162033}
+.zyraviq-page .zyraviq-header{height:72px;background:#17324d;border-bottom:1px solid rgba(255,255,255,.10);box-shadow:0 10px 28px rgba(16,33,51,.12)}
+.zyraviq-page .zyraviq-header__inner{width:min(1180px,calc(100% - 40px));max-width:none;height:72px;min-height:72px;padding:0}
+.zyraviq-page .zyraviq-logo{font-size:30px;letter-spacing:-1.2px}
+.zyraviq-page .zyraviq-logo strong,.zyraviq-page .zyraviq-logo small{color:#14b8a6}
+.zyraviq-page .zyraviq-nav,.zyraviq-page .zyraviq-actions,.zyraviq-page .zyraviq-actions__item{height:72px}
+.zyraviq-page .zyraviq-nav__button{height:72px;min-height:72px;padding:0 15px;font-size:13px;font-weight:800}
+.zyraviq-page .zyraviq-nav__item:hover .zyraviq-nav__button,.zyraviq-page .zyraviq-nav__item:focus-within .zyraviq-nav__button{background:rgba(255,255,255,.08);color:#fff}
+.zyraviq-page .zyraviq-menu{top:72px;border-radius:0 0 8px 8px;overflow:hidden}
+.zyraviq-page .install-app-button{background:#14b8a6;box-shadow:none}
 
-.shipx-page .shipx-mega-menu{
+.zyraviq-page .zyraviq-mega-menu{
   width:560px;
   padding:16px;
   border:1px solid rgba(23,50,77,.10);
@@ -2751,18 +2788,18 @@ body.theme-dark .footer-column a:focus{
   color:#162033;
 }
 
-.shipx-page .shipx-tracking-menu{
+.zyraviq-page .zyraviq-tracking-menu{
   width:520px;
   left:50%;
   transform:translateX(-50%);
 }
 
-.shipx-page .shipx-menu--support,
-.shipx-page .shipx-menu--account{
+.zyraviq-page .zyraviq-menu--support,
+.zyraviq-page .zyraviq-menu--account{
   width:560px;
 }
 
-.shipx-menu__intro{
+.zyraviq-menu__intro{
   display:grid;
   gap:4px;
   padding:14px;
@@ -2772,29 +2809,29 @@ body.theme-dark .footer-column a:focus{
   border:1px solid #d8ecea;
 }
 
-.shipx-menu__intro b{
+.zyraviq-menu__intro b{
   color:#17324d;
   font-size:14px;
   font-weight:950;
 }
 
-.shipx-menu__intro span{
+.zyraviq-menu__intro span{
   color:#607083;
   font-size:13px;
   line-height:1.45;
 }
 
-.shipx-menu__grid{
+.zyraviq-menu__grid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:10px;
 }
 
-.shipx-menu__grid--compact{
+.zyraviq-menu__grid--compact{
   grid-template-columns:repeat(3, minmax(0, 1fr));
 }
 
-.shipx-page .shipx-menu a.shipx-menu-card{
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card{
   display:block;
   min-height:116px;
   padding:14px;
@@ -2808,14 +2845,14 @@ body.theme-dark .footer-column a:focus{
   font-weight:700;
 }
 
-.shipx-page .shipx-menu a.shipx-menu-card b{
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card b{
   display:block;
   color:#162033;
   font-size:15px;
   font-weight:950;
 }
 
-.shipx-page .shipx-menu a.shipx-menu-card span{
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card span{
   display:block;
   margin-top:8px;
   color:#667487;
@@ -2823,20 +2860,20 @@ body.theme-dark .footer-column a:focus{
   font-weight:650;
 }
 
-.shipx-page .shipx-menu a.shipx-menu-card:hover,
-.shipx-page .shipx-menu a.shipx-menu-card:focus{
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card:hover,
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card:focus{
   background:#f7fbfb;
   border-color:#0e8f87;
   color:#0e8f87;
   transform:translateY(-1px);
 }
 
-.shipx-page .shipx-menu a.shipx-menu-card:hover b,
-.shipx-page .shipx-menu a.shipx-menu-card:focus b{
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card:hover b,
+.zyraviq-page .zyraviq-menu a.zyraviq-menu-card:focus b{
   color:#0e8f87;
 }
 
-.shipx-page .shipx-tracking-menu .tracking-menu-form{
+.zyraviq-page .zyraviq-tracking-menu .tracking-menu-form{
   margin:0 0 12px;
   padding:14px;
   border-radius:8px;
@@ -2844,51 +2881,51 @@ body.theme-dark .footer-column a:focus{
   border:0;
 }
 
-.shipx-page .shipx-tracking-menu .tracking-menu-form label{
+.zyraviq-page .zyraviq-tracking-menu .tracking-menu-form label{
   color:#d9f4ef;
   font-size:12px;
   letter-spacing:.08em;
 }
 
-.shipx-page .shipx-tracking-menu .tracking-menu-form input{
+.zyraviq-page .zyraviq-tracking-menu .tracking-menu-form input{
   background:#ffffff;
   color:#162033;
   border:0;
 }
 
-.shipx-page .shipx-tracking-menu .tracking-menu-form button{
+.zyraviq-page .zyraviq-tracking-menu .tracking-menu-form button{
   background:#14b8a6;
   color:#fff;
 }
 
-body.theme-dark .shipx-page .shipx-mega-menu,
-body.theme-dark.shipx-page .shipx-mega-menu{
+body.theme-dark .zyraviq-page .zyraviq-mega-menu,
+body.theme-dark.zyraviq-page .zyraviq-mega-menu{
   background:#142238;
   border-color:rgba(255,255,255,.10);
 }
 
-body.theme-dark .shipx-menu__intro{
+body.theme-dark .zyraviq-menu__intro{
   background:#0f1b2d;
   border-color:rgba(255,255,255,.10);
 }
 
-body.theme-dark .shipx-menu__intro b,
-body.theme-dark.shipx-page .shipx-menu a.shipx-menu-card b{
+body.theme-dark .zyraviq-menu__intro b,
+body.theme-dark.zyraviq-page .zyraviq-menu a.zyraviq-menu-card b{
   color:#f8fafc;
 }
 
-body.theme-dark .shipx-menu__intro span,
-body.theme-dark.shipx-page .shipx-menu a.shipx-menu-card span{
+body.theme-dark .zyraviq-menu__intro span,
+body.theme-dark.zyraviq-page .zyraviq-menu a.zyraviq-menu-card span{
   color:#b9c5d6;
 }
 
-body.theme-dark.shipx-page .shipx-menu a.shipx-menu-card{
+body.theme-dark.zyraviq-page .zyraviq-menu a.zyraviq-menu-card{
   background:#0f1b2d;
   border-color:rgba(255,255,255,.10);
   color:#f8fafc;
 }
 
-.shipx-home{background:#f5f7fb;color:#162033;overflow:hidden}
+.zyraviq-home{background:#f5f7fb;color:#162033;overflow:hidden}
 .home-hero{width:min(1180px,calc(100% - 40px));min-height:calc(100vh - 96px);margin:0 auto;padding:62px 0 38px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(420px,.78fr);gap:46px;align-items:center}
 .home-kicker{margin:0 0 14px;color:#0e8f87;font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
 .home-hero h1,.home-section h2,.home-cta h2{margin:0;color:#122033;letter-spacing:0}
@@ -2950,7 +2987,7 @@ body.theme-dark.shipx-page .shipx-menu a.shipx-menu-card{
 .home-cta p{color:#a9e4dd}
 .home-cta .home-primary{flex:0 0 auto}
 
-body.theme-dark.shipx-page,body.theme-dark .shipx-home{background:#0d1624;color:#f8fafc}
+body.theme-dark.zyraviq-page,body.theme-dark .zyraviq-home{background:#0d1624;color:#f8fafc}
 body.theme-dark .home-hero h1,body.theme-dark .home-section h2,body.theme-dark .home-section h3{color:#f8fafc}
 body.theme-dark .shipment-panel,body.theme-dark .home-metrics,body.theme-dark .setup-steps article,body.theme-dark .feature-grid article,body.theme-dark .document-list li{background:#142238;border-color:rgba(255,255,255,.10)}
 body.theme-dark .shipment-route b,body.theme-dark .shipment-stats b,body.theme-dark .home-metrics b,body.theme-dark .setup-steps h3,body.theme-dark .feature-grid h3,body.theme-dark .document-list li{color:#f8fafc}
@@ -2964,8 +3001,8 @@ body.theme-dark .shipment-map-preview,body.theme-dark .shipment-stats span{backg
 }
 
 @media (max-width:720px){
-  .shipx-page .shipx-header__inner,.home-hero,.home-metrics,.home-section,.home-cta{width:min(100% - 28px,1180px)}
-  .shipx-page .shipx-nav{display:none}
+  .zyraviq-page .zyraviq-header__inner,.home-hero,.home-metrics,.home-section,.home-cta{width:min(100% - 28px,1180px)}
+  .zyraviq-page .zyraviq-nav{display:none}
   .home-hero h1{font-size:40px}
   .home-metrics,.feature-grid,.shipment-stats{grid-template-columns:1fr}
   .home-metrics article{border-right:0;border-bottom:1px solid #dde6ee}
@@ -2976,10 +3013,10 @@ body.theme-dark .shipment-map-preview,body.theme-dark .shipment-stats span{backg
 }
 
 @media (max-width:980px){
-  .shipx-page .shipx-mega-menu,
-  .shipx-page .shipx-tracking-menu,
-  .shipx-page .shipx-menu--support,
-  .shipx-page .shipx-menu--account{
+  .zyraviq-page .zyraviq-mega-menu,
+  .zyraviq-page .zyraviq-tracking-menu,
+  .zyraviq-page .zyraviq-menu--support,
+  .zyraviq-page .zyraviq-menu--account{
     left:0;
     right:auto;
     transform:none;
@@ -2988,8 +3025,8 @@ body.theme-dark .shipment-map-preview,body.theme-dark .shipment-stats span{backg
 }
 
 @media (max-width:720px){
-  .shipx-menu__grid,
-  .shipx-menu__grid--compact{
+  .zyraviq-menu__grid,
+  .zyraviq-menu__grid--compact{
     grid-template-columns:1fr;
   }
 }

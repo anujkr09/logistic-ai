@@ -1,5 +1,5 @@
 /*
-  Minimal dynamic renderer for shipX UI.
+  Minimal dynamic renderer for ZYRAVIQ UI.
   - Fetches page schema from backend: GET /api/ui/schema/:page (auth protected)
   - Renders simple widgets: summary cards, tables, lists, and basic forms
 

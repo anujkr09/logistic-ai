@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create User ID - ZYRAVIQ AI Logistics</title>
+  <title>ZYRAVIQ One Stop Shop - ZYRAVIQ AI Logistics</title>
   <link rel="stylesheet" href="../assets/css/style.css?v=zyraviq34" />
   <link rel="stylesheet" href="../assets/css/animations.css?v=zyraviq30" />
   <link rel="stylesheet" href="../assets/css/responsive.css?v=zyraviq34" />
@@ -109,66 +109,12 @@
       <button class="search-close" type="button" id="closeSearch" aria-label="Close search">x</button>
     </div>
   </header>
-  <main class="container register-page">
-    <section class="register-steps">
-      <div class="step active">
-        <span class="step-marker">1</span>
-        <div>
-          <p class="step-label">Contact details</p>
-        </div>
-      </div>
-      <div class="step">
-        <span class="step-marker">2</span>
-        <div>
-          <p class="step-label">Account details</p>
-        </div>
-      </div>
-      <div class="step">
-        <span class="step-marker">3</span>
-        <div>
-          <p class="step-label">Complete</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="register-hero">
-      <h1>Welcome! Let's get started.</h1>
-      <p class="register-intro">
-        Already have a user ID? <a href="./login.html">Log in.</a>
-      </p>
-      <div class="register-card">
-        <h2>Create a user ID</h2>
-        <form class="register-form">
-          <div class="form-row">
-            <label for="email">Email*</label>
-            <input id="email" class="input" type="email" placeholder="Enter your email" required />
-          </div>
-          <div class="form-row checkbox-row">
-            <label class="checkbox-label">
-              <input type="checkbox" checked />
-              Create a custom user ID to log in
-            </label>
-          </div>
-          <div class="form-row">
-            <label for="userId">User ID*</label>
-            <input id="userId" class="input" type="text" placeholder="Your user ID can be a name you choose to log in." required />
-            <p class="input-hint">
-              Your user ID must:
-              <span>Be at least six characters</span>
-              <span>Be at most 35 characters</span>
-              <span>Contain only digits and letters</span>
-            </p>
-          </div>
-          <div class="form-row">
-            <label for="password">Password*</label>
-            <div class="password-field">
-              <input id="password" class="input" type="password" placeholder="Create a password" required />
-              <button type="button" class="eye-toggle" aria-label="Show password">Show</button>
-            </div>
-          </div>
-          <button class="btn btn-primary" type="submit">CREATE LOGIN</button>
-        </form>
-      </div>
+  <main class="container">
+    <section class="account-hero">
+      <h1>ZYRAVIQ One Stop Shop</h1>
+      <p class="account-hero__lead">Everything you need for end-to-end shipping in one place.</p>
+      <p class="account-hero__note">From quotes and scheduling to tracking and delivery management, your shipment experience is simplified.</p>
+      <a class="signup-button" href="./customer-dashboard.html">Explore services</a>
     </section>
   </main>
   <footer class="footer">
@@ -202,5 +148,7 @@
     </div>
   </footer>
   <script src="../assets/js/app.js?v=zyraviq33"></script>
+  
+  <script src="../assets/js/dynamicServicePages.js?v=zyraviq32"></script>
 </body>
 </html>

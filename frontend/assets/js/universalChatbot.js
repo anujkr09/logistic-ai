@@ -9,13 +9,13 @@
       if (!window.io) return null;
       const base = getApiBase();
       const socketUrl = base;
-      if (!window.__shipxChatSocket) {
-        window.__shipxChatSocket = window.io(socketUrl, {
+      if (!window.__zyraviqChatSocket) {
+        window.__zyraviqChatSocket = window.io(socketUrl, {
           auth: { token: localStorage.getItem('token') || '' },
           transports: ['websocket', 'polling'],
         });
       }
-      return window.__shipxChatSocket;
+      return window.__zyraviqChatSocket;
     } catch (_) {
       return null;
     }
@@ -35,13 +35,13 @@
         <div class="chatbot-card">
           <div class="chatbot-header">
             <div>
-              <h3>shipX AI Assistant</h3>
+              <h3>ZYRAVIQ AI Assistant</h3>
               <p>Ask about tracking, delays, weather, ETA, accounts, or admin tools.</p>
             </div>
             <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">x</button>
           </div>
           <div class="chatbot-messages" id="chatbotMessages" role="log" aria-live="polite">
-            <div class="chatbot-message bot" data-role="bot">Hi! I'm shipX AI. Ask me about tracking, delay reasons, weather, ETA, accounts, or admin tools.</div>
+            <div class="chatbot-message bot" data-role="bot">Hi! I'm ZYRAVIQ AI. Ask me about tracking, delay reasons, weather, ETA, accounts, or admin tools.</div>
           </div>
           <form class="chatbot-form" id="chatbotForm">
             <input id="chatbotMessage" type="text" placeholder="Type your message..." aria-label="Type your message" autocomplete="off" />
@@ -82,7 +82,7 @@
     const div = document.createElement('div');
     div.className = 'chatbot-message bot';
     div.innerHTML = `
-      <span class="shipx-typing" aria-label="AI is typing">Typing</span>
+      <span class="zyraviq-typing" aria-label="AI is typing">Typing</span>
     `;
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -456,11 +456,11 @@
 
   // basic typing indicator styling
   function ensureTypingCss() {
-    if (document.getElementById('shipx-chatbot-typing-css')) return;
+    if (document.getElementById('zyraviq-chatbot-typing-css')) return;
     const style = document.createElement('style');
-    style.id = 'shipx-chatbot-typing-css';
+    style.id = 'zyraviq-chatbot-typing-css';
     style.textContent = `
-      .shipx-typing::after{content:"";display:inline-block;width:1.2em;}
+      .zyraviq-typing::after{content:"";display:inline-block;width:1.2em;}
     `;
     document.head.appendChild(style);
   }

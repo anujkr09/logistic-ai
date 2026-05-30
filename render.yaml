@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: shipx-ai-logistics
+    name: zyraviq-ai-logistics
     runtime: node
     plan: free
     buildCommand: cd backend && npm ci
@@ -16,13 +16,28 @@ services:
       - key: AI_SERVICE_HOSTPORT
         fromService:
           type: web
-          name: shipx-ai-service
+          name: zyraviq-ai-service
           property: hostport
       - key: CORS_ORIGIN
-        value: "*"
+        value: https://zyraviq-ai-frontend.onrender.com
+      - key: SOCKET_CORS_ORIGIN
+        value: https://zyraviq-ai-frontend.onrender.com
 
   - type: web
-    name: shipx-ai-service
+    name: zyraviq-ai-frontend
+    runtime: node
+    plan: free
+    buildCommand: cd frontend && npm ci
+    startCommand: cd frontend && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_BASE_URL
+        value: https://zyraviq-ai-logistics.onrender.com
+
+  - type: web
+    name: zyraviq-ai-service
     runtime: python
     plan: free
     buildCommand: cd ai-service && pip install -r requirements.txt

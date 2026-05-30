@@ -3,98 +3,98 @@
   .grid-3{grid-template-columns:1fr;}
   .grid-4{grid-template-columns:1fr 1fr;}
   .topnav{display:none;}
-  .shipx-header__inner{
+  .zyraviq-header__inner{
     max-width:none;
     min-height:76px;
     gap:18px;
   }
-  .shipx-logo{
+  .zyraviq-logo{
     font-size:33px;
   }
-  .shipx-nav__button{
+  .zyraviq-nav__button{
     padding:0 11px;
     font-size:15px;
   }
-  .shipx-actions{
+  .zyraviq-actions{
     gap:10px;
   }
   .install-app-button,
-  .shipx-page .install-app-button{
+  .zyraviq-page .install-app-button{
     min-width:118px;
     padding:0 13px;
     font-size:13px;
   }
-  .shipx-signin{
+  .zyraviq-signin{
     display:none;
   }
-  .shipx-menu{
+  .zyraviq-menu{
     width:275px;
   }
 }
 @media (max-width: 520px){
   .grid-4{grid-template-columns:1fr;}
   .tracking-search__form{flex-direction:column;align-items:stretch}
-  .shipx-header__inner{
+  .zyraviq-header__inner{
     min-height:auto;
     flex-wrap:wrap;
     padding:12px 14px 0;
     gap:10px;
   }
-  .shipx-logo{
+  .zyraviq-logo{
     font-size:31px;
   }
-  .shipx-nav{
+  .zyraviq-nav{
     order:3;
     width:100%;
     overflow-x:auto;
   }
-  .shipx-nav__item{
+  .zyraviq-nav__item{
     position:static;
   }
-  .shipx-nav__button{
+  .zyraviq-nav__button{
     min-height:48px;
     white-space:nowrap;
   }
-  .shipx-menu{
+  .zyraviq-menu{
     left:0;
     right:0;
     width:100%;
   }
-  .shipx-actions{
+  .zyraviq-actions{
     margin-left:auto;
     gap:8px;
   }
-  .shipx-icon-link{
+  .zyraviq-icon-link{
     width:40px;
     height:40px;
   }
 
-  .shipx-page button.shipx-icon-link{
+  .zyraviq-page button.zyraviq-icon-link{
     width:40px;
     height:40px;
   }
 
-  .shipx-page .search-icon{
+  .zyraviq-page .search-icon{
     width:21px;
     height:21px;
     border-width:3px;
   }
 
-  .shipx-page .search-icon::before{
+  .zyraviq-page .search-icon::before{
     left:6px;
     top:4px;
     width:9px;
     border-top-width:3px;
   }
 
-  .shipx-page .search-icon::after{
+  .zyraviq-page .search-icon::after{
     right:-10px;
     bottom:-8px;
     width:15px;
     height:4px;
   }
   .install-app-button,
-  .shipx-page .install-app-button{
+  .zyraviq-page .install-app-button{
     width:40px;
     min-width:40px;
     height:40px;
@@ -134,18 +134,18 @@
 }
 
 @media (max-width: 900px){
-  .shipx-page .account-hero{
+  .zyraviq-page .account-hero{
     grid-template-columns:1fr;
     width:calc(100% - 28px);
     gap:22px;
     padding:48px 0;
   }
 
-  .shipx-page .account-hero::before{
+  .zyraviq-page .account-hero::before{
     inset:18px 0;
   }
 
-  .shipx-page .account-hero::after{
+  .zyraviq-page .account-hero::after{
     grid-column:1;
     grid-row:auto;
     min-height:190px;
@@ -153,11 +153,11 @@
     font-size:58px;
   }
 
-  .shipx-page .account-hero[data-dynamic-page]{
+  .zyraviq-page .account-hero[data-dynamic-page]{
     grid-template-columns:1fr;
   }
 
-  .shipx-page .account-hero[data-dynamic-page]::after{
+  .zyraviq-page .account-hero[data-dynamic-page]::after{
     display:none;
   }
 
@@ -176,14 +176,14 @@
     margin:0 22px;
   }
 
-  .shipx-page .account-hero > h1,
-  .shipx-page .account-hero > p,
-  .shipx-page .account-hero > a,
-  .shipx-page .account-hero > hr,
-  .shipx-page .account-hero > form,
-  .shipx-page .account-hero > div:not(.account-hero__visual),
-  .shipx-page .account-hero__lead,
-  .shipx-page .account-hero__note,
+  .zyraviq-page .account-hero > h1,
+  .zyraviq-page .account-hero > p,
+  .zyraviq-page .account-hero > a,
+  .zyraviq-page .account-hero > hr,
+  .zyraviq-page .account-hero > form,
+  .zyraviq-page .account-hero > div:not(.account-hero__visual),
+  .zyraviq-page .account-hero__lead,
+  .zyraviq-page .account-hero__note,
   .service-hero-actions{
     margin-left:22px;
     margin-right:22px;
@@ -211,15 +211,15 @@
 }
 
 @media (max-width: 520px){
-  .shipx-page .account-hero h1{
+  .zyraviq-page .account-hero h1{
     font-size:34px;
   }
 
-  .shipx-page .account-hero__lead{
+  .zyraviq-page .account-hero__lead{
     font-size:20px;
   }
 
-  .shipx-page .signup-button{
+  .zyraviq-page .signup-button{
     width:calc(100% - 44px);
     min-height:54px;
     font-size:15px;
@@ -271,7 +271,7 @@ svg{
 }
 
 .container,
-.shipx-home,
+.zyraviq-home,
 .home-hero,
 .home-section,
 .home-metrics,
@@ -314,7 +314,7 @@ button,
 }
 
 @media (max-width: 1180px){
-  .shipx-page .shipx-header__inner,
+  .zyraviq-page .zyraviq-header__inner,
   .home-hero,
   .home-section,
   .home-metrics,
@@ -346,11 +346,11 @@ button,
     white-space:nowrap;
   }
 
-  .shipx-page .shipx-header{
+  .zyraviq-page .zyraviq-header{
     height:auto;
   }
 
-  .shipx-page .shipx-header__inner{
+  .zyraviq-page .zyraviq-header__inner{
     height:auto;
     min-height:72px;
     flex-wrap:wrap;
@@ -359,7 +359,7 @@ button,
     gap:10px;
   }
 
-  .shipx-page .shipx-nav{
+  .zyraviq-page .zyraviq-nav{
     order:3;
     width:100%;
     height:auto;
@@ -370,17 +370,17 @@ button,
     scrollbar-width:thin;
   }
 
-  .shipx-page .shipx-nav__button{
+  .zyraviq-page .zyraviq-nav__button{
     height:48px;
     min-height:48px;
     white-space:nowrap;
   }
 
-  .shipx-page .shipx-menu,
-  .shipx-page .shipx-mega-menu,
-  .shipx-page .shipx-tracking-menu,
-  .shipx-page .shipx-menu--support,
-  .shipx-page .shipx-menu--account{
+  .zyraviq-page .zyraviq-menu,
+  .zyraviq-page .zyraviq-mega-menu,
+  .zyraviq-page .zyraviq-tracking-menu,
+  .zyraviq-page .zyraviq-menu--support,
+  .zyraviq-page .zyraviq-menu--account{
     top:100%;
     left:0;
     right:0;
@@ -440,7 +440,7 @@ button,
     padding-right:12px;
   }
 
-  .shipx-page .shipx-header__inner,
+  .zyraviq-page .zyraviq-header__inner,
   .home-hero,
   .home-section,
   .home-metrics,
@@ -448,12 +448,12 @@ button,
     width:calc(100% - 24px);
   }
 
-  .shipx-page .shipx-logo{
+  .zyraviq-page .zyraviq-logo{
     font-size:27px;
     letter-spacing:-.8px;
   }
 
-  .shipx-actions{
+  .zyraviq-actions{
     gap:6px;
   }
 
@@ -503,8 +503,8 @@ button,
   .profile-edit-form,
   .warehouses-grid,
   .shipment-stats,
-  .shipx-menu__grid,
-  .shipx-menu__grid--compact{
+  .zyraviq-menu__grid,
+  .zyraviq-menu__grid--compact{
     grid-template-columns:1fr;
   }
 
@@ -679,7 +679,7 @@ button,
 }
 
 @media (max-width: 420px){
-  .shipx-page .shipx-header__inner,
+  .zyraviq-page .zyraviq-header__inner,
   .home-hero,
   .home-section,
   .home-metrics,
@@ -687,7 +687,7 @@ button,
     width:calc(100% - 18px);
   }
 
-  .shipx-page .shipx-logo{
+  .zyraviq-page .zyraviq-logo{
     font-size:24px;
   }
 
@@ -748,7 +748,7 @@ button,
 
 /* Professional responsive alignment layer */
 .container,
-.shipx-home,
+.zyraviq-home,
 .home-hero,
 .home-section,
 .home-metrics,
@@ -890,7 +890,7 @@ button,
 
 @media (min-width: 1181px){
   .container,
-  .shipx-home,
+  .zyraviq-home,
   .home-hero,
   .home-section,
   .home-metrics,
@@ -921,7 +921,7 @@ button,
 
 @media (max-width: 900px){
   .container,
-  .shipx-home,
+  .zyraviq-home,
   .home-hero,
   .home-section,
   .home-metrics,
@@ -937,7 +937,7 @@ button,
   .home-hero,
   .home-section--split,
   .home-section--documents,
-  .shipx-page .account-hero{
+  .zyraviq-page .account-hero{
     grid-template-columns:1fr;
   }
 
@@ -953,7 +953,7 @@ button,
 
 @media (max-width: 680px){
   .container,
-  .shipx-home,
+  .zyraviq-home,
   .home-hero,
   .home-section,
   .home-metrics,
@@ -1033,7 +1033,7 @@ button,
 
 @media (max-width: 430px){
   .container,
-  .shipx-home,
+  .zyraviq-home,
   .home-hero,
   .home-section,
   .home-metrics,

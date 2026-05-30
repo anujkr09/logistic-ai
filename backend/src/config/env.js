@@ -14,7 +14,7 @@ if (!JWT_SECRET) {
 module.exports = {
   JWT_SECRET: JWT_SECRET || 'dev_only_secret_for_local_runs',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/shipx_ai_logistics',
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/zyraviq_ai_logistics',
   AI_SERVICE_URL: process.env.AI_SERVICE_URL || 'http://localhost:8001',
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-5.2',

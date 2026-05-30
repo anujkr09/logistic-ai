@@ -1,7 +1,7 @@
 {
-  "name": "shipx-ai-logistics-frontend",
+  "name": "zyraviq-ai-logistics-frontend",
   "version": "1.0.0",
-  "description": "Frontend for shipX AI Logistics",
+  "description": "Frontend for ZYRAVIQ AI Logistics",
   "main": "server.js",
   "scripts": {
     "build": "node scripts/build-check.js",

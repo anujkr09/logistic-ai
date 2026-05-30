@@ -176,10 +176,10 @@
       steps: ['Pick the operation', 'Enter shipment or account context', 'Act from dashboard or tool page'],
       checklist: ['Tracking number', 'Account access', 'Shipment details', 'Warehouse or pickup context'],
     },
-    'shipx-one-stop-shop': {
-      page: 'shipx-one-stop-shop',
+    'zyraviq-one-stop-shop': {
+      page: 'zyraviq-one-stop-shop',
       kicker: 'Unified workspace',
-      title: 'shipX One Stop Shop',
+      title: 'ZYRAVIQ One Stop Shop',
       lead: 'Bring quotes, shipment creation, tracking, support, dashboards, and AI assistance into one everyday logistics experience.',
       note: 'A single place for customers and operators to move from planning to resolution without losing context.',
       primaryAction: { label: 'Explore services', href: './customer-dashboard.html' },
@@ -201,10 +201,10 @@
     contact: {
       page: 'contact',
       kicker: 'Support center',
-      title: 'Contact shipX',
+      title: 'Contact ZYRAVIQ',
       lead: 'Get help with tracking, account access, pickup changes, freight quotes, packaging questions, and delivery exceptions.',
       note: 'Support works best when you include tracking IDs, account email, shipment route, and the exact issue.',
-      primaryAction: { label: 'Email support', href: 'mailto:support@shipxlogistics.example' },
+      primaryAction: { label: 'Email support', href: 'mailto:support@zyraviqlogistics.example' },
       secondaryAction: { label: 'Track first', href: './tracking.html' },
       visual: { code: 'HELP', title: 'Support routing', meta: 'Track -> Diagnose -> Resolve', stats: ['24/7 context', 'Fast lookup', 'Team routing'] },
       metrics: [
@@ -287,7 +287,7 @@
     hero.setAttribute('data-dynamic-page', schema.page);
     hero.innerHTML = `
       <div class="service-hero-copy">
-        <p class="home-kicker">${escapeHtml(schema.kicker || 'shipX workspace')}</p>
+        <p class="home-kicker">${escapeHtml(schema.kicker || 'ZYRAVIQ workspace')}</p>
         <h1>${escapeHtml(schema.title)}</h1>
         <p class="account-hero__lead">${escapeHtml(schema.lead || '')}</p>
         <p class="account-hero__note">${escapeHtml(schema.note || '')}</p>
@@ -365,7 +365,7 @@
     hero.setAttribute('aria-busy', 'true');
     const schema = await loadSchema(key);
     if (!schema) return;
-    document.title = `${schema.title} - shipX AI Logistics`;
+    document.title = `${schema.title} - ZYRAVIQ AI Logistics`;
     renderHero(hero, schema);
     renderSections(main, schema);
     hero.setAttribute('aria-busy', 'false');

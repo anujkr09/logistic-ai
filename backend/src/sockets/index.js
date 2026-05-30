@@ -47,7 +47,7 @@ function initSocket(app) {
 
   const PORT = process.env.PORT || 4000;
   server.listen(PORT, () => {
-    console.log(`shipX backend socket server on ${PORT}`);
+    console.log(`ZYRAVIQ backend socket server on ${PORT}`);
   });
 }
 

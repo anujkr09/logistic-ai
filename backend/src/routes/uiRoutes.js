@@ -223,9 +223,9 @@ const servicePageSchemas = {
       { title: 'Warehouse view', text: 'Connect shipments to inventory and hubs.' },
     ],
   },
-  'shipx-one-stop-shop': {
-    page: 'shipx-one-stop-shop',
-    title: 'shipX One Stop Shop',
+  'zyraviq-one-stop-shop': {
+    page: 'zyraviq-one-stop-shop',
+    title: 'ZYRAVIQ One Stop Shop',
     kicker: 'Unified workspace',
     lead: 'Bring quotes, shipment creation, tracking, and support into one dynamic experience.',
     note: 'The visible page is now assembled from schema data and shared components.',
@@ -244,11 +244,11 @@ const servicePageSchemas = {
   },
   contact: {
     page: 'contact',
-    title: 'Contact shipX',
+    title: 'Contact ZYRAVIQ',
     kicker: 'Support center',
     lead: 'Get help with shipments, account access, pickup changes, and exceptions.',
     note: 'Support content is now dynamic and can be backed by tickets or CRM data later.',
-    primaryAction: { label: 'Email support', href: 'mailto:support@shipxlogistics.example' },
+    primaryAction: { label: 'Email support', href: 'mailto:support@zyraviqlogistics.example' },
     secondaryAction: { label: 'Track first', href: './tracking.html' },
     metrics: [
       { value: '24/7', label: 'tracking context' },

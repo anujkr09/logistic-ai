@@ -1,9 +1,14 @@
 (function () {
   const app = document.getElementById('app');
-  const storeKey = 'shipxWorkspace.v2';
-  const apiBase = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-    ? 'http://localhost:4000'
-    : location.origin;
+  const storeKey = 'zyraviqWorkspace.v2';
+  const apiBase = window.API_BASE_URL
+    ? String(window.API_BASE_URL).replace(/\/$/, '')
+    : (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+      ? 'http://localhost:4000'
+      : location.origin);
+
+  window.API_BASE_URL = apiBase;
+  window.__getApiBase = () => apiBase;
 
   const entityConfig = {
     users: { title: 'Users', singular: 'User', fields: ['name', 'email', 'role', 'status'], filter: 'role', lead: 'Manage workspace access, account roles, and active user status.' },
@@ -38,7 +43,7 @@
     '/packaging-shipping-supplies': '/packaging',
     '/quote-heavy-shipment': '/freight',
     '/contact': '/support',
-    '/shipx-one-stop-shop': '/dashboard',
+    '/zyraviq-one-stop-shop': '/dashboard',
   };
 
   const state = {
@@ -51,8 +56,8 @@
   function defaultDb() {
     return {
       users: [
-        { id: 'usr-1', name: 'Admin User', email: 'admin@shipx.test', role: 'admin', status: 'Active' },
-        { id: 'usr-2', name: 'Customer User', email: 'customer@shipx.test', role: 'customer', status: 'Active' },
+        { id: 'usr-1', name: 'Admin User', email: 'admin@zyraviq.test', role: 'admin', status: 'Active' },
+        { id: 'usr-2', name: 'Customer User', email: 'customer@zyraviq.test', role: 'customer', status: 'Active' },
       ],
       orders: [
         { id: 'ord-1', orderNo: 'ORD-1001', customer: 'Northstar Retail', status: 'Processing', total: '2450' },
@@ -121,7 +126,7 @@
         { id: 'not-2', title: 'Payment received', message: 'Invoice INV-9001 was marked paid.', type: 'Payment', status: 'Read' },
       ],
       settings: {
-        companyName: 'shipX Demo Workspace',
+        companyName: 'ZYRAVIQ Demo Workspace',
         emailAlerts: true,
         smsAlerts: true,
         defaultCurrency: 'INR',
@@ -153,10 +158,10 @@
   }
 
   function workspaceSession() {
-    let key = localStorage.getItem('shipxWorkspaceSession');
+    let key = localStorage.getItem('zyraviqWorkspaceSession');
     if (!key) {
-      key = `shipx-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      localStorage.setItem('shipxWorkspaceSession', key);
+      key = `zyraviq-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      localStorage.setItem('zyraviqWorkspaceSession', key);
     }
     return key;
   }
@@ -410,7 +415,7 @@
       <section class="hero-dynamic">
         <div class="dynamic-panel dynamic-hero-copy">
           <p class="home-kicker">AI logistics operations</p>
-          <h1>One working place for every visible shipX action.</h1>
+          <h1>One working place for every visible ZYRAVIQ action.</h1>
           <p>Every card and navigation item opens a useful page with persisted local data, validation, search, filters, sorting, details, add, edit, delete, download, and print actions.</p>
           <div class="dynamic-actions">
             <a class="btn btn-primary" href="/shipments?action=add" data-link>Create shipment</a>
@@ -885,6 +890,7 @@
 
   function cityPoint(value) {
     const text = String(value || '').toLowerCase();
+    if (!text.trim()) return null;
     const points = [
       ['delhi', 28.6139, 77.2090],
       ['new delhi', 28.6139, 77.2090],
@@ -907,7 +913,13 @@
       ['gurugram', 28.4595, 77.0266],
     ];
     const match = points.find(([name]) => text.includes(name));
-    return match ? { lat: match[1], lon: match[2] } : null;
+    if (match) return { lat: match[1], lon: match[2] };
+
+    const seed = text.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return {
+      lat: 8 + (seed % 2600) / 100,
+      lon: 68 + ((seed * 7) % 2800) / 100,
+    };
   }
 
   function analyticsPage() {
@@ -1252,13 +1264,13 @@
     document.querySelectorAll('[data-action="print"]').forEach((button) => button.addEventListener('click', () => window.print()));
     document.querySelectorAll('[data-action="back"]').forEach((button) => button.addEventListener('click', () => history.length > 1 ? history.back() : go('/')));
     document.querySelectorAll('[data-action="download"]').forEach((button) => {
-      button.addEventListener('click', () => downloadJson(`${button.dataset.entity || 'shipx'}-export.json`, state.db[button.dataset.entity] || state.db));
+      button.addEventListener('click', () => downloadJson(`${button.dataset.entity || 'zyraviq'}-export.json`, state.db[button.dataset.entity] || state.db));
     });
     document.querySelectorAll('[data-action="download-report"]').forEach((button) => {
       button.addEventListener('click', () => downloadJson(`${button.dataset.report}.json`, state.db));
     });
     document.querySelector('[data-action="download-data-center"]')?.addEventListener('click', () => {
-      downloadJson('shipx-data-center-export.json', buildDataCenterReport());
+      downloadJson('zyraviq-data-center-export.json', buildDataCenterReport());
     });
 
     document.querySelectorAll('[data-action="add"]').forEach((button) => button.addEventListener('click', () => openEntityDialog(button.dataset.entity)));

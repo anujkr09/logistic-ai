@@ -47,7 +47,7 @@ function coordinatesFor(location) {
   const known = KNOWN_COORDINATES.find((item) => item.match.some((word) => text.includes(word)));
   if (known) return known.coordinates;
 
-  const seedText = text || 'shipx route';
+  const seedText = text || 'zyraviq route';
   let seed = 0;
   for (const char of seedText) seed = (seed + char.charCodeAt(0) * 17) % 997;
 
@@ -199,7 +199,7 @@ function startAutoTracker() {
     runAutoTracker();
   }, 5000);
 
-  console.log(`shipX AI auto tracker running every ${intervalMs}ms`);
+  console.log(`ZYRAVIQ AI auto tracker running every ${intervalMs}ms`);
 }
 
 module.exports = { startAutoTracker, runAutoTracker, advanceShipment };

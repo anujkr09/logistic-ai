@@ -16,10 +16,10 @@
 .chatbot-toggle{background:linear-gradient(135deg,var(--primary),#22c55e);}
 .chatbot-toggle-icon{font-size:16px}
 .chatbot-toggle span:last-child{font-weight:800;font-size:13px}
-.shipx-typing{position:relative;display:inline-flex;gap:6px;align-items:center}
-.shipx-typing::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--primary);display:inline-block;animation:shipxDot 1.2s infinite ease-in-out}
-.shipx-typing::after{content:""}
-@keyframes shipxDot{0%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}100%{opacity:.3;transform:translateY(0)}}
+.zyraviq-typing{position:relative;display:inline-flex;gap:6px;align-items:center}
+.zyraviq-typing::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--primary);display:inline-block;animation:zyraviqDot 1.2s infinite ease-in-out}
+.zyraviq-typing::after{content:""}
+@keyframes zyraviqDot{0%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}100%{opacity:.3;transform:translateY(0)}}
 
 /* Theme contrast fixes */
 body.theme-light .chatbot-card{

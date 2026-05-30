@@ -1,24 +1,24 @@
-const CACHE_NAME = 'shipx-ai-logistics-v45';
+const CACHE_NAME = 'zyraviq-ai-logistics-v47';
 const APP_SHELL = [
   './',
   './index.html',
   './app.html',
-  './manifest.webmanifest?v=dynamic1',
-  './assets/css/style.css?v=shipx34',
-  './assets/css/animations.css?v=shipx31',
-  './assets/css/responsive.css?v=shipx34',
-  './assets/css/dynamic-app.css?v=dynamic8',
-  './assets/css/tracking.css?v=shipx31',
-  './assets/css/chatbot.css?v=shipx31',
-  './assets/css/dashboard.css?v=shipx31',
-  './assets/js/app.js?v=shipx33',
-  './assets/js/dynamicApp.js?v=dynamic6',
-  './assets/js/universalChatbot.js?v=shipx32',
-  './assets/js/auth.js?v=shipx32',
-  './assets/js/maps.js?v=shipx32',
-  './assets/js/profile.js?v=shipx31',
-  './assets/js/tracking.js?v=shipx32',
-  './assets/js/dynamicServicePages.js?v=shipx32',
+  './manifest.webmanifest?v=dynamic2',
+  './assets/css/style.css?v=zyraviq35',
+  './assets/css/animations.css?v=zyraviq31',
+  './assets/css/responsive.css?v=zyraviq34',
+  './assets/css/dynamic-app.css?v=dynamic10',
+  './assets/css/tracking.css?v=zyraviq31',
+  './assets/css/chatbot.css?v=zyraviq31',
+  './assets/css/dashboard.css?v=zyraviq31',
+  './assets/js/app.js?v=zyraviq33',
+  './assets/js/dynamicApp.js?v=dynamic7',
+  './assets/js/universalChatbot.js?v=zyraviq32',
+  './assets/js/auth.js?v=zyraviq32',
+  './assets/js/maps.js?v=zyraviq32',
+  './assets/js/profile.js?v=zyraviq31',
+  './assets/js/tracking.js?v=zyraviq32',
+  './assets/js/dynamicServicePages.js?v=zyraviq32',
   './assets/img/app-icon-192.png',
   './assets/img/app-icon-512.png',
   './assets/img/download.png',
@@ -37,7 +37,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(keys
-        .filter((key) => key !== CACHE_NAME || /fedx|fedex/i.test(key))
+        .filter((key) => key !== CACHE_NAME || /zyraviq|zyraviq/i.test(key))
         .map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );

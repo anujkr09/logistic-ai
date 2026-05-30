@@ -1,10 +1,10 @@
 /* Global UI helpers */
 (function () {
   const BRAND_REPLACEMENTS = [
-    [/FedEx/g, 'shipX'],
-    [/FedX/g, 'shipX'],
-    [/fedex/g, 'shipx'],
-    [/fedx/g, 'shipx'],
+    [/ZYRAVIQ/g, 'ZYRAVIQ'],
+    [/ZYRAVIQ/g, 'ZYRAVIQ'],
+    [/zyraviq/g, 'zyraviq'],
+    [/zyraviq/g, 'zyraviq'],
     [/FEDEX/g, 'SHIPX'],
     [/FEDX/g, 'SHIPX'],
     [/\bFX-/g, 'SX-'],
@@ -18,9 +18,9 @@
 
   function migrateLegacyBranding(root = document) {
     document.title = replaceLegacyBrand(document.title);
-    document.body?.classList.replace('fedex-page', 'shipx-page');
+    document.body?.classList.replace('zyraviq-page', 'zyraviq-page');
 
-    root.querySelectorAll?.('[class*="fedex"], [class*="fedx"]').forEach((el) => {
+    root.querySelectorAll?.('[class*="zyraviq"], [class*="zyraviq"]').forEach((el) => {
       el.className = replaceLegacyBrand(String(el.className || ''));
     });
 
@@ -30,9 +30,9 @@
       });
     });
 
-    root.querySelectorAll?.('.shipx-logo, .fedex-logo').forEach((logo) => {
+    root.querySelectorAll?.('.zyraviq-logo, .zyraviq-logo').forEach((logo) => {
       logo.className = replaceLegacyBrand(String(logo.className || ''));
-      logo.setAttribute('aria-label', 'shipX AI Logistics home');
+      logo.setAttribute('aria-label', 'ZYRAVIQ AI Logistics home');
       logo.innerHTML = '<span>ship</span><strong>X</strong><small>AI</small>';
     });
 
@@ -123,7 +123,7 @@
       'ship-now.html': '/shipments?action=add',
       'shipping-services.html': '/shipments',
       'shipping-tools.html': '/analytics',
-      'shipx-one-stop-shop.html': '/dashboard',
+      'zyraviq-one-stop-shop.html': '/dashboard',
       'tracking.html': `/tracking${location.search || ''}`,
       'warehouses.html': '/warehouses',
     };
@@ -185,10 +185,10 @@
       link.href = workspaceUrl(route);
     });
 
-    document.querySelectorAll('.shipx-menu-card').forEach((link) => {
+    document.querySelectorAll('.zyraviq-menu-card').forEach((link) => {
       const title = linkTitle(link);
-      if (title === 'dashboard' && link.closest('.shipx-menu--account')) {
-        const cards = [...link.closest('.shipx-menu__grid')?.querySelectorAll('.shipx-menu-card') || []];
+      if (title === 'dashboard' && link.closest('.zyraviq-menu--account')) {
+        const cards = [...link.closest('.zyraviq-menu__grid')?.querySelectorAll('.zyraviq-menu-card') || []];
         const index = cards.indexOf(link);
         if (index === 0) setMenuCard(link, '/profile', 'Profile', 'Manage your active account details.');
         if (index === 1) setMenuCard(link, '/settings', 'Settings', 'Update alerts and workspace preferences.');
@@ -198,12 +198,12 @@
 
   function setupLanguageSelector() {
     document.querySelectorAll('.language-card select').forEach((select) => {
-      const stored = localStorage.getItem('shipxLanguage');
+      const stored = localStorage.getItem('zyraviqLanguage');
       if (stored && [...select.options].some((option) => option.value === stored || option.textContent === stored)) {
         select.value = stored;
       }
       select.addEventListener('change', () => {
-        localStorage.setItem('shipxLanguage', select.value);
+        localStorage.setItem('zyraviqLanguage', select.value);
         showToast(`Language saved: ${select.value}`);
       });
     });
@@ -215,8 +215,8 @@
     const dashboard = pageUrl(isAdminRole(role) ? 'admin-dashboard.html' : 'customer-dashboard.html');
     const profile = pageUrl('profile.html');
 
-    document.querySelectorAll('.shipx-actions__item').forEach((item) => {
-      if (!item.querySelector('.shipx-signin')) return;
+    document.querySelectorAll('.zyraviq-actions__item').forEach((item) => {
+      if (!item.querySelector('.zyraviq-signin')) return;
       item.hidden = Boolean(token);
       item.setAttribute('aria-hidden', token ? 'true' : 'false');
     });
@@ -235,9 +235,9 @@
         text.includes('create user id');
 
       if (token && isAuthAction) {
-        const menuCard = link.classList.contains('shipx-menu-card');
+        const menuCard = link.classList.contains('zyraviq-menu-card');
         const footerLink = link.closest('.footer');
-        const signInMenuLink = link.closest('.shipx-menu--signin');
+        const signInMenuLink = link.closest('.zyraviq-menu--signin');
 
         if (signInMenuLink || footerLink) {
           link.hidden = true;
@@ -352,7 +352,7 @@
   }
 
   function ensureProfileAction() {
-    const actions = document.querySelector('.shipx-actions');
+    const actions = document.querySelector('.zyraviq-actions');
     if (!actions) return;
 
     let link = actions.querySelector('[data-profile-action]');
@@ -364,7 +364,7 @@
 
     if (!link) {
       link = document.createElement('a');
-      link.className = 'shipx-icon-link profile-action-link';
+      link.className = 'zyraviq-icon-link profile-action-link';
       link.setAttribute('aria-label', 'Profile');
       link.setAttribute('data-profile-action', 'true');
       if (installButton?.nextSibling) {
@@ -507,7 +507,7 @@
   window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
     setInstallButtonVisible(false);
-    showToast('shipX AI app installed.');
+    showToast('ZYRAVIQ AI app installed.');
   });
 
   window.matchMedia?.('(display-mode: standalone)').addEventListener?.('change', () => {
@@ -520,7 +520,7 @@
     if (location.protocol === 'http:' || location.protocol === 'https:') {
       const link = document.createElement('a');
       link.href = new URL('download-app', appRootUrl).href;
-      link.download = 'shipX AI Logistics.html';
+      link.download = 'ZYRAVIQ AI Logistics.html';
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -534,17 +534,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="refresh" content="0; url=${appUrl}">
-  <title>Open shipX AI Logistics</title>
+  <title>Open ZYRAVIQ AI Logistics</title>
 </head>
 <body>
-  <p>Opening shipX AI Logistics...</p>
+  <p>Opening ZYRAVIQ AI Logistics...</p>
   <p><a href="${appUrl}">Open app</a></p>
 </body>
 </html>`;
     const blob = new Blob([launcher], { type: 'text/html' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'shipX AI Logistics.html';
+    link.download = 'ZYRAVIQ AI Logistics.html';
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -558,7 +558,7 @@
       deferredInstallPrompt = null;
       if (choice.outcome === 'accepted') {
         setInstallButtonVisible(false);
-        showToast('Installing shipX AI app...');
+        showToast('Installing ZYRAVIQ AI app...');
         return;
       }
       setInstallButtonVisible(false);

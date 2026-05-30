@@ -423,7 +423,7 @@
   border-radius:999px;
   background:linear-gradient(90deg, #eef2f7 0%, #fff 45%, #e8f5f2 72%, #eef2f7 100%);
   background-size:220% 100%;
-  animation:shipxSkeleton 1.35s ease-in-out infinite;
+  animation:zyraviqSkeleton 1.35s ease-in-out infinite;
 }
 
 .app-splash__line{
@@ -469,7 +469,7 @@
   border-radius:8px;
 }
 
-@keyframes shipxSkeleton{
+@keyframes zyraviqSkeleton{
   0%{background-position:160% 0}
   100%{background-position:-80% 0}
 }
@@ -1524,5 +1524,503 @@
     bottom: calc(156px + env(safe-area-inset-bottom, 0px));
     width: auto;
     max-width: none;
+  }
+}
+
+/* Final mobile/dashboard alignment overrides */
+.dynamic-app .mobile-bottom-nav{
+  grid-template-columns:repeat(6, minmax(0, 1fr));
+}
+
+.dynamic-app .mobile-bottom-nav__item{
+  width:100%;
+}
+
+.dynamic-app .mobile-bottom-nav__item span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.dynamic-app .route-box{
+  grid-template-columns:minmax(132px, .7fr) minmax(280px, 1.45fr) auto;
+  grid-template-rows:auto 12px;
+  align-items:center;
+  column-gap:16px;
+  row-gap:12px;
+  overflow-x:auto;
+}
+
+.dynamic-app .route-box h2{
+  grid-column:1;
+  grid-row:1;
+  margin:0;
+}
+
+.dynamic-app .route-box .route-line{
+  grid-column:1 / -1;
+  grid-row:2;
+  width:100%;
+}
+
+.dynamic-app .route-box .dynamic-grid{
+  grid-column:2;
+  grid-row:1;
+  display:grid;
+  grid-template-columns:repeat(3, minmax(86px, 1fr)) !important;
+  min-width:280px;
+  align-self:center;
+}
+
+.dynamic-app .route-box .snapshot-print-button{
+  grid-column:3;
+  grid-row:1;
+  align-self:center;
+  justify-self:end;
+  width:auto !important;
+  min-width:max-content;
+}
+
+@media (max-width: 760px){
+  .dynamic-app .route-box{
+    grid-template-columns:minmax(118px, .72fr) minmax(252px, 1.45fr) max-content;
+    padding-bottom:18px;
+  }
+
+  .dynamic-app .route-box .dynamic-grid{
+    min-width:252px;
+  }
+}
+
+/* Mobile app-wide refinement */
+@media (max-width: 768px){
+  body.dynamic-app{
+    padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dynamic-app .app-header{
+    position:sticky;
+    top:0;
+    z-index:1100;
+  }
+
+  .dynamic-app .app-header-inner{
+    width:calc(100% - 24px) !important;
+    min-height:78px;
+    margin:0 auto;
+    padding:10px 0 !important;
+    display:flex;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .dynamic-app .app-logo{
+    flex:0 1 auto;
+    min-width:0;
+    font-size:31px;
+    line-height:1;
+  }
+
+  .dynamic-app .app-logo small{
+    font-size:11px;
+  }
+
+  .dynamic-app .app-user{
+    width:auto !important;
+    margin-left:auto;
+    flex:0 0 auto;
+    justify-content:flex-end !important;
+  }
+
+  .dynamic-app .app-user > a,
+  .dynamic-app .app-profile-link{
+    width:48px !important;
+    height:48px !important;
+    min-width:48px;
+    padding:0 !important;
+    display:grid !important;
+    place-items:center;
+    border-radius:50%;
+    box-shadow:0 0 0 7px rgba(77,20,140,.08);
+  }
+
+  .dynamic-app .app-profile-link .app-avatar{
+    width:38px;
+    height:38px;
+  }
+
+  .dynamic-app .app-main{
+    width:calc(100% - 24px) !important;
+    margin:0 auto !important;
+    padding:14px 0 18px !important;
+    gap:12px;
+  }
+
+  .dynamic-app .hero-dynamic,
+  .dynamic-app .dynamic-grid,
+  .dynamic-app .dynamic-grid.two,
+  .dynamic-app .form-row,
+  .dynamic-app #trackingResult{
+    grid-template-columns:1fr !important;
+    gap:12px;
+  }
+
+  .dynamic-app .dynamic-panel,
+  .dynamic-app .dynamic-card,
+  .dynamic-app .stat-button{
+    padding:16px;
+    border-radius:8px;
+    box-shadow:0 10px 28px rgba(15,23,42,.06);
+  }
+
+  .dynamic-app .dynamic-hero-copy{
+    min-height:auto;
+    padding:20px;
+  }
+
+  .dynamic-app .dynamic-panel h1,
+  .dynamic-app .dynamic-hero-copy h1{
+    margin-bottom:12px;
+    font-size:clamp(34px, 9vw, 42px) !important;
+    line-height:1.08;
+  }
+
+  .dynamic-app .dynamic-panel h2{
+    font-size:24px;
+    line-height:1.18;
+  }
+
+  .dynamic-app .dynamic-card h3{
+    margin-bottom:8px;
+    font-size:22px;
+  }
+
+  .dynamic-app .dynamic-panel p,
+  .dynamic-app .dynamic-card p,
+  .dynamic-app .muted-text{
+    font-size:16px;
+    line-height:1.45;
+  }
+
+  .dynamic-app .home-kicker{
+    margin-bottom:12px;
+    font-size:12px;
+    letter-spacing:.12em;
+  }
+
+  .dynamic-app .dynamic-actions{
+    width:100%;
+    margin-top:16px;
+    gap:9px;
+  }
+
+  .dynamic-app .dynamic-actions > *,
+  .dynamic-app .btn,
+  .dynamic-app .btn-primary,
+  .dynamic-app .btn-secondary{
+    width:100%;
+    min-height:48px;
+  }
+
+  .dynamic-app .dynamic-card,
+  .dynamic-app .stat-button{
+    min-height:118px;
+  }
+
+  .dynamic-app .page-head-row,
+  .dynamic-app .list-toolbar,
+  .dynamic-app .list-item{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+  }
+
+  .dynamic-app .page-head-row > div:first-child{
+    flex:0 1 auto !important;
+  }
+
+  .dynamic-app .page-head-row .dynamic-actions{
+    flex:0 1 auto;
+  }
+
+  .dynamic-app .list-item{
+    padding:12px 0;
+  }
+
+  .dynamic-app .tracking-map-canvas{
+    min-height:260px;
+  }
+
+  .dynamic-app .tracking-map-badges,
+  .dynamic-app .tracking-map-legend,
+  .dynamic-app .tracking-route-preview__grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .dynamic-app .map-city{
+    max-width:128px;
+    font-size:11px;
+  }
+
+  .dynamic-app .mobile-bottom-nav{
+    min-height:calc(76px + env(safe-area-inset-bottom, 0px));
+    grid-template-columns:repeat(6, minmax(0, 1fr)) !important;
+    gap:2px;
+    padding:7px 5px calc(7px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dynamic-app .mobile-bottom-nav__item{
+    min-height:58px;
+    padding:6px 1px;
+    gap:4px;
+  }
+
+  .dynamic-app .mobile-bottom-nav__item svg{
+    width:21px;
+    height:21px;
+  }
+
+  .dynamic-app .mobile-bottom-nav__item span{
+    font-size:10px;
+    line-height:1;
+  }
+
+  .dynamic-app .chatbot-toggle{
+    right:12px;
+    bottom:calc(92px + env(safe-area-inset-bottom, 0px));
+    width:58px;
+    height:58px;
+    min-width:58px;
+    padding:0;
+    justify-content:center;
+    gap:0;
+    border-radius:50%;
+  }
+
+  .dynamic-app .chatbot-toggle span:last-child{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  }
+
+  .dynamic-app .chatbot-widget{
+    bottom:calc(162px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 420px){
+  .dynamic-app .app-header-inner,
+  .dynamic-app .app-main{
+    width:calc(100% - 18px) !important;
+  }
+
+  .dynamic-app .app-logo{
+    font-size:29px;
+  }
+
+  .dynamic-app .dynamic-panel,
+  .dynamic-app .dynamic-card,
+  .dynamic-app .stat-button{
+    padding:14px;
+  }
+
+  .dynamic-app .dynamic-panel h1,
+  .dynamic-app .dynamic-hero-copy h1{
+    font-size:clamp(32px, 9.5vw, 38px) !important;
+  }
+}
+
+/* Laptop and desktop refinement */
+@media (min-width: 769px){
+  body.dynamic-app{
+    padding-bottom:0;
+  }
+
+  .dynamic-app .app-header{
+    z-index:1000;
+  }
+
+  .dynamic-app .app-header-inner{
+    min-height:68px;
+    align-items:center;
+  }
+
+  .dynamic-app .app-logo{
+    white-space:nowrap;
+  }
+
+  .dynamic-app .app-main{
+    gap:16px;
+    padding-top:22px;
+    padding-bottom:42px;
+  }
+
+  .dynamic-app .dynamic-panel,
+  .dynamic-app .dynamic-card,
+  .dynamic-app .stat-button{
+    border-radius:8px;
+    box-shadow:0 10px 30px rgba(15,23,42,.06);
+  }
+
+  .dynamic-app .dynamic-panel{
+    padding:22px;
+  }
+
+  .dynamic-app .dynamic-card,
+  .dynamic-app .stat-button{
+    min-height:132px;
+    padding:18px;
+  }
+
+  .dynamic-app .dynamic-panel h1{
+    font-size:clamp(32px, 3vw, 46px);
+    line-height:1.06;
+  }
+
+  .dynamic-app .dynamic-panel h2{
+    font-size:clamp(22px, 2vw, 28px);
+  }
+
+  .dynamic-app .dynamic-hero-copy{
+    min-height:340px;
+    padding:30px;
+  }
+
+  .dynamic-app .dynamic-hero-copy h1{
+    font-size:clamp(42px, 4vw, 62px);
+    line-height:1;
+  }
+
+  .dynamic-app .dynamic-hero-copy p,
+  .dynamic-app .dynamic-panel p,
+  .dynamic-app .dynamic-card p{
+    line-height:1.5;
+  }
+
+  .dynamic-app .hero-dynamic{
+    gap:18px;
+    align-items:stretch;
+  }
+
+  .dynamic-app .dynamic-grid{
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:16px;
+  }
+
+  .dynamic-app .dynamic-grid.two{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+
+  .dynamic-app .data-center-stats{
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .dynamic-app .page-head-row{
+    display:flex;
+    align-items:flex-start;
+    gap:18px;
+  }
+
+  .dynamic-app .page-head-row .dynamic-actions{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    min-width:min(360px, 40%);
+  }
+
+  .dynamic-app .page-head-row .dynamic-actions > *,
+  .dynamic-app .dynamic-actions > .btn,
+  .dynamic-app .dynamic-actions > .btn-primary,
+  .dynamic-app .dynamic-actions > .btn-secondary{
+    width:auto;
+  }
+
+  .dynamic-app .list-toolbar{
+    gap:12px;
+  }
+
+  .dynamic-app .table-responsive{
+    max-width:100%;
+  }
+
+  .dynamic-app .data-table{
+    min-width:720px;
+  }
+
+  .dynamic-app #trackingResult{
+    grid-template-columns:minmax(320px, .95fr) minmax(0, 1.05fr);
+  }
+
+  .dynamic-app .tracking-map-canvas{
+    min-height:340px;
+  }
+
+  .dynamic-app .tracking-route-preview__grid{
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+  }
+
+  .dynamic-app .route-box{
+    min-height:260px;
+    overflow:hidden;
+  }
+
+  .dynamic-app .route-box .dynamic-grid{
+    min-width:0;
+  }
+
+  .dynamic-app .chatbot-toggle{
+    right:22px;
+    bottom:22px;
+    z-index:1250;
+  }
+
+  .dynamic-app .chatbot-widget{
+    right:22px;
+    bottom:92px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px){
+  .dynamic-app .app-main{
+    margin-left:104px;
+    margin-right:14px;
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  .dynamic-app .hero-dynamic{
+    grid-template-columns:1fr;
+  }
+
+  .dynamic-app .dynamic-hero-copy{
+    min-height:auto;
+  }
+
+  .dynamic-app .route-box{
+    grid-template-columns:minmax(150px, .7fr) minmax(300px, 1.5fr) auto;
+  }
+
+  .dynamic-app .route-box .snapshot-print-button{
+    justify-self:end;
+  }
+}
+
+@media (min-width: 1181px){
+  .dynamic-app .app-main{
+    margin-left:140px;
+    margin-right:24px;
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  .dynamic-app .hero-dynamic{
+    grid-template-columns:minmax(0, 1.05fr) minmax(440px, .95fr);
   }
 }

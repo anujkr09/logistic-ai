@@ -1,4 +1,4 @@
-# shipX AI Logistics (AI-powered logistics & shipment tracking)
+# ZYRAVIQ AI Logistics (AI-powered logistics & shipment tracking)
 
 Modern enterprise-grade logistics management system for shipment tracking, warehouse management, fraud detection, and AI-guided logistics recommendations.
 
@@ -45,7 +45,7 @@ Copy `.env.example` to `.env` for both backend and AI service and configure valu
 - `PORT=4000`
 - `JWT_SECRET=replace_with_a_long_random_secret`
 - `JWT_EXPIRES_IN=7d`
-- `MONGODB_URI=mongodb://mongo:27017/shipx_ai_logistics`
+- `MONGODB_URI=mongodb://mongo:27017/zyraviq_ai_logistics`
 - `AI_SERVICE_URL=http://ai-service:8001`
 - `CORS_ORIGIN=http://localhost:3000`
 - `SOCKET_CORS_ORIGIN=http://localhost:3000`

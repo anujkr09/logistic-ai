@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="shipX AI Service")
+app = FastAPI(title="ZYRAVIQ AI Service")
 
 
 # -----------------------------
@@ -82,7 +82,7 @@ def _env(name: str, default: Optional[str] = None) -> str:
 
 def build_system_prompt() -> str:
     return (
-        "You are shipX AI, a project-trained logistics assistant for the shipX AI Logistics web app. "
+        "You are ZYRAVIQ AI, a project-trained logistics assistant for the ZYRAVIQ AI Logistics web app. "
         "You help customers, admins, and warehouse managers with tracking, shipment creation, route status, "
         "delay reasons, weather impact, ETA, transport mode, fraud risk, warehouse assignment, pickups, account setup, "
         "dashboard navigation, and general logistics questions. "
@@ -101,7 +101,7 @@ def build_system_prompt() -> str:
         "\\nProject pages/features you know:\\n"
         "- Home has Tracking, Shipping, Support, and Account navigation.\\n"
         "- Tracking page accepts a tracking number and shows route, current location, transport mode, weather, delay reason, ETA confidence, map, and timeline.\\n"
-        "- Register page creates a shipX account/workspace.\\n"
+        "- Register page creates a ZYRAVIQ account/workspace.\\n"
         "- Login page authenticates customers/admins.\\n"
         "- Customer dashboard shows shipment history, notifications, analytics, and chat.\\n"
         "- Admin dashboard manages shipments, analytics, fraud alerts, recommendations, and shipment creation.\\n"
@@ -195,12 +195,12 @@ def project_fallback_answer(message: str, context: Optional[ChatContext]) -> str
         suggestion_text = f" Abhi active shipment ke liye {suggested} try kar sakte hain." if suggested else ""
         return (
             f"{tracking_number} ka exact shipment record abhi nahi mila.{tried_text} "
-            "Ho sakta hai number incomplete ho; shipX tracking usually SX-8042 ya SX-604547 jaisa hota hai. "
+            "Ho sakta hai number incomplete ho; ZYRAVIQ tracking usually SX-8042 ya SX-604547 jaisa hota hai. "
             f"Please full tracking number bhejiye, ya Tracking page par paste karke check kijiye.{suggestion_text}"
         )
 
     return (
-        "Main shipX AI assistant hoon. Aap tracking number bhej kar parcel location, delay reason, weather, transport mode, ETA, timeline aur delivery status pooch sakte hain. "
+        "Main ZYRAVIQ AI assistant hoon. Aap tracking number bhej kar parcel location, delay reason, weather, transport mode, ETA, timeline aur delivery status pooch sakte hain. "
         "Admin ho to shipment creation, warehouse assignment, fraud alerts, analytics aur dashboard actions ke baare me bhi pooch sakte hain."
     )
 

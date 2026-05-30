@@ -1,11 +1,12 @@
 {
-  "name": "shipx-ai-logistics-backend",
+  "name": "zyraviq-ai-logistics-backend",
   "version": "1.0.0",
   "private": true,
   "type": "commonjs",
   "main": "src/server.js",
   "scripts": {
     "build": "node scripts/build-check.js",
+    "brand:migrate": "node scripts/brand-migrate.js",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },

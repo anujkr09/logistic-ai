@@ -616,12 +616,12 @@
   font-family:inherit;
 }
 
-.leaflet-shipx-marker{
+.leaflet-zyraviq-marker{
   background:transparent;
   border:0;
 }
 
-.leaflet-shipx-marker span{
+.leaflet-zyraviq-marker span{
   width:34px;
   height:34px;
   display:grid;
@@ -1800,5 +1800,62 @@ body:has(.tracking-shell) .bg-grid{
 
   .route-map .pin-label span{
     max-width:76px;
+  }
+}
+
+/* Final tracking alignment overrides */
+.tracking-grid .table-wrap{
+  width:100%;
+  max-width:100%;
+}
+
+.tracking-grid .data-table th,
+.tracking-grid .data-table td{
+  overflow-wrap:anywhere;
+}
+
+@media (max-width: 640px){
+  .tracking-grid .table-wrap{
+    overflow:visible;
+  }
+
+  .tracking-grid .data-table{
+    min-width:0 !important;
+    width:100%;
+    border-spacing:0;
+  }
+
+  .tracking-grid .data-table tbody,
+  .tracking-grid .data-table tr,
+  .tracking-grid .data-table th,
+  .tracking-grid .data-table td{
+    display:block;
+    width:100%;
+    max-width:none;
+  }
+
+  .tracking-grid .data-table tr{
+    margin-bottom:9px;
+    padding:10px 11px;
+    border:1px solid rgba(15,23,42,.10);
+    border-radius:8px;
+    background:rgba(248,250,252,.78);
+  }
+
+  .tracking-grid .data-table th,
+  .tracking-grid .data-table td{
+    padding:0;
+  }
+
+  .tracking-grid .data-table th{
+    margin-bottom:4px;
+    font-size:10px;
+    line-height:1.2;
+    letter-spacing:.06em;
+  }
+
+  .tracking-grid .data-table td{
+    font-size:13px;
+    line-height:1.35;
   }
 }

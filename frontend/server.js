@@ -5,6 +5,7 @@ const app = express();
 
 const PORT = process.env.PORT || process.env.FRONTEND_PORT || 3000;
 const fallbackFile = path.join(__dirname, 'app.html');
+const apiBaseUrl = (process.env.API_BASE_URL || '').replace(/\/$/, '');
 
 app.set('trust proxy', true);
 
@@ -17,7 +18,13 @@ app.use((req, res, next) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ ok: true, app: 'shipX AI Logistics frontend' });
+  res.json({ ok: true, app: 'ZYRAVIQ AI Logistics frontend' });
+});
+
+app.get('/runtime-config.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.send(`window.API_BASE_URL=${JSON.stringify(apiBaseUrl)};`);
 });
 
 app.get('/download-app', (req, res) => {
@@ -28,18 +35,44 @@ app.get('/download-app', (req, res) => {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="refresh" content="0; url=${appUrl}">
-  <title>Open shipX AI Logistics</title>
+  <title>Open ZYRAVIQ AI Logistics</title>
 </head>
 <body>
-  <p>Opening shipX AI Logistics...</p>
+  <p>Opening ZYRAVIQ AI Logistics...</p>
   <p><a href="${appUrl}">Open app</a></p>
 </body>
 </html>`;
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.setHeader('Content-Disposition', 'attachment; filename="shipX AI Logistics.html"');
+  res.setHeader('Content-Disposition', 'attachment; filename="ZYRAVIQ AI Logistics.html"');
   res.send(launcher);
+});
+
+function sendHtmlWithRuntimeConfig(filePath, res, next) {
+  fs.readFile(filePath, 'utf8', (err, html) => {
+    if (err) {
+      if (next) return next(err);
+      res.status(500).send('Unable to load page');
+      return;
+    }
+
+    const configScript = '<script src="/runtime-config.js"></script>';
+    const body = html.includes(configScript)
+      ? html
+      : html.replace('</head>', `  ${configScript}\n</head>`);
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.send(body);
+  });
+}
+
+app.get(['/', '/index.html', '/app.html', '/pages/*.html'], (req, res, next) => {
+  const requested = req.path === '/' ? '/index.html' : req.path;
+  const filePath = path.join(__dirname, requested);
+  if (!filePath.startsWith(__dirname) || !fs.existsSync(filePath)) return next();
+  sendHtmlWithRuntimeConfig(filePath, res, next);
 });
 
 // Serve static files from the current directory
@@ -57,8 +90,7 @@ app.use(express.static(path.join(__dirname), {
 
 // Handle SPA routing - serve the dynamic app shell for all routes
 app.get('*', (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.sendFile(fallbackFile);
+  sendHtmlWithRuntimeConfig(fallbackFile, res);
 });
 
 const server = app.listen(PORT, () => {

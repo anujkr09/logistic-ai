@@ -253,14 +253,14 @@ function googleMapsApiKey() {
 
 function loadGoogleMaps() {
   if (window.google?.maps) return Promise.resolve(window.google.maps);
-  if (window.__shipxGoogleMapsPromise) return window.__shipxGoogleMapsPromise;
+  if (window.__zyraviqGoogleMapsPromise) return window.__zyraviqGoogleMapsPromise;
 
   const key = googleMapsApiKey();
   if (!key) return Promise.reject(new Error('Google Maps API key missing'));
 
-  window.__shipxGoogleMapsPromise = new Promise((resolve, reject) => {
+  window.__zyraviqGoogleMapsPromise = new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error('Google Maps took too long to load')), 4500);
-    const callbackName = `__shipxGoogleMapsReady_${Date.now()}`;
+    const callbackName = `__zyraviqGoogleMapsReady_${Date.now()}`;
     window[callbackName] = () => {
       clearTimeout(timer);
       delete window[callbackName];
@@ -278,14 +278,14 @@ function loadGoogleMaps() {
     document.head.appendChild(script);
   });
 
-  return window.__shipxGoogleMapsPromise;
+  return window.__zyraviqGoogleMapsPromise;
 }
 
 function loadLeaflet() {
   if (window.L) return Promise.resolve(window.L);
-  if (window.__shipxLeafletPromise) return window.__shipxLeafletPromise;
+  if (window.__zyraviqLeafletPromise) return window.__zyraviqLeafletPromise;
 
-  window.__shipxLeafletPromise = new Promise((resolve, reject) => {
+  window.__zyraviqLeafletPromise = new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error('OpenStreetMap took too long to load')), 4500);
     const cssId = 'leaflet-css';
     if (!document.getElementById(cssId)) {
@@ -310,7 +310,7 @@ function loadLeaflet() {
     document.head.appendChild(script);
   });
 
-  return window.__shipxLeafletPromise;
+  return window.__zyraviqLeafletPromise;
 }
 
 function fallbackMapTemplate({ origin, current, destination, status, eta, mode, weather, progress, fraudFlag, fraudMessage, empty, reason }) {
@@ -402,7 +402,7 @@ function googleMarkerIcon(color) {
 
 function leafletMarkerIcon(color, label) {
   return L.divIcon({
-    className: 'leaflet-shipx-marker',
+    className: 'leaflet-zyraviq-marker',
     html: `<span style="background:${escapeMapText(color)}">${escapeMapText(label)}</span>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
@@ -626,15 +626,18 @@ async function renderLeafletMap(element, location, shipment = {}, empty = false)
 }
 
 function renderProviderMap(element, location, shipment = {}, empty = false) {
+  const renderOpenStreetMap = () => renderLeafletMap(element, location, shipment, empty)
+    .catch((error) => {
+      renderFallbackMap(element, location, shipment, empty, 'Smart route preview');
+      throw error;
+    });
+
   if (googleMapsApiKey()) {
     return renderGoogleMap(element, location, shipment, empty)
-      .catch((error) => {
-        renderFallbackMap(element, location, shipment, empty, 'Smart route preview');
-        throw error;
-      });
+      .catch(() => renderOpenStreetMap());
   }
 
-  return Promise.reject(new Error('Google Maps API key missing'));
+  return renderOpenStreetMap();
 }
 
 function renderFallbackMap(element, location, shipment = {}, empty = false, reason = '') {
@@ -644,12 +647,6 @@ function renderFallbackMap(element, location, shipment = {}, empty = false, reas
 }
 
 function upgradeToProviderMap(element, location, shipment = {}, empty = false) {
-  if (!googleMapsApiKey()) {
-    const providerBadge = element.querySelector('.map-provider-badge');
-    if (providerBadge) providerBadge.textContent = 'Smart route preview';
-    return;
-  }
-
   renderProviderMap(element, location, shipment, empty)
     .catch(() => {
       const providerBadge = element.querySelector('.map-provider-badge');

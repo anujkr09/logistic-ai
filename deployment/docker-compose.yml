@@ -34,7 +34,7 @@ services:
       PORT: 4000
       JWT_SECRET: ${JWT_SECRET:-dev_only_secret_for_local_runs}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      MONGODB_URI: mongodb://mongo:27017/shipx_ai_logistics
+      MONGODB_URI: mongodb://mongo:27017/zyraviq_ai_logistics
       AI_SERVICE_URL: http://ai-service:8001
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
       SOCKET_CORS_ORIGIN: ${SOCKET_CORS_ORIGIN:-http://localhost:3000}

@@ -130,7 +130,7 @@ function compactShipmentContext(context = {}) {
 
 function openAiInstructions({ role }) {
   return [
-    'You are shipX AI Assistant for a logistics web app.',
+    'You are ZYRAVIQ AI Assistant for a logistics web app.',
     'Always answer in the same language style as the user message: Hindi/Devanagari for Hindi, Hinglish for Hinglish, and English for English.',
     'If the user mixes Hindi and English, reply in natural Hinglish with short Hindi explanations and logistics terms in English when useful.',
     'Use the provided shipment context as the source of truth. Do not invent tracking status, ETA, location, payment, fraud, or account details.',
@@ -366,16 +366,16 @@ function fallbackChat({ message, trackingNumber, context }) {
     return { reply: 'Admin dashboard lets you create shipments, assign warehouses, view analytics, fraud alerts, AI recommendations, and monitor live tracking updates.' };
   }
   if (normalized.includes('account') || normalized.includes('register') || normalized.includes('signup')) {
-    if (hi) return { reply: 'shipX account banane ke liye Register/Open account page open karo. Existing user login karke apne role ke hisaab se customer ya admin dashboard use kar sakta hai.' };
-    return { reply: 'Open the Register/Open account page to create a shipX workspace. Existing users can login and then use customer/admin dashboards based on role.' };
+    if (hi) return { reply: 'ZYRAVIQ account banane ke liye Register/Open account page open karo. Existing user login karke apne role ke hisaab se customer ya admin dashboard use kar sakta hai.' };
+    return { reply: 'Open the Register/Open account page to create a ZYRAVIQ workspace. Existing users can login and then use customer/admin dashboards based on role.' };
   }
   if (trackingNumber) {
     const lookup = context?.recommendations?.lookup;
     const tried = lookup?.tried?.length ? ` I also checked ${lookup.tried.slice(0, 3).join(', ')}.` : '';
-    const suggested = lookup?.suggestedTracking ? ` You can try the active shipment ${lookup.suggestedTracking}, or paste the full tracking number on the Tracking page.` : ' Please paste the full shipX tracking number, for example SX-8042 or SX-604547.';
+    const suggested = lookup?.suggestedTracking ? ` You can try the active shipment ${lookup.suggestedTracking}, or paste the full tracking number on the Tracking page.` : ' Please paste the full ZYRAVIQ tracking number, for example SX-8042 or SX-604547.';
     if (hi) {
       const triedHi = lookup?.tried?.length ? ` Maine ${lookup.tried.slice(0, 3).join(', ')} bhi check kiya.` : '';
-      const suggestedHi = lookup?.suggestedTracking ? ` Aap active shipment ${lookup.suggestedTracking} try kar sakte ho, ya Tracking page par full tracking number paste karo.` : ' Kripya full shipX tracking number paste karo, jaise SX-8042 ya SX-604547.';
+      const suggestedHi = lookup?.suggestedTracking ? ` Aap active shipment ${lookup.suggestedTracking} try kar sakte ho, ya Tracking page par full tracking number paste karo.` : ' Kripya full ZYRAVIQ tracking number paste karo, jaise SX-8042 ya SX-604547.';
       return { reply: `${trackingNumber} ke liye exact shipment nahi mila.${triedHi}${suggestedHi}` };
     }
     return { reply: `I could not find an exact shipment for ${trackingNumber}.${tried}${suggested}` };
