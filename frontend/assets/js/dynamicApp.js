@@ -305,7 +305,7 @@
         <a class="skip-link" href="#app-main">Skip to content</a>
         <header class="app-header">
           <div class="app-header-inner">
-            <a href="/" class="app-logo" data-link><span>ship</span><strong>X</strong><small>AI</small></a>
+            <a href="/" class="app-logo" data-link><span>ZYRAVIQ</span><small>AI</small></a>
             <nav class="app-nav" aria-label="Primary navigation">
               ${nav.map(([label, href]) => `<a href="${href}" class="${active === href ? 'active' : ''}" data-link>${label}</a>`).join('')}
             </nav>
@@ -806,17 +806,22 @@
     if (!originPoint || !destinationPoint) return '';
     const [originPos, currentPos, destinationPos] = projectRoutePoints([originPoint, currentPoint, destinationPoint]);
     const linePoints = `${originPos.x},${originPos.y} ${currentPos.x},${currentPos.y} ${destinationPos.x},${destinationPos.y}`;
+    const progressLinePoints = `${originPos.x},${originPos.y} ${currentPos.x},${currentPos.y}`;
     return `
       <div class="tracking-map-embed">
         <div class="tracking-map-canvas" role="img" aria-label="Shipment route from ${escapeHtml(origin)} to ${escapeHtml(destination)}">
+          <div class="tracking-map-grid" aria-hidden="true"></div>
+          <span class="tracking-map-region tracking-map-region--north">NORTH</span>
+          <span class="tracking-map-region tracking-map-region--west">WEST</span>
+          <span class="tracking-map-region tracking-map-region--south">SOUTH</span>
           <svg class="tracking-map-route-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <polyline class="tracking-map-route-shadow" points="${linePoints}"></polyline>
             <polyline class="tracking-map-route-base" points="${linePoints}"></polyline>
-            <polyline class="tracking-map-route-progress" points="${originPos.x},${originPos.y} ${currentPos.x},${currentPos.y}"></polyline>
+            <polyline class="tracking-map-route-progress" points="${progressLinePoints}"></polyline>
           </svg>
-          <span class="map-city map-city--origin" style="left:${originPos.x}%;top:${originPos.y}%"><b>A</b>${escapeHtml(origin)}</span>
-          <span class="map-city map-city--current" style="left:${currentPos.x}%;top:${currentPos.y}%"><b>${escapeHtml(mode.icon)}</b>${escapeHtml(current)}</span>
-          <span class="map-city map-city--destination" style="left:${destinationPos.x}%;top:${destinationPos.y}%"><b>B</b>${escapeHtml(destination)}</span>
+          <span class="map-city map-city--origin" style="left:${originPos.x}%;top:${originPos.y}%"><b>A</b><span>${escapeHtml(origin)}</span></span>
+          <span class="map-city map-city--current" style="left:${currentPos.x}%;top:${currentPos.y}%"><b>${escapeHtml(mode.icon)}</b><span>${escapeHtml(current)}</span></span>
+          <span class="map-city map-city--destination" style="left:${destinationPos.x}%;top:${destinationPos.y}%"><b>B</b><span>${escapeHtml(destination)}</span></span>
         </div>
         <div class="route-overlay route-overlay--map" aria-hidden="true">
           <div class="route-line-track">
@@ -1415,7 +1420,7 @@
   function loadingShell() {
     return `
       <div class="app-splash" role="status" aria-live="polite">
-        <div class="app-splash__brand"><span>ship</span><strong>X</strong><small>AI</small></div>
+        <div class="app-splash__brand"><span>ZYRAVIQ</span><small>AI</small></div>
         <div class="app-splash__panel">
           <div class="app-splash__line app-splash__line--wide"></div>
           <div class="app-splash__line"></div>

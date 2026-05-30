@@ -1088,12 +1088,12 @@
 
 .dynamic-app .tracking-map-canvas {
   position: relative;
-  min-height: 360px;
+  min-height: 390px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 18% 72%, rgba(14, 143, 135, 0.20), transparent 22%),
-    radial-gradient(circle at 78% 22%, rgba(77, 20, 140, 0.16), transparent 24%),
-    linear-gradient(135deg, #e8f3ff 0%, #f7fbff 48%, #e9f8f1 100%);
+    radial-gradient(circle at 22% 76%, rgba(14, 143, 135, 0.22), transparent 24%),
+    radial-gradient(circle at 72% 24%, rgba(77, 20, 140, 0.18), transparent 26%),
+    linear-gradient(135deg, #e8f3ff 0%, #f7fbff 44%, #e9f8f1 100%);
 }
 
 .dynamic-app .tracking-map-canvas::before {
@@ -1101,9 +1101,55 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(23, 32, 51, 0.055) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(23, 32, 51, 0.055) 1px, transparent 1px);
-  background-size: 44px 44px;
+    linear-gradient(90deg, rgba(23, 32, 51, 0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(23, 32, 51, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.dynamic-app .tracking-map-canvas::after {
+  content: "";
+  position: absolute;
+  inset: 11% 9% 10% 10%;
+  border-radius: 42% 58% 52% 48% / 48% 38% 62% 52%;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.18)),
+    linear-gradient(90deg, rgba(14, 143, 135, 0.10), rgba(77, 20, 140, 0.08));
+  border: 1px solid rgba(23, 32, 51, 0.10);
+  box-shadow: inset 0 0 0 12px rgba(255, 255, 255, 0.20);
+}
+
+.dynamic-app .tracking-map-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(28deg, transparent 47%, rgba(14, 143, 135, 0.11) 48%, transparent 50%),
+    linear-gradient(148deg, transparent 46%, rgba(77, 20, 140, 0.09) 47%, transparent 49%);
+  background-size: 120px 120px, 150px 150px;
+}
+
+.dynamic-app .tracking-map-region {
+  position: absolute;
+  z-index: 2;
+  color: rgba(17, 24, 39, 0.16);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+}
+
+.dynamic-app .tracking-map-region--north {
+  top: 18%;
+  left: 58%;
+}
+
+.dynamic-app .tracking-map-region--west {
+  top: 54%;
+  left: 16%;
+}
+
+.dynamic-app .tracking-map-region--south {
+  right: 14%;
+  bottom: 18%;
 }
 
 .dynamic-app .tracking-map-route-svg {
@@ -1111,6 +1157,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 3;
 }
 
 .dynamic-app .tracking-map-route-shadow,
@@ -1122,29 +1169,29 @@
 }
 
 .dynamic-app .tracking-map-route-shadow {
-  stroke: rgba(15, 23, 42, 0.18);
-  stroke-width: 5;
+  stroke: rgba(15, 23, 42, 0.22);
+  stroke-width: 6;
 }
 
 .dynamic-app .tracking-map-route-base {
-  stroke: rgba(77, 20, 140, 0.26);
-  stroke-width: 2.5;
-  stroke-dasharray: 6 5;
+  stroke: rgba(77, 20, 140, 0.34);
+  stroke-width: 3;
+  stroke-dasharray: 7 5;
 }
 
 .dynamic-app .tracking-map-route-progress {
   stroke: #0e8f87;
-  stroke-width: 4;
+  stroke-width: 5;
 }
 
 .dynamic-app .map-city {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  max-width: 150px;
+  max-width: 190px;
   padding: 7px 9px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.96);
@@ -1154,6 +1201,12 @@
   font-weight: 900;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
   white-space: nowrap;
+}
+
+.dynamic-app .map-city span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dynamic-app .map-city b {
@@ -1751,7 +1804,15 @@
   }
 
   .dynamic-app .tracking-map-canvas{
-    min-height:260px;
+    min-height:300px;
+  }
+
+  .dynamic-app .tracking-map-region{
+    font-size:10px;
+  }
+
+  .dynamic-app .tracking-map-embed{
+    min-height:300px;
   }
 
   .dynamic-app .tracking-map-badges,
@@ -1761,8 +1822,15 @@
   }
 
   .dynamic-app .map-city{
-    max-width:128px;
+    max-width:118px;
     font-size:11px;
+    padding:6px 7px;
+  }
+
+  .dynamic-app .map-city b{
+    min-width:24px;
+    height:22px;
+    font-size:10px;
   }
 
   .dynamic-app .mobile-bottom-nav{
@@ -1836,6 +1904,161 @@
   }
 }
 
+/* Mobile layout correction for deployed app shell */
+@media (max-width: 768px){
+  body.dynamic-app{
+    padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .dynamic-app .app-header{
+    position:sticky !important;
+    top:0;
+    z-index:1100;
+    min-height:64px !important;
+  }
+
+  .dynamic-app .app-header-inner{
+    width:calc(100% - 24px) !important;
+    min-height:64px !important;
+    padding:8px 0 !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+  }
+
+  .dynamic-app .app-logo,
+  .dynamic-app .app-splash__brand{
+    gap:4px;
+    color:#4d148c;
+    font-size:28px !important;
+    letter-spacing:0;
+    line-height:1;
+    font-weight:950;
+  }
+
+  .dynamic-app .app-logo small,
+  .dynamic-app .app-splash__brand small{
+    margin-left:3px;
+    color:#111827;
+    font-size:10px !important;
+  }
+
+  .dynamic-app .app-user{
+    display:none !important;
+  }
+
+  .dynamic-app .app-main{
+    width:calc(100% - 24px) !important;
+    padding-top:12px !important;
+    padding-bottom:18px !important;
+  }
+
+  .dynamic-app .breadcrumbs{
+    display:none;
+  }
+
+  .dynamic-app .dynamic-panel,
+  .dynamic-app .dynamic-card,
+  .dynamic-app .stat-button{
+    border-radius:8px;
+  }
+
+  .dynamic-app .dynamic-hero-copy h1,
+  .dynamic-app .dynamic-panel h1{
+    font-size:clamp(34px, 9.2vw, 40px) !important;
+    line-height:1.08 !important;
+  }
+
+  .dynamic-app .dynamic-panel p,
+  .dynamic-app .dynamic-card p,
+  .dynamic-app .muted-text{
+    font-size:16px !important;
+    line-height:1.45 !important;
+  }
+
+  .dynamic-app .page-head-row,
+  .dynamic-app .page-head-row > div:first-child,
+  .dynamic-app .page-head-row .dynamic-actions{
+    min-height:0 !important;
+    flex:0 1 auto !important;
+  }
+
+  .dynamic-app .page-head-row{
+    justify-content:flex-start !important;
+  }
+
+  .dynamic-app .mobile-bottom-nav{
+    position:fixed !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    z-index:1200 !important;
+    display:grid !important;
+    grid-template-columns:repeat(6, minmax(0, 1fr)) !important;
+    min-height:calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    padding:7px 4px calc(7px + env(safe-area-inset-bottom, 0px)) !important;
+    gap:2px !important;
+    overflow:hidden;
+  }
+
+  .dynamic-app .mobile-bottom-nav__item{
+    min-width:0 !important;
+    width:100% !important;
+    min-height:58px !important;
+    padding:6px 0 !important;
+  }
+
+  .dynamic-app .mobile-bottom-nav__item svg{
+    width:21px !important;
+    height:21px !important;
+  }
+
+  .dynamic-app .mobile-bottom-nav__item span{
+    width:100%;
+    font-size:10px !important;
+    line-height:1 !important;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .dynamic-app .chatbot-toggle{
+    right:12px !important;
+    bottom:calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+    width:58px !important;
+    height:58px !important;
+    min-width:58px !important;
+    padding:0 !important;
+    border-radius:50% !important;
+    display:grid !important;
+    place-items:center !important;
+    gap:0 !important;
+    z-index:1190 !important;
+  }
+
+  .dynamic-app .chatbot-toggle-icon{
+    font-size:18px !important;
+  }
+
+  .dynamic-app .chatbot-toggle span:last-child{
+    position:absolute !important;
+    width:1px !important;
+    height:1px !important;
+    overflow:hidden !important;
+    clip:rect(0 0 0 0) !important;
+    white-space:nowrap !important;
+  }
+
+  .dynamic-app .chatbot-widget{
+    right:10px !important;
+    left:10px !important;
+    bottom:calc(164px + env(safe-area-inset-bottom, 0px)) !important;
+    width:auto !important;
+    max-width:none !important;
+  }
+}
+
 /* Laptop and desktop refinement */
 @media (min-width: 769px){
   body.dynamic-app{
@@ -1847,17 +2070,27 @@
   }
 
   .dynamic-app .app-header-inner{
-    min-height:68px;
+    min-height:72px;
     align-items:center;
   }
 
   .dynamic-app .app-logo{
+    color:#4d148c;
+    font-size:30px;
+    font-weight:950;
+    letter-spacing:0;
     white-space:nowrap;
+  }
+
+  .dynamic-app .app-logo small{
+    margin-left:4px;
+    color:#111827;
+    font-size:11px;
   }
 
   .dynamic-app .app-main{
     gap:16px;
-    padding-top:22px;
+    padding-top:24px;
     padding-bottom:42px;
   }
 
@@ -1906,6 +2139,18 @@
   .dynamic-app .hero-dynamic{
     gap:18px;
     align-items:stretch;
+  }
+
+  .dynamic-app .tracking-map-panel{
+    min-height:520px;
+  }
+
+  .dynamic-app .tracking-route-preview{
+    height:100%;
+  }
+
+  .dynamic-app .tracking-map-embed{
+    min-height:390px;
   }
 
   .dynamic-app .dynamic-grid{
