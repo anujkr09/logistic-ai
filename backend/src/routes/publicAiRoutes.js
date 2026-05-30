@@ -9,11 +9,22 @@ router.post('/chat', async (req, res) => {
 
   try {
     const match = trackingNumber || String(message).match(/\b[A-Z]{2,}-[A-Z0-9-]+\b|\b\d{4,}\b/i)?.[0] || null;
-    const lookupMeta = match ? await findShipmentForChat({ trackingNumber: match }) : null;
+    let lookupMeta = null;
+    try {
+      lookupMeta = match ? await findShipmentForChat({ trackingNumber: match }) : null;
+    } catch (lookupErr) {
+      console.warn('publicAiRoutes lookup warning', lookupErr?.message || lookupErr);
+    }
+
     const shipment = lookupMeta?.shipment || null;
     const shipmentData = shipment ? shipment.toObject() : null;
     if (shipmentData) shipmentData.aiInsights = await analyzeTracking({ shipment: shipmentData });
-    const suggestedShipment = shipmentData ? null : await latestActiveShipment({});
+    let suggestedShipment = null;
+    try {
+      suggestedShipment = shipmentData ? null : await latestActiveShipment({});
+    } catch (latestErr) {
+      console.warn('publicAiRoutes latest shipment warning', latestErr?.message || latestErr);
+    }
 
     const ai = await chat({
       message: String(message),
