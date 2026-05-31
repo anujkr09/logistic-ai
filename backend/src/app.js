@@ -50,7 +50,7 @@ app.use(cors({
 app.use(express.json({ limit: '2mb' }));
 app.use(morgan('dev'));
 
-app.get('/health', (req, res) => res.json({ ok: true, app: 'ZYRAVIQ AI Logistics backend' }));
+app.get('/health', (req, res) => res.json({ ok: true, app: 'ZYRAVIQ AI Logistics backend', brand: 'ZYRAVIQ' }));
 
 app.use('/api/auth', authLimiter);
 app.use('/api', apiLimiter);
