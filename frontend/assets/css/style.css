@@ -1413,7 +1413,7 @@ body{
 
   .mobile-bottom-nav {
     min-height: calc(72px + env(safe-area-inset-bottom, 0px));
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 3px;
     padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
   }
@@ -2771,7 +2771,8 @@ body.theme-dark .footer-column a:focus{
 .zyraviq-page .zyraviq-header__inner{width:min(1180px,calc(100% - 40px));max-width:none;height:72px;min-height:72px;padding:0}
 .zyraviq-page .zyraviq-logo{font-size:30px;letter-spacing:-1.2px}
 .zyraviq-page .zyraviq-logo strong,.zyraviq-page .zyraviq-logo small{color:#14b8a6}
-.zyraviq-page .zyraviq-nav,.zyraviq-page .zyraviq-actions,.zyraviq-page .zyraviq-actions__item{height:72px}
+.zyraviq-page .zyraviq-nav{display:none}
+.zyraviq-page .zyraviq-actions,.zyraviq-page .zyraviq-actions__item{height:72px}
 .zyraviq-page .zyraviq-nav__button{height:72px;min-height:72px;padding:0 15px;font-size:13px;font-weight:800}
 .zyraviq-page .zyraviq-nav__item:hover .zyraviq-nav__button,.zyraviq-page .zyraviq-nav__item:focus-within .zyraviq-nav__button{background:rgba(255,255,255,.08);color:#fff}
 .zyraviq-page .zyraviq-menu{top:72px;border-radius:0 0 8px 8px;overflow:hidden}

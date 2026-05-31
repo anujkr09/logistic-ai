@@ -305,7 +305,7 @@
         <a class="skip-link" href="#app-main">Skip to content</a>
         <header class="app-header">
           <div class="app-header-inner">
-            <a href="/" class="app-logo" data-link><span>ZYRAVIQ</span><small>AI</small></a>
+            <a href="/" class="app-logo"><span>ZYRAVIQ</span><small>AI</small></a>
             <nav class="app-nav" aria-label="Primary navigation">
               ${nav.map(([label, href]) => `<a href="${href}" class="${active === href ? 'active' : ''}" data-link>${label}</a>`).join('')}
             </nav>
@@ -346,7 +346,6 @@
       ['Shipping', '/shipping', 'shipping', 'M4 7h16v10H4z M7 7V5h10v2 M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'],
       ['Tracking', '/tracking', 'tracking', 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
       ['Shipments', '/shipments', 'shipments', 'M4 7l8-4 8 4-8 4-8-4z M4 7v10l8 4 8-4V7 M12 11v10'],
-      ['Data', '/data-center', 'data', 'M4 5h16v4H4z M4 10h16v4H4z M4 15h16v4H4z'],
       ['More', '/more', 'more', 'M5 5h5v5H5z M14 5h5v5h-5z M5 14h5v5H5z M14 14h5v5h-5z'],
     ];
     const normalized = activePath === '/orders' ? '/shipments' : activePath;
@@ -355,7 +354,7 @@
         const isActive = href === '/'
           ? normalized === '/'
           : normalized === href || normalized.startsWith(`${href}/`) || (href === '/shipping' && ['/routes', '/pickups', '/stores', '/packaging', '/freight'].includes(normalized));
-        return `<a class="mobile-bottom-nav__item ${isActive ? 'active' : ''}" href="${href}" data-link aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
+        return `<a class="mobile-bottom-nav__item ${isActive ? 'active' : ''}" href="${href}" ${href === '/' ? '' : 'data-link'} aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${pathData}"></path></svg>
           <span>${label}</span>
         </a>`;
@@ -369,7 +368,6 @@
       ['Shipping', '/shipping', 'shipping', 'M4 7h16v10H4z M7 7V5h10v2 M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'],
       ['Tracking', '/tracking', 'tracking', 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
       ['Shipments', '/shipments', 'shipments', 'M4 7l8-4 8 4-8 4-8-4z M4 7v10l8 4 8-4V7 M12 11v10'],
-      ['Data', '/data-center', 'data', 'M4 5h16v4H4z M4 10h16v4H4z M4 15h16v4H4z'],
       ['More', '/more', 'more', 'M5 5h5v5H5z M14 5h5v5h-5z M5 14h5v5H5z M14 14h5v5h-5z'],
     ];
     const normalized = activePath === '/orders' ? '/shipments' : activePath;
@@ -378,7 +376,7 @@
         const isActive = href === '/'
           ? normalized === '/'
           : normalized === href || normalized.startsWith(`${href}/`) || (href === '/shipping' && ['/routes', '/pickups', '/stores', '/packaging', '/freight'].includes(normalized));
-        return `<a class="desktop-side-nav__item ${isActive ? 'active' : ''}" href="${href}" data-link aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
+        return `<a class="desktop-side-nav__item ${isActive ? 'active' : ''}" href="${href}" ${href === '/' ? '' : 'data-link'} aria-label="${label}" ${isActive ? 'aria-current="page"' : ''}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${pathData}"></path></svg>
           <span>${label}</span>
         </a>`;

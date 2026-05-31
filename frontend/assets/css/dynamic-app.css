@@ -48,7 +48,7 @@
 }
 
 .app-nav {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
@@ -1582,7 +1582,7 @@
 
 /* Final mobile/dashboard alignment overrides */
 .dynamic-app .mobile-bottom-nav{
-  grid-template-columns:repeat(6, minmax(0, 1fr));
+  grid-template-columns:repeat(5, minmax(0, 1fr));
 }
 
 .dynamic-app .mobile-bottom-nav__item{
@@ -1835,7 +1835,7 @@
 
   .dynamic-app .mobile-bottom-nav{
     min-height:calc(76px + env(safe-area-inset-bottom, 0px));
-    grid-template-columns:repeat(6, minmax(0, 1fr)) !important;
+    grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
     gap:2px;
     padding:7px 5px calc(7px + env(safe-area-inset-bottom, 0px));
   }
@@ -1994,7 +1994,7 @@
     bottom:0 !important;
     z-index:1200 !important;
     display:grid !important;
-    grid-template-columns:repeat(6, minmax(0, 1fr)) !important;
+    grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
     min-height:calc(76px + env(safe-area-inset-bottom, 0px)) !important;
     padding:7px 4px calc(7px + env(safe-area-inset-bottom, 0px)) !important;
     gap:2px !important;
