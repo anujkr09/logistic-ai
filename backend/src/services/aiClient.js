@@ -256,7 +256,7 @@ function projectHowToAnswer(message) {
       reply: [
         'Shipment track karne ke liye:',
         '1. Tracking page open karo.',
-        '2. Apna tracking number paste karo, jaise SX-8042 ya SX-604547.',
+        '2. Apna tracking number paste karo, jaise ZQ-8042 ya ZQ-604547.',
         '3. Track button dabao.',
         '4. App current location, status, route, ETA, weather, delay reason, transport mode aur timeline dikhayega.',
         'Agar tracking number nahi hai to sender/admin se full tracking number lo.',
@@ -268,7 +268,7 @@ function projectHowToAnswer(message) {
     reply: [
       'To track a shipment:',
       '1. Open the Tracking page.',
-      '2. Paste your tracking number, for example SX-8042 or SX-604547.',
+      '2. Paste your tracking number, for example ZQ-8042 or ZQ-604547.',
       '3. Click Track.',
       '4. The app will show current location, status, route, ETA, weather, delay reason, transport mode, and timeline.',
       'If you do not have a tracking number, ask the sender/admin for the full tracking number.',
@@ -372,10 +372,10 @@ function fallbackChat({ message, trackingNumber, context }) {
   if (trackingNumber) {
     const lookup = context?.recommendations?.lookup;
     const tried = lookup?.tried?.length ? ` I also checked ${lookup.tried.slice(0, 3).join(', ')}.` : '';
-    const suggested = lookup?.suggestedTracking ? ` You can try the active shipment ${lookup.suggestedTracking}, or paste the full tracking number on the Tracking page.` : ' Please paste the full ZYRAVIQ tracking number, for example SX-8042 or SX-604547.';
+    const suggested = lookup?.suggestedTracking ? ` You can try the active shipment ${lookup.suggestedTracking}, or paste the full tracking number on the Tracking page.` : ' Please paste the full ZYRAVIQ tracking number, for example ZQ-8042 or ZQ-604547.';
     if (hi) {
       const triedHi = lookup?.tried?.length ? ` Maine ${lookup.tried.slice(0, 3).join(', ')} bhi check kiya.` : '';
-      const suggestedHi = lookup?.suggestedTracking ? ` Aap active shipment ${lookup.suggestedTracking} try kar sakte ho, ya Tracking page par full tracking number paste karo.` : ' Kripya full ZYRAVIQ tracking number paste karo, jaise SX-8042 ya SX-604547.';
+      const suggestedHi = lookup?.suggestedTracking ? ` Aap active shipment ${lookup.suggestedTracking} try kar sakte ho, ya Tracking page par full tracking number paste karo.` : ' Kripya full ZYRAVIQ tracking number paste karo, jaise ZQ-8042 ya ZQ-604547.';
       return { reply: `${trackingNumber} ke liye exact shipment nahi mila.${triedHi}${suggestedHi}` };
     }
     return { reply: `I could not find an exact shipment for ${trackingNumber}.${tried}${suggested}` };

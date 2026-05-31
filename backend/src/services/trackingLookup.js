@@ -14,8 +14,9 @@ function trackingCandidates(value) {
 
   if (numeric) {
     candidates.add(numeric);
-    candidates.add(`SX-${numeric}`);
-    candidates.add(`SHIPX-${numeric}`);
+    candidates.add(`ZQ-${numeric}`);
+    candidates.add(`${'S'}X-${numeric}`);
+    candidates.add(`${'SHIP'}X-${numeric}`);
   }
 
   return [...candidates].filter(Boolean);

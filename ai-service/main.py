@@ -195,7 +195,7 @@ def project_fallback_answer(message: str, context: Optional[ChatContext]) -> str
         suggestion_text = f" Abhi active shipment ke liye {suggested} try kar sakte hain." if suggested else ""
         return (
             f"{tracking_number} ka exact shipment record abhi nahi mila.{tried_text} "
-            "Ho sakta hai number incomplete ho; ZYRAVIQ tracking usually SX-8042 ya SX-604547 jaisa hota hai. "
+            "Ho sakta hai number incomplete ho; ZYRAVIQ tracking usually ZQ-8042 ya ZQ-604547 jaisa hota hai. "
             f"Please full tracking number bhejiye, ya Tracking page par paste karke check kijiye.{suggestion_text}"
         )
 
@@ -512,7 +512,7 @@ def detect_fraud(req: FraudRequest):
     history_count = len(req.history or [])
     repeated_statuses = len([entry for entry in req.history if entry.get("status") == "Delayed"])
     risk_score = min(1.0, 0.05 + (history_count * 0.03) + (repeated_statuses * 0.1))
-    is_fraud = risk_score >= 0.25 or req.trackingNumber.upper().startswith("SX-FAKE")
+    is_fraud = risk_score >= 0.25 or req.trackingNumber.upper().startswith("ZQ-FAKE")
     alerts = []
     if is_fraud:
         alerts.append("Potential fraud detected based on delay frequency and unusual pattern.")

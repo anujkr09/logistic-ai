@@ -82,7 +82,7 @@
       shipments: [
         {
           id: 'shp-1',
-          trackingNumber: 'SX-DEMO-1001',
+          trackingNumber: 'ZQ-DEMO-1001',
           origin: 'Mumbai Hub',
           destination: 'Delhi Customer',
           status: 'In Transit',
@@ -92,7 +92,7 @@
         },
         {
           id: 'shp-2',
-          trackingNumber: 'SX-DEMO-1002',
+          trackingNumber: 'ZQ-DEMO-1002',
           origin: 'Bengaluru Hub',
           destination: 'Chennai Doorstep',
           status: 'Delivered',
@@ -122,7 +122,7 @@
         { id: 'frt-2', quoteNo: 'FRT-7002', cargo: 'Oversized retail fixtures', weight: '420 kg', status: 'Reviewing' },
       ],
       notifications: [
-        { id: 'not-1', title: 'Shipment moved', message: 'SX-DEMO-1001 crossed Jaipur hub.', type: 'Shipment', status: 'Unread' },
+        { id: 'not-1', title: 'Shipment moved', message: 'ZQ-DEMO-1001 crossed Jaipur hub.', type: 'Shipment', status: 'Unread' },
         { id: 'not-2', title: 'Payment received', message: 'Invoice INV-9001 was marked paid.', type: 'Payment', status: 'Read' },
       ],
       settings: {
@@ -703,7 +703,7 @@
         <h1>Tracking</h1>
         <form id="trackingForm" class="dynamic-form">
           <div class="form-row">
-            <label class="field"><span>Tracking number</span><input id="trackingInput" class="input" required placeholder="SX-DEMO-1001" /></label>
+            <label class="field"><span>Tracking number</span><input id="trackingInput" class="input" required placeholder="ZQ-DEMO-1001" /></label>
             <label class="field"><span>&nbsp;</span><button class="btn btn-primary" type="submit">Track</button></label>
           </div>
           <div id="trackingHint" class="hint" role="alert"></div>

@@ -68,7 +68,7 @@
     }
   }
 
-  window.__SHIPX_NOTIFICATIONS__ = { loadCustomerNotifications };
+  window.__ZYRAVIQ_NOTIFICATIONS__ = { loadCustomerNotifications };
   document.addEventListener('DOMContentLoaded', autoMount);
 })();
 

@@ -66,8 +66,8 @@
     trackingViewerRole.textContent = roleLabel(role);
     trackingViewerBadge.hidden = false;
 
-    window.__SHIPX_TRACKING_CONTEXT__ = {
-      ...(window.__SHIPX_TRACKING_CONTEXT__ || {}),
+    window.__ZYRAVIQ_TRACKING_CONTEXT__ = {
+      ...(window.__ZYRAVIQ_TRACKING_CONTEXT__ || {}),
       viewerName: name,
       viewerRole: role || 'guest',
       viewerRoleLabel: roleLabel(role),
@@ -191,8 +191,8 @@
     const delay = insights.delay;
     activeTrackingNumber = shipment.trackingNumber || activeTrackingNumber;
     activeShipmentSnapshot = buildTrackingSnapshot(shipment);
-    window.__SHIPX_TRACKING_CONTEXT__ = {
-      ...(window.__SHIPX_TRACKING_CONTEXT__ || {}),
+    window.__ZYRAVIQ_TRACKING_CONTEXT__ = {
+      ...(window.__ZYRAVIQ_TRACKING_CONTEXT__ || {}),
       trackingNumber: activeTrackingNumber,
       shipmentStatus: shipment.status || '',
       currentLocation: locationText(shipment.currentLocation),
@@ -296,8 +296,8 @@
       if (!response.ok) throw new Error(data?.message || 'Could not submit report');
       fraudDescription.value = '';
       if (fraudReportStatus) fraudReportStatus.textContent = 'Fraud report sent to admin and affected customer.';
-      window.__SHIPX_TRACKING_CONTEXT__ = {
-        ...(window.__SHIPX_TRACKING_CONTEXT__ || {}),
+      window.__ZYRAVIQ_TRACKING_CONTEXT__ = {
+        ...(window.__ZYRAVIQ_TRACKING_CONTEXT__ || {}),
         screen: {
           ...(activeShipmentSnapshot || {}),
           reportStatus: fraudReportStatus?.textContent || '',

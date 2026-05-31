@@ -293,7 +293,7 @@
     }
   }
 
-  window.__SHIPX_DYNAMIC_INIT__ = initDynamicPage;
+  window.__ZYRAVIQ_DYNAMIC_INIT__ = initDynamicPage;
   document.addEventListener('DOMContentLoaded', initDynamicPage);
 })();
 

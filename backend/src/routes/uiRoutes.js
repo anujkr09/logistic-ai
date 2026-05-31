@@ -47,7 +47,7 @@ const pageSchemas = {
     title: 'Tracking',
     trackingSearch: {
       formId: 'trackingForm',
-      field: { name: 'trackingNumber', label: 'Tracking number', type: 'text', required: true, placeholder: 'e.g. SX-923847-IN' },
+      field: { name: 'trackingNumber', label: 'Tracking number', type: 'text', required: true, placeholder: 'e.g. ZQ-923847-IN' },
       submitAction: { type: 'shipment.track.public' },
     },
   },

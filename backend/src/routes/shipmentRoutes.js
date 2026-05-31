@@ -39,7 +39,7 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
   const { trackingNumber, origin, destination, currentLocation, status, warehouseId } = req.body || {};
   if (!origin?.text || !destination?.text) return res.status(400).json({ message: 'origin.text and destination.text required' });
 
-  const finalTrackingNumber = String(trackingNumber || `SX-${Date.now()}`).trim().toUpperCase();
+  const finalTrackingNumber = String(trackingNumber || `ZQ-${Date.now()}`).trim().toUpperCase();
   const existing = await Shipment.findOne({ trackingNumber: finalTrackingNumber }).exec();
   if (existing) return res.status(409).json({ message: 'Tracking number already exists' });
 

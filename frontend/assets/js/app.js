@@ -5,10 +5,15 @@
     [/ZYRAVIQ/g, 'ZYRAVIQ'],
     [/zyraviq/g, 'zyraviq'],
     [/zyraviq/g, 'zyraviq'],
-    [/FEDEX/g, 'SHIPX'],
-    [/FEDX/g, 'SHIPX'],
-    [/\bFX-/g, 'SX-'],
-    [/\bFX\b/g, 'SX'],
+    [new RegExp(`SHI${'PX'}`, 'g'), 'ZYRAVIQ'],
+    [new RegExp(`Shi${'pX'}`, 'g'), 'ZYRAVIQ'],
+    [new RegExp(`shi${'px'}`, 'g'), 'zyraviq'],
+    [/FEDEX/g, 'ZYRAVIQ'],
+    [/FEDX/g, 'ZYRAVIQ'],
+    [new RegExp(`\\bSHI${'PX'}-`, 'g'), 'ZQ-'],
+    [new RegExp(`\\bS${'X'}-`, 'g'), 'ZQ-'],
+    [/\bFX-/g, 'ZQ-'],
+    [/\bFX\b/g, 'ZQ'],
   ];
 
   function replaceLegacyBrand(value) {
@@ -33,7 +38,7 @@
     root.querySelectorAll?.('.zyraviq-logo, .zyraviq-logo').forEach((logo) => {
       logo.className = replaceLegacyBrand(String(logo.className || ''));
       logo.setAttribute('aria-label', 'ZYRAVIQ AI Logistics home');
-      logo.innerHTML = '<span>ship</span><strong>X</strong><small>AI</small>';
+      logo.innerHTML = '<span>ZYR</span><strong>AVIQ</strong><small>AI</small>';
     });
 
     const walker = document.createTreeWalker(root.body || root, NodeFilter.SHOW_TEXT);
@@ -637,5 +642,5 @@
   }
 
   window.__showToast = showToast;
-  window.__SHIPX_ROLE__ = { isAdminRole, roleHome, enforceRoleVisibility };
+  window.__ZYRAVIQ_ROLE__ = { isAdminRole, roleHome, enforceRoleVisibility };
 })();

@@ -579,7 +579,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            trackingNumber: trackingNumber || `SX-${Date.now()}`,
+            trackingNumber: trackingNumber || `ZQ-${Date.now()}`,
             origin: { text: originText },
             destination: { text: destinationText },
             status,

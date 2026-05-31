@@ -60,7 +60,7 @@
     }
   }
 
-  window.__SHIPX_ANALYTICS__ = {
+  window.__ZYRAVIQ_ANALYTICS__ = {
     loadCustomerAnalytics,
     loadAdminSummary,
   };
