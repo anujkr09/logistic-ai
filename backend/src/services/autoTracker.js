@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Shipment, Notification } = require('./models');
 const { getIo } = require('../sockets/instance');
 const { buildTrackingInsights } = require('./trackingInsights');
@@ -167,6 +168,7 @@ async function advanceShipment(shipment) {
 
 async function runAutoTracker() {
   if (running) return;
+  if (mongoose.connection.readyState !== 1) return;
   running = true;
 
   try {
