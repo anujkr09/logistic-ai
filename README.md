@@ -69,6 +69,6 @@ Copy `.env.example` to `.env` for both backend and AI service and configure valu
 
 ## Notes
 - The frontend currently uses local storage for JWT tokens.
-- The AI service implements placeholder heuristics for ETA estimation, fraud detection, and recommendations.
+- The AI service and backend include deterministic fallback logic for ETA estimation, fraud detection, recommendations, and chat when external AI providers are unavailable.
 - Docker Compose is configured in `deployment/docker-compose.yml`.
 

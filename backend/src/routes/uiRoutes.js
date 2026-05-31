@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { requireAuth } = require('../middleware/authMiddleware');
 const { Warehouse, Shipment, Notification, Analytics } = require('../services/models');
 const { validateLocation, predictEta, detectFraud, recommendRoute, analyzeTracking, chat } = require('../services/aiClient');
+const { getRevenueSummary } = require('../services/analyticsSummary');
 
 // NOTE: This is a minimal schema system to start making the UI dynamic.
 // It returns JSON config for each page and provides a generic action dispatcher.
@@ -21,7 +22,7 @@ const pageSchemas = {
       fields: [
         { name: 'companyName', label: 'Company', type: 'text', required: true, placeholder: 'Company name' },
         { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@company.com' },
-        { name: 'password', label: 'Password', type: 'password', required: true, placeholder: '••••••••' },
+        { name: 'password', label: 'Password', type: 'password', required: true, placeholder: '********' },
       ],
     },
   },
@@ -35,7 +36,7 @@ const pageSchemas = {
       fields: [
         { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your full name' },
         { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@company.com' },
-        { name: 'password', label: 'Password', type: 'password', required: true, placeholder: '••••••••' },
+        { name: 'password', label: 'Password', type: 'password', required: true, placeholder: '********' },
         { name: 'companyName', label: 'Company', type: 'text', required: true, placeholder: 'Company name' },
       ],
     },
@@ -338,10 +339,16 @@ router.post('/action', requireAuth, async (req, res) => {
         Shipment.countDocuments(base),
         Shipment.countDocuments({ ...base, estimatedDelivery: { $lt: new Date() }, status: { $ne: 'Delivered' } }),
         Shipment.countDocuments({ ...base, status: 'Delivered' }),
-        // Placeholder revenue
-        Promise.resolve({ revenue: 0 }),
+        getRevenueSummary(companyId),
       ]);
-      return res.json({ totalShipments: total, delayedShipments: delayed, deliveredShipments: delivered, revenue: revenueSummary?.revenue || 0, delayedOnly: delayedOnly === 'true' });
+      return res.json({
+        totalShipments: total,
+        delayedShipments: delayed,
+        deliveredShipments: delivered,
+        revenue: revenueSummary.revenue,
+        revenueComputedAt: revenueSummary.computedAt,
+        delayedOnly: delayedOnly === 'true',
+      });
     }
 
     // Fraud alerts

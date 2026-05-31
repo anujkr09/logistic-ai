@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { requireAuth, requireRole } = require('../middleware/authMiddleware');
 const { Shipment } = require('../services/models');
+const { getRevenueSummary } = require('../services/analyticsSummary');
 
 router.get('/customer', requireAuth, async (req, res) => {
   const companyId = req.user.companyId;
@@ -38,19 +39,19 @@ router.get('/customer', requireAuth, async (req, res) => {
 router.get('/admin/summary', requireAuth, requireRole(['admin']), async (req, res) => {
   const companyId = req.user.companyId;
 
-  const [total, delivered, delayed] = await Promise.all([
+  const [total, delivered, delayed, revenueSummary] = await Promise.all([
     Shipment.countDocuments({ companyId }),
     Shipment.countDocuments({ companyId, status: 'Delivered' }),
     Shipment.countDocuments({ companyId, estimatedDelivery: { $lt: new Date() }, status: { $ne: 'Delivered' } }),
+    getRevenueSummary(companyId),
   ]);
-
-  const revenue = total * 120; // Placeholder revenue estimate
 
   res.json({
     totalShipments: total,
     deliveredShipments: delivered,
     delayedShipments: delayed,
-    revenue,
+    revenue: revenueSummary.revenue,
+    revenueComputedAt: revenueSummary.computedAt,
     total,
     delivered,
     delayed,

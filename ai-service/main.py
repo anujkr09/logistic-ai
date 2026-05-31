@@ -321,7 +321,7 @@ async def generate_llm(messages: list[dict]) -> str:
 
 
 # -----------------------------
-# Utilities: placeholder domain logic (existing)
+# Utilities: deterministic logistics fallback logic
 # -----------------------------
 from geopy.distance import geodesic
 
