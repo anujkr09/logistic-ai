@@ -6,8 +6,21 @@ const app = express();
 const PORT = process.env.PORT || process.env.FRONTEND_PORT || 3000;
 const fallbackFile = path.join(__dirname, 'app.html');
 const apiBaseUrl = (process.env.API_BASE_URL || '').replace(/\/$/, '');
+const legacyHostRedirects = {
+  'shipx-ai-logistics.onrender.com': 'zyraviq-ai-logistics.onrender.com',
+  'shipx-ai-frontend.onrender.com': 'zyraviq-ai-frontend.onrender.com',
+};
 
 app.set('trust proxy', true);
+
+app.use((req, res, next) => {
+  const host = String(req.get('host') || '').toLowerCase().split(':')[0];
+  const targetHost = legacyHostRedirects[host];
+  if (!targetHost) return next();
+
+  const protocol = req.protocol || 'https';
+  return res.redirect(308, `${protocol}://${targetHost}${req.originalUrl || req.url || '/'}`);
+});
 
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');

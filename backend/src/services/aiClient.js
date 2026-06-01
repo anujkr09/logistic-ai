@@ -8,6 +8,10 @@ const AI_SERVICE_URL = (
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.2';
 const OPENAI_BASE_URL = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || '';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_BASE_URL = (process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta').replace(/\/$/, '');
+const AI_PROVIDER = String(process.env.AI_PROVIDER || '').toLowerCase();
 
 async function callAi(path, body) {
   const res = await fetch(`${AI_SERVICE_URL}${path}`, {
@@ -131,12 +135,15 @@ function compactShipmentContext(context = {}) {
 function openAiInstructions({ role }) {
   return [
     'You are ZYRAVIQ AI Assistant for a logistics web app.',
+    'You know this project: tracking page, login/register pages, customer dashboard, admin dashboard, warehouses, shipments, notifications, analytics, fraud alerts, route recommendations, weather/ETA/delay insights, and live Socket.io updates.',
     'Always answer in the same language style as the user message: Hindi/Devanagari for Hindi, Hinglish for Hinglish, and English for English.',
     'If the user mixes Hindi and English, reply in natural Hinglish with short Hindi explanations and logistics terms in English when useful.',
     'Use the provided shipment context as the source of truth. Do not invent tracking status, ETA, location, payment, fraud, or account details.',
     'If a tracking number is missing or not found, ask for the full tracking number and suggest the available tracking number only when it is present in context.',
+    'For recommendation questions, give role-aware next steps: customers need tracking, ETA, delay reason, delivery action; admins need shipment creation/update, warehouse assignment, fraud review, analytics, and route recommendations.',
     'For fraud or suspicious activity, explain what signal is visible, advise the user to report it in the app, and avoid accusing a person unless the context explicitly proves it.',
-    'For admin users, you may explain dashboard actions like create shipment, update status, assign warehouse, fraud scan, and AI recommendations.',
+    'For admin users, explain dashboard actions like create shipment, update status, assign warehouse, fraud scan, analytics, live tracking, and AI recommendations.',
+    'Never ask users for passwords, API keys, card details, PAN/GST documents, or private secrets in chat.',
     'Keep answers clear, practical, and concise. Use bullet points only when they help.',
     `Current user role: ${role || 'customer'}.`,
   ].join('\n');
@@ -161,6 +168,21 @@ function extractOpenAiText(data) {
     for (const content of item?.content || []) {
       if (content?.type === 'output_text' && content.text) parts.push(content.text);
       if (content?.text && typeof content.text === 'string') parts.push(content.text);
+    }
+  }
+  return parts.join('\n').trim();
+}
+
+function geminiModelPath(model) {
+  const safeModel = String(model || GEMINI_MODEL).replace(/^models\//, '');
+  return `models/${encodeURIComponent(safeModel)}`;
+}
+
+function extractGeminiText(data) {
+  const parts = [];
+  for (const candidate of data?.candidates || []) {
+    for (const part of candidate?.content?.parts || []) {
+      if (typeof part?.text === 'string') parts.push(part.text);
     }
   }
   return parts.join('\n').trim();
@@ -325,6 +347,53 @@ async function callOpenAiChat({ message, trackingNumber, companyId, context, rol
   return reply ? { reply } : null;
 }
 
+async function callGeminiChat({ message, trackingNumber, companyId, context, role }) {
+  if (!GEMINI_API_KEY) return null;
+
+  const groundedContext = compactShipmentContext({
+    ...(context || {}),
+    role,
+    companyId,
+    trackingNumber,
+  });
+
+  const prompt = [
+    `User message: ${message}`,
+    '',
+    'Available app context JSON:',
+    JSON.stringify(groundedContext, null, 2),
+  ].join('\n');
+
+  const res = await fetch(`${GEMINI_BASE_URL}/${geminiModelPath(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: {
+        parts: [{ text: openAiInstructions({ role }) }],
+      },
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 700,
+      },
+    }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const detail = data?.error?.message || data?.message || `Gemini call failed ${res.status}`;
+    throw new Error(detail);
+  }
+
+  const reply = extractGeminiText(data);
+  return reply ? { reply } : null;
+}
+
 function fallbackChat({ message, trackingNumber, context }) {
   const lang = preferredLanguage(message);
   const hi = lang === 'hi';
@@ -361,9 +430,16 @@ function fallbackChat({ message, trackingNumber, context }) {
     if (hi) return { reply: `Shipment ${shipment.trackingNumber} abhi ${status} hai aur location ${location} hai. Mode: ${mode}. Weather: ${weather}. ETA: ${eta}. Delay check: ${delay}` };
     return { reply: `Shipment ${shipment.trackingNumber} is ${status} at ${location}. Mode: ${mode}. Weather: ${weather}. ETA: ${eta}. Delay check: ${delay}` };
   }
-  if (normalized.includes('admin') || normalized.includes('dashboard')) {
+  if ((normalized.includes('admin') || normalized.includes('dashboard')) && !normalized.includes('recommend') && !normalized.includes('suggest')) {
     if (hi) return { reply: 'Admin dashboard me aap shipments create kar sakte ho, warehouse assign kar sakte ho, analytics dekh sakte ho, fraud alerts scan kar sakte ho, AI recommendations le sakte ho, aur live tracking monitor kar sakte ho.' };
     return { reply: 'Admin dashboard lets you create shipments, assign warehouses, view analytics, fraud alerts, AI recommendations, and monitor live tracking updates.' };
+  }
+  if (normalized.includes('recommend') || normalized.includes('suggest') || normalized.includes('next step')) {
+    const isAdmin = context?.role === 'admin' || context?.role === 'warehouse_manager';
+    if (hi && isAdmin) return { reply: 'Admin recommendation: delayed shipments pehle review karo, AI route/warehouse recommendation use karo, fraud alerts verify karo, phir customer ko updated ETA/status notification bhejo. Specific shipment ke liye tracking number bhejo.' };
+    if (isAdmin) return { reply: 'Admin recommendation: review delayed shipments first, use AI route/warehouse recommendations, verify fraud alerts, then notify the customer with the updated ETA/status. Share a tracking number for shipment-specific advice.' };
+    if (hi) return { reply: 'Customer recommendation: tracking number bhejo, main current location, ETA, delay reason, weather impact aur next delivery step bata dunga. Account issue ho to Login/Register page use karo.' };
+    return { reply: 'Customer recommendation: share a tracking number and I will check current location, ETA, delay reason, weather impact, and the next delivery step. For account issues, use Login/Register.' };
   }
   if (normalized.includes('account') || normalized.includes('register') || normalized.includes('signup')) {
     if (hi) return { reply: 'ZYRAVIQ account banane ke liye Register/Open account page open karo. Existing user login karke apne role ke hisaab se customer ya admin dashboard use kar sakta hai.' };
@@ -396,10 +472,29 @@ async function chat({ message, trackingNumber, companyId, context, role }) {
   const howTo = projectHowToAnswer(message);
   if (howTo) return howTo;
 
+  const preferGemini = GEMINI_API_KEY && (AI_PROVIDER === 'gemini' || !OPENAI_API_KEY || AI_PROVIDER === '');
+  if (preferGemini) {
+    try {
+      const geminiReply = await callGeminiChat({ message, trackingNumber, companyId, context, role });
+      if (geminiReply) return geminiReply;
+    } catch (e) {
+      // Fall through to OpenAI, local AI service, and deterministic fallback.
+    }
+  }
+
   if (OPENAI_API_KEY) {
     try {
       const openAiReply = await callOpenAiChat({ message, trackingNumber, companyId, context, role });
       if (openAiReply) return openAiReply;
+    } catch (e) {
+      // Fall through to the existing local AI service and deterministic fallback.
+    }
+  }
+
+  if (GEMINI_API_KEY && !preferGemini) {
+    try {
+      const geminiReply = await callGeminiChat({ message, trackingNumber, companyId, context, role });
+      if (geminiReply) return geminiReply;
     } catch (e) {
       // Fall through to the existing local AI service and deterministic fallback.
     }
@@ -420,11 +515,36 @@ async function* streamChat({ message, trackingNumber, companyId, context, role }
     return;
   }
 
+  const preferGemini = GEMINI_API_KEY && (AI_PROVIDER === 'gemini' || !OPENAI_API_KEY || AI_PROVIDER === '');
+  if (preferGemini) {
+    try {
+      const geminiReply = await callGeminiChat({ message, trackingNumber, companyId, context, role });
+      if (geminiReply?.reply) {
+        yield geminiReply.reply;
+        return;
+      }
+    } catch (e) {
+      // Fall through to OpenAI/local streaming service.
+    }
+  }
+
   if (OPENAI_API_KEY) {
     try {
       const openAiReply = await callOpenAiChat({ message, trackingNumber, companyId, context, role });
       if (openAiReply?.reply) {
         yield openAiReply.reply;
+        return;
+      }
+    } catch (e) {
+      // Fall through to the existing streaming service.
+    }
+  }
+
+  if (GEMINI_API_KEY && !preferGemini) {
+    try {
+      const geminiReply = await callGeminiChat({ message, trackingNumber, companyId, context, role });
+      if (geminiReply?.reply) {
+        yield geminiReply.reply;
         return;
       }
     } catch (e) {

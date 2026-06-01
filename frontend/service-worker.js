@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zyraviq-ai-logistics-v50';
+const CACHE_NAME = 'zyraviq-ai-logistics-v51';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,13 +7,13 @@ const APP_SHELL = [
   './assets/css/style.css?v=zyraviq37',
   './assets/css/animations.css?v=zyraviq31',
   './assets/css/responsive.css?v=zyraviq34',
-  './assets/css/dynamic-app.css?v=dynamic13',
+  './assets/css/dynamic-app.css?v=dynamic14',
   './assets/css/tracking.css?v=zyraviq31',
-  './assets/css/chatbot.css?v=zyraviq32',
+  './assets/css/chatbot.css?v=zyraviq33',
   './assets/css/dashboard.css?v=zyraviq31',
   './assets/js/app.js?v=zyraviq34',
   './assets/js/dynamicApp.js?v=dynamic10',
-  './assets/js/universalChatbot.js?v=zyraviq33',
+  './assets/js/universalChatbot.js?v=zyraviq34',
   './assets/js/auth.js?v=zyraviq32',
   './assets/js/maps.js?v=zyraviq32',
   './assets/js/profile.js?v=zyraviq31',

@@ -26,19 +26,27 @@
 
   <main class="container auth-page">
     <section class="auth-info card animate-in">
-      <span class="eyebrow">Secure access</span>
-      <h1>Welcome back</h1>
-      <p>Sign in once and your profile, dashboard, shipment history, and tracking tools stay connected to your account.</p>
-      <div class="auth-points">
-        <span>Profile opens without asking login again</span>
-        <span>Customer and admin dashboards stay separate</span>
-        <span>PAN, GST, mobile, and company details stay in your profile</span>
+      <span class="eyebrow">Secure logistics access</span>
+      <h1>Sign in to your ZYRAVIQ workspace</h1>
+      <p>Continue with your company account to manage shipments, tracking, operations, and saved business details.</p>
+      <div class="auth-points" aria-label="Account benefits">
+        <span><strong>Workspace ready</strong> Profile, dashboard, and shipment history stay connected.</span>
+        <span><strong>Role based</strong> Customers and admins open the right tools automatically.</span>
+        <span><strong>Verified business</strong> Company, PAN, GST, and mobile details remain protected.</span>
       </div>
     </section>
 
     <section class="auth-wrap card animate-in">
-      <h2 class="auth-title">Login</h2>
-      <p class="auth-sub">Enter your company, email, and password.</p>
+      <div class="auth-switch" aria-label="Account access options">
+        <span class="auth-switch-item is-active">Sign in</span>
+        <a class="auth-switch-item" href="./register.html">New user</a>
+      </div>
+
+      <div class="auth-heading">
+        <span class="auth-kicker">Existing account</span>
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-sub">Use your registered company, email, and password.</p>
+      </div>
 
       <form id="loginForm" class="auth-form">
         <label class="field">
@@ -54,13 +62,13 @@
           <input name="password" type="password" class="input" placeholder="Your password" autocomplete="current-password" required />
         </label>
 
-        <button class="btn btn-primary" type="submit">Sign in</button>
+        <button class="btn btn-primary auth-submit" type="submit">Sign in securely</button>
         <div id="authHint" class="hint" aria-live="polite"></div>
       </form>
 
       <div class="auth-footer">
-        <span>New here?</span>
-        <a href="./register.html" class="link">Create an account</a>
+        <span>New to ZYRAVIQ?</span>
+        <a href="./register.html" class="link">Register your company account</a>
       </div>
     </section>
   </main>

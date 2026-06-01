@@ -26,19 +26,27 @@
 
   <main class="container auth-page">
     <section class="auth-info card animate-in">
-      <span class="eyebrow">New account</span>
-      <h1>Create your logistics profile</h1>
-      <p>Your profile stores contact details, mobile number with country code, and company PAN/GST verification.</p>
-      <div class="auth-points">
-        <span>Country selector adds phone code automatically</span>
-        <span>Choose Customer or Admin during registration</span>
-        <span>Admin opens operations tools, customer opens tracking tools</span>
+      <span class="eyebrow">New user onboarding</span>
+      <h1>Create a verified logistics account</h1>
+      <p>Register once with company details, contact information, and tax verification for a cleaner shipment workflow.</p>
+      <div class="auth-points" aria-label="Registration benefits">
+        <span><strong>Fast setup</strong> Country selection fills the phone code automatically.</span>
+        <span><strong>Correct access</strong> Pick Customer or Admin during account creation.</span>
+        <span><strong>Business checks</strong> PAN and GST details are validated before onboarding.</span>
       </div>
     </section>
 
     <section class="auth-wrap card animate-in">
-      <h2 class="auth-title">Create account</h2>
-      <p class="auth-sub">Register with company verification details.</p>
+      <div class="auth-switch" aria-label="Account access options">
+        <span class="auth-switch-item is-active">New user</span>
+        <a class="auth-switch-item" href="./login.html">Sign in</a>
+      </div>
+
+      <div class="auth-heading">
+        <span class="auth-kicker">Create account</span>
+        <h2 class="auth-title">Register your company</h2>
+        <p class="auth-sub">Add your user, mobile, company, PAN, and GST details.</p>
+      </div>
 
       <form id="registerForm" class="auth-form">
         <label class="field">
@@ -95,13 +103,13 @@
           <small class="field-help">Example: first 2 digits are state code, next 10 characters must be your PAN.</small>
         </label>
 
-        <button class="btn btn-primary" type="submit">Register</button>
+        <button class="btn btn-primary auth-submit" type="submit">Create account</button>
         <div id="authHint" class="hint" aria-live="polite"></div>
       </form>
 
       <div class="auth-footer">
         <span>Already have an account?</span>
-        <a href="./login.html" class="link">Sign in</a>
+        <a href="./login.html" class="link">Sign in to your workspace</a>
       </div>
     </section>
   </main>

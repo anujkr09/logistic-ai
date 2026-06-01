@@ -23,6 +23,9 @@ const workspaceRoutes = require('./routes/workspaceRoutes');
 const { CORS_ORIGIN } = require('./config/env');
 
 const app = express();
+const legacyHostRedirects = {
+  'shipx-ai-logistics.onrender.com': 'zyraviq-ai-logistics.onrender.com',
+};
 
 const apiLimiter = rateLimit({
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
@@ -31,6 +34,17 @@ const apiLimiter = rateLimit({
 const authLimiter = rateLimit({
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),
   max: Number(process.env.AUTH_RATE_LIMIT_MAX || 30),
+});
+
+app.set('trust proxy', true);
+
+app.use((req, res, next) => {
+  const host = String(req.get('host') || '').toLowerCase().split(':')[0];
+  const targetHost = legacyHostRedirects[host];
+  if (!targetHost) return next();
+
+  const protocol = req.protocol || 'https';
+  return res.redirect(308, `${protocol}://${targetHost}${req.originalUrl || req.url || '/'}`);
 });
 
 app.use(helmet({

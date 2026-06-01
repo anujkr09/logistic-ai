@@ -82,12 +82,20 @@
 
   function fillEditForm(user = getStoredUser()) {
     const phone = user.phone || {};
+    const name = document.getElementById('editName');
     const email = document.getElementById('editEmail');
+    const companyName = document.getElementById('editCompanyName');
+    const panNumber = document.getElementById('editPanNumber');
+    const gstNumber = document.getElementById('editGstNumber');
     const country = document.getElementById('editPhoneCountry');
     const code = document.getElementById('editPhoneCode');
     const number = document.getElementById('editPhoneNumber');
 
+    if (name) name.value = user.name || '';
     if (email) email.value = user.email || '';
+    if (companyName) companyName.value = user.companyName || '';
+    if (panNumber) panNumber.value = user.panNumber || '';
+    if (gstNumber) gstNumber.value = user.gstNumber || '';
     if (country) country.value = phone.country || 'India';
     if (code) code.value = phone.countryCode || optionCodeForCountry(country?.value || 'India');
     if (number) number.value = phone.number || '';
@@ -191,13 +199,17 @@
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      const name = form.elements.name?.value?.trim();
       const email = form.elements.email?.value?.trim();
+      const companyName = form.elements.companyName?.value?.trim();
+      const panNumber = form.elements.panNumber?.value?.trim().toUpperCase();
+      const gstNumber = form.elements.gstNumber?.value?.trim().toUpperCase();
       const phoneCountry = form.elements.phoneCountry?.value?.trim();
       const phoneCountryCode = form.elements.phoneCountryCode?.value?.trim();
       const phoneNumber = form.elements.phoneNumber?.value?.trim();
 
-      if (!email || !phoneCountry || !phoneCountryCode || !phoneNumber) {
-        if (state) state.textContent = 'Please fill email and mobile number';
+      if (!name || !email || !companyName || !panNumber || !gstNumber || !phoneCountry || !phoneCountryCode || !phoneNumber) {
+        if (state) state.textContent = 'Please fill all profile details';
         return;
       }
 
@@ -205,7 +217,7 @@
       if (button) button.disabled = true;
 
       try {
-        const user = await updateProfile({ email, phoneCountry, phoneCountryCode, phoneNumber });
+        const user = await updateProfile({ name, email, companyName, panNumber, gstNumber, phoneCountry, phoneCountryCode, phoneNumber });
         setStoredUser(user);
         renderProfile(user);
         if (state) state.textContent = 'Saved';

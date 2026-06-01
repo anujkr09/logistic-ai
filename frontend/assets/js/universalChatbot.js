@@ -45,7 +45,7 @@
           </div>
           <form class="chatbot-form" id="chatbotForm">
             <input id="chatbotMessage" type="text" placeholder="Type your message..." aria-label="Type your message" autocomplete="off" />
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button type="submit" class="btn btn-primary chatbot-send">Send</button>
           </form>
         </div>
       </div>
@@ -307,37 +307,33 @@
     chatbotToggle?.addEventListener('click', () => toggleChatbot(true));
     chatbotClose?.addEventListener('click', () => toggleChatbot(false));
 
-    // Suggested questions (simple, role-agnostic)
-    const suggested = [
-      'Where is my parcel?',
-      'Why is my shipment delayed?',
-      'How do I open an account?',
-      'What can admin dashboard do?',
-    ];
+    const role = (trackingPageContext().viewerRole || localStorage.getItem('userRole') || 'guest').toLowerCase();
+    const isAdmin = role === 'admin' || role === 'warehouse_manager';
+    const suggested = isAdmin
+      ? [
+          'Show shipment recommendations',
+          'How do I assign a warehouse?',
+          'Check fraud risk',
+          'What should I do next?',
+        ]
+      : [
+          'Where is my parcel?',
+          'Why is my shipment delayed?',
+          'How do I open an account?',
+          'When will it deliver?',
+        ];
 
     // Inject suggestion row once
     if (!document.getElementById('chatbotSuggestions')) {
       const suggestionRow = document.createElement('div');
       suggestionRow.id = 'chatbotSuggestions';
-      suggestionRow.style.padding = '0 22px 12px';
-      suggestionRow.style.display = 'flex';
-      suggestionRow.style.gap = '10px';
-      suggestionRow.style.flexWrap = 'wrap';
-      suggestionRow.style.background = '#f8f8fb';
-      suggestionRow.style.borderTop = '1px solid rgba(0,0,0,.04)';
+      suggestionRow.className = 'chatbot-suggestions';
 
       suggested.forEach((q) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = q;
-        btn.style.border = '1px solid rgba(0,0,0,.12)';
-        btn.style.borderRadius = '999px';
-        btn.style.padding = '8px 12px';
-        btn.style.cursor = 'pointer';
-        btn.style.background = '#fff';
-        btn.style.color = '#4d148c';
-        btn.style.fontWeight = '800';
-        btn.style.fontSize = '12px';
+        btn.className = 'chatbot-suggestion';
         btn.addEventListener('click', () => {
           inputEl.value = q;
           inputEl.focus();
@@ -357,6 +353,7 @@
       if (!msg) return;
       if (sending) return;
       sending = true;
+      setFormBusy(true);
 
       const pageCtx = trackingPageContext();
       const trackingNumber = extractTrackingNumber(msg) || pageCtx.trackingNumber || null;
@@ -369,6 +366,7 @@
       if (directAnswer) {
         addMessage(messagesEl, directAnswer, 'bot');
         sending = false;
+        setFormBusy(false);
         return;
       }
 
@@ -376,6 +374,7 @@
       if (howToAnswer) {
         addMessage(messagesEl, howToAnswer, 'bot');
         sending = false;
+        setFormBusy(false);
         return;
       }
 
@@ -402,6 +401,8 @@
           const onDone = ({ sessionId } = {}) => {
             if (sessionId !== chatSessionId) return;
             removeEl(typingEl);
+            sending = false;
+            setFormBusy(false);
             socket.off('chat:token', onToken);
             socket.off('chat:done', onDone);
             socket.off('chat:error', onError);
@@ -411,6 +412,8 @@
             if (sessionId !== chatSessionId) return;
             removeEl(typingEl);
             addMessage(messagesEl, message || 'AI error', 'bot');
+            sending = false;
+            setFormBusy(false);
             socket.off('chat:token', onToken);
             socket.off('chat:done', onDone);
             socket.off('chat:error', onError);
@@ -440,8 +443,20 @@
         removeEl(typingEl);
         addMessage(messagesEl, 'AI service unavailable', 'bot');
       } finally {
-        sending = false;
+        if (!useSocket) {
+          sending = false;
+          setFormBusy(false);
+        }
       }
+    }
+
+    function setFormBusy(isBusy) {
+      const button = chatbotForm.querySelector('button[type="submit"]');
+      if (button) {
+        button.disabled = Boolean(isBusy);
+        button.setAttribute('aria-busy', isBusy ? 'true' : 'false');
+      }
+      inputEl.disabled = Boolean(isBusy);
     }
 
     chatbotForm.addEventListener('submit', (event) => {

@@ -55,15 +55,31 @@
       <section class="panel card profile-edit-panel" style="margin-top:16px;">
         <div class="profile-head">
           <div>
-            <h2 class="panel-title">Update contact details</h2>
-            <p class="page-subtitle">Change your email or mobile number anytime.</p>
+            <h2 class="panel-title">Update profile details</h2>
+            <p class="page-subtitle">Change your account, contact, and company verification details anytime.</p>
           </div>
           <span id="profileSaveState" class="hint" aria-live="polite"></span>
         </div>
         <form id="profileEditForm" class="profile-edit-form">
           <label class="field">
+            <span>Name</span>
+            <input id="editName" name="name" type="text" class="input" placeholder="Your name" required />
+          </label>
+          <label class="field">
             <span>Email</span>
             <input id="editEmail" name="email" type="email" class="input" placeholder="you@company.com" required />
+          </label>
+          <label class="field">
+            <span>Company</span>
+            <input id="editCompanyName" name="companyName" type="text" class="input" placeholder="Company name" required />
+          </label>
+          <label class="field">
+            <span>PAN number</span>
+            <input id="editPanNumber" name="panNumber" type="text" class="input" placeholder="ABCDE1234F" maxlength="10" required />
+          </label>
+          <label class="field">
+            <span>GST number</span>
+            <input id="editGstNumber" name="gstNumber" type="text" class="input" placeholder="22ABCDE1234F1Z5" maxlength="15" required />
           </label>
           <label class="field">
             <span>Country</span>

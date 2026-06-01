@@ -267,6 +267,10 @@
     return state.user?.role === 'admin' || state.user?.role === 'warehouse_manager';
   }
 
+  function isMockToken() {
+    return !state.token || String(state.token).startsWith('mock-');
+  }
+
   function saveAuth(user) {
     state.token = `mock-${Date.now()}`;
     state.user = user;
@@ -292,7 +296,7 @@
       ['Products', '/products'],
       ['Pickups', '/pickups'],
       ['Warehouses', '/warehouses'],
-      ['Users', '/users'],
+      ...(isAdmin() ? [['Users', '/users']] : []),
       ['Payments', '/payments'],
       ['Analytics', '/analytics'],
       ['Data Center', '/data-center'],
@@ -524,6 +528,11 @@
 
   function dashboardPage(admin = false) {
     if (!requireLogin()) return '';
+    if (admin && !isAdmin()) {
+      go('/dashboard');
+      toast('Admin console is admin-only', 'error');
+      return '';
+    }
     const totals = {
       shipments: state.db.shipments.length,
       orders: state.db.orders.length,
@@ -561,6 +570,11 @@
     if (!requireLogin()) return '';
     const cfg = entityConfig[entity];
     if (!cfg) return notFoundPage();
+    if (entity === 'users' && !isAdmin()) {
+      go('/dashboard');
+      toast('Users management is admin-only', 'error');
+      return '';
+    }
     const params = new URLSearchParams(location.search);
     const filter = params.get('filter') || '';
     const rows = [...(state.db[entity] || [])];
@@ -667,6 +681,11 @@
   function detailPage(entity, id) {
     if (!requireLogin()) return '';
     const cfg = entityConfig[entity];
+    if (entity === 'users' && !isAdmin()) {
+      go('/dashboard');
+      toast('Users management is admin-only', 'error');
+      return '';
+    }
     const item = state.db[entity]?.find((row) => row.id === id);
     if (!cfg || !item) return notFoundPage('Data missing');
     return layout(`
@@ -1110,16 +1129,53 @@
 
   function profilePage() {
     if (!requireLogin()) return '';
+    const phone = state.user?.phone || {};
+    const companyName = state.user?.companyName || state.db.settings.companyName || '';
+    const role = state.user?.role || 'customer';
     return layout(`
-      <section class="dynamic-panel"><p class="home-kicker">Profile</p><h1>Profile</h1></section>
+      <section class="dynamic-panel">
+        <p class="home-kicker">${escapeHtml(titleCase(role))} profile</p>
+        <h1>Profile</h1>
+        <p class="muted-text">Account, contact, PAN/GST, and company details for the signed-in user.</p>
+      </section>
       <section class="dynamic-panel">
         <form id="profileForm" class="dynamic-form" data-dirty-form>
-          <label class="field"><span>Name</span><input class="input" name="name" required value="${escapeHtml(state.user?.name || '')}" /></label>
-          <label class="field"><span>Email</span><input class="input" name="email" type="email" required value="${escapeHtml(state.user?.email || '')}" /></label>
-          <label class="field"><span>Role</span><select class="select" name="role"><option value="customer" ${state.user?.role === 'customer' ? 'selected' : ''}>Customer</option><option value="admin" ${state.user?.role === 'admin' ? 'selected' : ''}>Admin</option></select></label>
+          <div class="form-row">
+            <label class="field"><span>Name</span><input class="input" name="name" required value="${escapeHtml(state.user?.name || '')}" /></label>
+            <label class="field"><span>Email</span><input class="input" name="email" type="email" required value="${escapeHtml(state.user?.email || '')}" /></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Company</span><input class="input" name="companyName" required value="${escapeHtml(companyName)}" /></label>
+            <label class="field"><span>Role</span><input class="input" name="roleLabel" readonly value="${escapeHtml(titleCase(role))}" /></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>PAN number</span><input class="input" name="panNumber" maxlength="10" required value="${escapeHtml(state.user?.panNumber || '')}" /></label>
+            <label class="field"><span>GST number</span><input class="input" name="gstNumber" maxlength="15" required value="${escapeHtml(state.user?.gstNumber || '')}" /></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Country</span><input class="input" name="phoneCountry" required value="${escapeHtml(phone.country || 'India')}" /></label>
+            <label class="field"><span>Country code</span><input class="input" name="phoneCountryCode" required value="${escapeHtml(phone.countryCode || '+91')}" /></label>
+          </div>
+          <label class="field"><span>Mobile number</span><input class="input" name="phoneNumber" type="tel" inputmode="tel" required value="${escapeHtml(phone.number || '')}" /></label>
           <div class="dynamic-actions"><button class="btn btn-primary" type="submit">Save</button><button class="btn-secondary" type="button" data-action="cancel-form">Cancel</button></div>
           <div class="hint" id="profileHint" role="alert"></div>
         </form>
+      </section>
+      <section class="dynamic-panel">
+        <div class="table-responsive">
+          <table class="data-table"><tbody>
+            <tr><th>Name</th><td>${escapeHtml(state.user?.name || '-')}</td></tr>
+            <tr><th>Email</th><td>${escapeHtml(state.user?.email || '-')}</td></tr>
+            <tr><th>Mobile</th><td>${escapeHtml([phone.countryCode, phone.number].filter(Boolean).join(' ') || '-')}</td></tr>
+            <tr><th>Company</th><td>${escapeHtml(companyName || '-')}</td></tr>
+            <tr><th>PAN</th><td>${escapeHtml(state.user?.panNumber || '-')}</td></tr>
+            <tr><th>GST</th><td>${escapeHtml(state.user?.gstNumber || '-')}</td></tr>
+            <tr><th>Account type</th><td>${escapeHtml(titleCase(role))}</td></tr>
+            <tr><th>User ID</th><td>${escapeHtml(state.user?.id || '-')}</td></tr>
+            <tr><th>Company ID</th><td>${escapeHtml(state.user?.companyId || localStorage.getItem('companyId') || '-')}</td></tr>
+            <tr><th>Status</th><td>${escapeHtml(state.user?.status || 'active')}</td></tr>
+          </tbody></table>
+        </div>
       </section>
     `, '/profile');
   }
@@ -1131,7 +1187,7 @@
       ['Data Center', 'Orders, deliveries, tracking movement, issues, payments, invoices, and export.', '/data-center'],
       ['Reports', 'Download and print operational reports.', '/reports'],
       ['Support', 'Create tickets and delivery help requests.', '/support?action=add'],
-      ['Users', 'Manage workspace users and access.', '/users'],
+      ...(isAdmin() ? [['Users', 'Manage workspace users and access.', '/users']] : []),
       ['Orders', 'Review order intake and fulfillment status.', '/orders'],
       ['Products', 'Manage inventory and shipping supplies.', '/products'],
       ['Payments', 'Review invoices and payment status.', '/payments'],
@@ -1371,15 +1427,62 @@
       toast('Save success');
     });
 
-    document.getElementById('profileForm')?.addEventListener('submit', (event) => {
+    document.getElementById('profileForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!event.currentTarget.reportValidity()) return;
       const values = Object.fromEntries(new FormData(event.currentTarget));
-      state.user = { ...state.user, ...values };
+      const hint = document.getElementById('profileHint');
+      const payload = {
+        name: String(values.name || '').trim(),
+        email: String(values.email || '').trim(),
+        companyName: String(values.companyName || '').trim(),
+        panNumber: String(values.panNumber || '').trim().toUpperCase(),
+        gstNumber: String(values.gstNumber || '').trim().toUpperCase(),
+        phoneCountry: String(values.phoneCountry || '').trim(),
+        phoneCountryCode: String(values.phoneCountryCode || '').trim(),
+        phoneNumber: String(values.phoneNumber || '').trim(),
+      };
+
+      if (!isMockToken()) {
+        try {
+          if (hint) hint.textContent = 'Saving...';
+          const response = await fetch(`${apiBase}/api/auth/me`, {
+            method: 'PATCH',
+            headers: apiHeaders(true),
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.message || 'Profile update failed');
+          state.user = data.user;
+        } catch (error) {
+          if (hint) hint.textContent = error.message;
+          toast(error.message, 'error');
+          return;
+        }
+      } else {
+        state.user = {
+          ...state.user,
+          name: payload.name,
+          email: payload.email,
+          companyName: payload.companyName,
+          panNumber: payload.panNumber,
+          gstNumber: payload.gstNumber,
+          phone: {
+            country: payload.phoneCountry,
+            countryCode: payload.phoneCountryCode,
+            number: payload.phoneNumber,
+            fullNumber: `${payload.phoneCountryCode}${payload.phoneNumber}`,
+          },
+        };
+      }
+
+      state.db.settings.companyName = state.user.companyName || state.db.settings.companyName;
       localStorage.setItem('user', JSON.stringify(state.user));
       localStorage.setItem('userRole', state.user.role || '');
+      if (state.user.companyId) localStorage.setItem('companyId', state.user.companyId);
+      persist();
       event.currentTarget.dataset.dirty = 'false';
-      document.getElementById('profileHint').textContent = 'Profile saved.';
+      if (hint) hint.textContent = 'Profile saved.';
       toast('Save success');
       render();
     });

@@ -97,7 +97,8 @@ def build_system_prompt() -> str:
         "- Do not ask for passwords, API keys, PAN/GST numbers, card details, or private documents in chat.\\n"
         "- For account opening, send users to Register/Open account.\\n"
         "- For customers: explain where the parcel is, why it may be delayed, ETA, mode, weather, and next step.\\n"
-        "- For admins: explain dashboard actions, shipment creation, warehouse assignment, fraud checks, and live tracking automation.\\n"
+        "- For admins: explain dashboard actions, shipment creation, warehouse assignment, fraud checks, analytics, AI route recommendations, and live tracking automation.\\n"
+        "- For recommendation questions: customers get delivery next steps; admins get operational actions with priority/order.\\n"
         "\\nProject pages/features you know:\\n"
         "- Home has Tracking, Shipping, Support, and Account navigation.\\n"
         "- Tracking page accepts a tracking number and shows route, current location, transport mode, weather, delay reason, ETA confidence, map, and timeline.\\n"
@@ -172,6 +173,21 @@ def project_fallback_answer(message: str, context: Optional[ChatContext]) -> str
 
     if "register" in text or "account" in text or "open" in text or "signup" in text:
         return "Account banane ke liye Register/Open account page par jaiye. Wahan company details, user info aur login credentials create honge. Existing user ho to Login page use karein."
+
+    if "recommend" in text or "recommendation" in text or "suggest" in text or "next" in text:
+        if role in ["admin", "warehouse_manager"]:
+            return (
+                "Admin recommendation:\n"
+                "1. Delayed/pending shipments ko pehle review karein.\n"
+                "2. AI route recommendation se fastest route aur nearest warehouse choose karein.\n"
+                "3. Manual status update se pehle fraud alerts verify karein.\n"
+                "4. ETA/status update ke baad customer notification bhejein.\n"
+                "Specific shipment recommendation ke liye tracking number bhejiye."
+            )
+        return (
+            "Customer recommendation: tracking number bhejiye, phir main current location, ETA, delay reason, weather impact aur next delivery step bata dunga. "
+            "Account issue ho to Login/Register page use karein."
+        )
 
     if "admin" in text or "dashboard" in text:
         if role in ["admin", "warehouse_manager"]:
@@ -269,11 +285,12 @@ async def stream_gemini_chat(messages: list[dict], model: str) -> AsyncGenerator
 
 
 async def stream_llm(messages: list[dict]) -> AsyncGenerator[str, None]:
-    provider = (_env("AI_PROVIDER", "openai") or "openai").lower()
-    openai_model = _env("OPENAI_MODEL", "gpt-4o-mini")
-    gemini_model = _env("GEMINI_MODEL", "gemini-2.5-flash")
     has_openai_key = bool(_env("OPENAI_API_KEY", ""))
     has_gemini_key = bool(_env("GEMINI_API_KEY", ""))
+    default_provider = "gemini" if has_gemini_key and not has_openai_key else "openai"
+    provider = (_env("AI_PROVIDER", default_provider) or default_provider).lower()
+    openai_model = _env("OPENAI_MODEL", "gpt-4o-mini")
+    gemini_model = _env("GEMINI_MODEL", "gemini-2.5-flash")
 
     last_err: Optional[Exception] = None
 

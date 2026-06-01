@@ -97,7 +97,7 @@ router.get('/me', requireAuth, async (req, res) => {
 });
 
 router.patch('/me', requireAuth, async (req, res) => {
-  const { email, phoneCountry, phoneCountryCode, phoneNumber } = req.body || {};
+  const { name, email, companyName, panNumber, gstNumber, phoneCountry, phoneCountryCode, phoneNumber } = req.body || {};
 
   const [user, company] = await Promise.all([
     User.findOne({ _id: req.user.id }).exec(),
@@ -108,6 +108,9 @@ router.patch('/me', requireAuth, async (req, res) => {
 
   const nextEmail = String(email || '').toLowerCase().trim();
   if (!nextEmail) return res.status(400).json({ message: 'Email required' });
+
+  const nextName = String(name || '').trim();
+  if (!nextName) return res.status(400).json({ message: 'Name required' });
 
   if (nextEmail !== user.email) {
     const existing = await User.findOne({
@@ -121,9 +124,34 @@ router.patch('/me', requireAuth, async (req, res) => {
 
   const phone = normalizePhone({ phoneCountry, phoneCountryCode, phoneNumber });
   if (phone.error) return res.status(400).json({ message: phone.error });
+  user.name = nextName;
   user.phone = phone;
 
-  await user.save();
+  const nextCompanyName = String(companyName || '').trim();
+  if (!nextCompanyName) return res.status(400).json({ message: 'Company name required' });
+
+  const taxIds = validateCompanyTaxIds({ panNumber, gstNumber });
+  if (taxIds.error) return res.status(400).json({ message: taxIds.error });
+
+  if (nextCompanyName !== company.name) {
+    const existingCompany = await Company.findOne({
+      _id: { $ne: company._id },
+      name: nextCompanyName,
+    }).exec();
+    if (existingCompany) return res.status(409).json({ message: 'Company name is already registered' });
+    company.name = nextCompanyName;
+  }
+
+  const taxOwner = await Company.findOne({
+    _id: { $ne: company._id },
+    $or: [{ panNumber: taxIds.pan }, { gstNumber: taxIds.gst }],
+  }).exec();
+  if (taxOwner) return res.status(409).json({ message: 'PAN/GST details are already registered with another company' });
+
+  company.panNumber = taxIds.pan;
+  company.gstNumber = taxIds.gst;
+
+  await Promise.all([user.save(), company.save()]);
   res.json({ user: publicUser(user, company) });
 });
 
