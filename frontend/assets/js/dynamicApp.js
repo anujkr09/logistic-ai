@@ -19,6 +19,8 @@
     pickups: { title: 'Pickup Desk', singular: 'Pickup', fields: ['pickupNo', 'address', 'slot', 'status'], filter: 'status', lead: 'Book, edit, and monitor pickup slots with address and assignment context.' },
     stores: { title: 'Store Shipping', singular: 'Store Order', fields: ['store', 'orderNo', 'channel', 'status'], filter: 'status', lead: 'Move ecommerce orders from channel intake to packing and dispatch.' },
     warehouses: { title: 'Warehouses', singular: 'Warehouse', fields: ['name', 'city', 'capacity', 'status'], filter: 'status', lead: 'Track hub capacity, city coverage, and operational readiness.' },
+    drivers: { title: 'Drivers', singular: 'Driver', fields: ['name', 'phone', 'vehicleNumber', 'currentStatus'], filter: 'currentStatus', lead: 'Manage driver availability, assigned vehicles, licenses, and route readiness.' },
+    vehicles: { title: 'Vehicles', singular: 'Vehicle', fields: ['vehicleNumber', 'vehicleType', 'driverName', 'status'], filter: 'status', lead: 'Track vehicles, driver pairing, route status, GPS context, fuel, and speed.' },
     payments: { title: 'Payments', singular: 'Payment', fields: ['invoiceNo', 'customer', 'amount', 'status'], filter: 'status', lead: 'Review invoices, payment states, and customer billing status.' },
     support: { title: 'Support', singular: 'Ticket', fields: ['ticketNo', 'subject', 'status', 'priority'], filter: 'status', lead: 'Resolve delivery help, callbacks, account issues, and support escalations.' },
     packaging: { title: 'Packaging Guide', singular: 'Packaging Item', fields: ['item', 'packageType', 'handling', 'status'], filter: 'status', lead: 'Prepare parcels with package type, handling notes, and readiness checks.' },
@@ -104,6 +106,14 @@
       warehouses: [
         { id: 'wh-1', name: 'Mumbai Central Hub', city: 'Mumbai', capacity: '78%', status: 'Active' },
         { id: 'wh-2', name: 'Delhi North Hub', city: 'Delhi', capacity: '61%', status: 'Active' },
+      ],
+      drivers: [
+        { id: 'drv-1', name: 'Ravi Kumar', phone: '+91 9876543210', vehicleNumber: 'DL01AB1234', vehicleType: 'Truck', licenseNumber: 'DL-2026-0001', currentStatus: 'Available' },
+        { id: 'drv-2', name: 'Aman Singh', phone: '+91 9123456789', vehicleNumber: 'MH02ZX9087', vehicleType: 'Van', licenseNumber: 'MH-2026-0021', currentStatus: 'On Route' },
+      ],
+      vehicles: [
+        { id: 'veh-1', vehicleNumber: 'DL01AB1234', vehicleType: 'Truck', driverName: 'Ravi Kumar', currentLocation: 'Delhi Hub', fuelStatus: '82%', speedKmph: '0', route: 'DEL-KNP-PAT', status: 'Available' },
+        { id: 'veh-2', vehicleNumber: 'MH02ZX9087', vehicleType: 'Van', driverName: 'Aman Singh', currentLocation: 'Pune Expressway', fuelStatus: '64%', speedKmph: '58', route: 'MUM-PUN-BLR', status: 'In Transit' },
       ],
       payments: [
         { id: 'pay-1', invoiceNo: 'INV-9001', customer: 'Northstar Retail', amount: '2450', status: 'Paid' },
@@ -296,6 +306,7 @@
       ['Products', '/products'],
       ['Pickups', '/pickups'],
       ['Warehouses', '/warehouses'],
+      ...(isAdmin() ? [['Drivers', '/drivers'], ['Vehicles', '/vehicles']] : []),
       ...(isAdmin() ? [['Users', '/users']] : []),
       ['Payments', '/payments'],
       ['Analytics', '/analytics'],
@@ -538,6 +549,10 @@
       orders: state.db.orders.length,
       delivered: state.db.shipments.filter((x) => x.status === 'Delivered').length,
       alerts: state.db.notifications.filter((x) => x.status === 'Unread').length,
+      ...(admin ? {
+        drivers: state.db.drivers?.length || 0,
+        vehicles: state.db.vehicles?.length || 0,
+      } : {}),
     };
     return layout(`
       <section class="dynamic-panel">
@@ -554,6 +569,42 @@
         <div class="dynamic-panel"><h2>Recent shipments</h2>${smallList('shipments', state.db.shipments.slice(0, 5))}</div>
         <div class="dynamic-panel"><h2>Notifications</h2>${smallList('notifications', state.db.notifications.slice(0, 5))}</div>
       </section>
+      ${admin ? `
+        <section class="dynamic-grid two">
+          <div class="dynamic-panel">
+            <div class="page-head-row compact">
+              <div>
+                <p class="home-kicker">Fleet desk</p>
+                <h2>Driver management</h2>
+              </div>
+              <a class="btn-secondary" href="/drivers" data-link>Open drivers</a>
+            </div>
+            ${smallList('drivers', (state.db.drivers || []).slice(0, 5))}
+          </div>
+          <div class="dynamic-panel">
+            <div class="page-head-row compact">
+              <div>
+                <p class="home-kicker">Live fleet</p>
+                <h2>Vehicle tracking</h2>
+              </div>
+              <a class="btn-secondary" href="/vehicles" data-link>Open vehicles</a>
+            </div>
+            ${smallList('vehicles', (state.db.vehicles || []).slice(0, 5))}
+          </div>
+        </section>
+        <section class="dynamic-grid two">
+          <article class="dynamic-card actionable-card" tabindex="0" data-card-href="/reports">
+            <h3>Operations reports</h3>
+            <p class="muted-text">Download delivery, risk, revenue, and route summaries.</p>
+            <a href="/reports" data-link>Open reports</a>
+          </article>
+          <article class="dynamic-card actionable-card" tabindex="0" data-card-href="/data-center">
+            <h3>Audit and data center</h3>
+            <p class="muted-text">Review operational records, exports, payments, and issue history.</p>
+            <a href="/data-center" data-link>Open data center</a>
+          </article>
+        </section>
+      ` : ''}
     `, admin ? '/admin' : '/dashboard');
   }
 
@@ -1193,6 +1244,7 @@
       ['Payments', 'Review invoices and payment status.', '/payments'],
       ['Analytics', 'View delivery and support metrics.', '/analytics'],
       ['Warehouses', 'Manage hubs and capacity.', '/warehouses'],
+      ...(isAdmin() ? [['Drivers', 'Manage driver profiles, availability, and assigned vehicles.', '/drivers'], ['Vehicles', 'Track vehicle status, driver pairing, route, fuel, and speed.', '/vehicles']] : []),
       ['Plan route', 'Compare ETA and service options.', '/routes'],
       ['Pickup desk', 'Book, edit, and monitor pickups.', '/pickups'],
       ['Store shipping', 'Manage ecommerce order movement.', '/stores'],

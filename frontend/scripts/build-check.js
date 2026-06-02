@@ -133,6 +133,11 @@ if (!frontendServer.includes("app.get('/robots.txt'") || !frontendServer.include
   fail('Frontend server must serve robots.txt and sitemap.xml before SPA fallback.');
 }
 
+const dynamicApp = fs.readFileSync(path.join(root, 'assets/js/dynamicApp.js'), 'utf8');
+if (!dynamicApp.includes('Driver management') || !dynamicApp.includes('Vehicle tracking') || !dynamicApp.includes('drivers:') || !dynamicApp.includes('vehicles:')) {
+  fail('Dynamic admin app must include driver and vehicle management modules.');
+}
+
 if (!process.exitCode) {
   console.log('Static frontend build check passed.');
 }

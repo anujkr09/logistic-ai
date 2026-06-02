@@ -53,6 +53,11 @@ if (!analyticsSummary.includes('refreshRevenueSummary') || !shipmentRoutes.inclu
   fail('Shipment writes must refresh revenue_summary analytics.');
 }
 
+const workspaceRoutes = fs.readFileSync(path.join(root, 'src/routes/workspaceRoutes.js'), 'utf8');
+if (!workspaceRoutes.includes("'drivers'") || !workspaceRoutes.includes("'vehicles'")) {
+  fail('Workspace persistence must allow driver and vehicle records.');
+}
+
 if (!process.exitCode) {
   console.log('Static backend build check passed.');
 }

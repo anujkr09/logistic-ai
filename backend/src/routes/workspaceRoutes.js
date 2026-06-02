@@ -12,6 +12,8 @@ const allowedEntities = new Set([
   'pickups',
   'stores',
   'warehouses',
+  'drivers',
+  'vehicles',
   'payments',
   'support',
   'packaging',
