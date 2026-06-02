@@ -97,10 +97,16 @@ if (!appHtml.includes('app-splash') || !appHtml.includes('dynamic-app.css')) {
 if (!appHtml.includes('meta name="description"') || !appHtml.includes('rel="canonical"')) {
   fail('Dynamic app shell must include SEO description and canonical metadata.');
 }
+if (!appHtml.includes('google-site-verification')) {
+  fail('Dynamic app shell must include Google Search Console verification metadata.');
+}
 
 const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 if (!indexHtml.includes('meta name="description"') || !indexHtml.includes('rel="canonical"')) {
   fail('Home page must include SEO description and canonical metadata.');
+}
+if (!indexHtml.includes('google-site-verification')) {
+  fail('Home page must include Google Search Console verification metadata.');
 }
 
 const robotsTxt = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
