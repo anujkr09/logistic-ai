@@ -6,6 +6,7 @@ const app = express();
 const PORT = process.env.PORT || process.env.FRONTEND_PORT || 3000;
 const fallbackFile = path.join(__dirname, 'app.html');
 const apiBaseUrl = (process.env.API_BASE_URL || '').replace(/\/$/, '');
+const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
 const legacyHostRedirects = {
   'shipx-ai-logistics.onrender.com': 'zyraviq-ai-logistics.onrender.com',
   'shipx-ai-frontend.onrender.com': 'zyraviq-ai-frontend.onrender.com',
@@ -37,7 +38,10 @@ app.get('/health', (req, res) => {
 app.get('/runtime-config.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.send(`window.API_BASE_URL=${JSON.stringify(apiBaseUrl)};`);
+  res.send([
+    `window.API_BASE_URL=${JSON.stringify(apiBaseUrl)};`,
+    `window.GOOGLE_MAPS_API_KEY=${JSON.stringify(googleMapsApiKey)};`,
+  ].join('\n'));
 });
 
 app.get('/download-app', (req, res) => {

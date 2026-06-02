@@ -273,6 +273,7 @@ function loadGoogleMaps() {
     script.defer = true;
     script.onerror = () => {
       clearTimeout(timer);
+      window.__zyraviqGoogleMapsPromise = null;
       reject(new Error('Google Maps failed to load'));
     };
     document.head.appendChild(script);
@@ -305,12 +306,28 @@ function loadLeaflet() {
     };
     script.onerror = () => {
       clearTimeout(timer);
+      window.__zyraviqLeafletPromise = null;
       reject(new Error('OpenStreetMap failed to load'));
     };
     document.head.appendChild(script);
   });
 
   return window.__zyraviqLeafletPromise;
+}
+
+let mapRenderVersion = 0;
+
+function nextMapRenderVersion() {
+  mapRenderVersion += 1;
+  return mapRenderVersion;
+}
+
+function assertCurrentMapRender(version) {
+  if (version !== mapRenderVersion) {
+    const error = new Error('Stale map render skipped');
+    error.isStaleMapRender = true;
+    throw error;
+  }
 }
 
 function fallbackMapTemplate({ origin, current, destination, status, eta, mode, weather, progress, fraudFlag, fraudMessage, empty, reason }) {
@@ -465,8 +482,9 @@ function resolveRoutePoints(location, shipment = {}) {
   return { origin, current, destination, routePlan, points: routePlan.points.map((point) => point.position).filter(Boolean) };
 }
 
-async function renderGoogleMap(element, location, shipment = {}, empty = false) {
+async function renderGoogleMap(element, location, shipment = {}, empty = false, version = mapRenderVersion) {
   const maps = await loadGoogleMaps();
+  assertCurrentMapRender(version);
   const { origin, current, destination, routePlan, points } = resolveRoutePoints(location, shipment);
   const fallbackCenter = { lat: 20.5937, lng: 78.9629 };
   const center = current || origin || destination || fallbackCenter;
@@ -550,8 +568,9 @@ async function renderGoogleMap(element, location, shipment = {}, empty = false) 
   `;
 }
 
-async function renderLeafletMap(element, location, shipment = {}, empty = false) {
+async function renderLeafletMap(element, location, shipment = {}, empty = false, version = mapRenderVersion) {
   const L = await loadLeaflet();
+  assertCurrentMapRender(version);
   const { origin, current, destination, routePlan, points } = resolveRoutePoints(location, shipment);
   const fallbackCenter = { lat: 20.5937, lng: 78.9629 };
   const center = current || origin || destination || fallbackCenter;
@@ -617,6 +636,7 @@ async function renderLeafletMap(element, location, shipment = {}, empty = false)
   `;
 
   const refreshLeafletSize = () => {
+    if (version !== mapRenderVersion) return;
     map.invalidateSize();
     if (bounds.length > 1) map.fitBounds(bounds, { padding: [30, 30] });
   };
@@ -625,15 +645,17 @@ async function renderLeafletMap(element, location, shipment = {}, empty = false)
   window.addEventListener('resize', refreshLeafletSize, { passive: true, once: true });
 }
 
-function renderProviderMap(element, location, shipment = {}, empty = false) {
-  const renderOpenStreetMap = () => renderLeafletMap(element, location, shipment, empty)
+function renderProviderMap(element, location, shipment = {}, empty = false, version = mapRenderVersion) {
+  const renderOpenStreetMap = () => renderLeafletMap(element, location, shipment, empty, version)
     .catch((error) => {
-      renderFallbackMap(element, location, shipment, empty, 'Smart route preview');
+      if (error?.isStaleMapRender) return null;
+      assertCurrentMapRender(version);
+      renderFallbackMap(element, location, shipment, empty, 'Live map unavailable; showing route preview');
       throw error;
     });
 
   if (googleMapsApiKey()) {
-    return renderGoogleMap(element, location, shipment, empty)
+    return renderGoogleMap(element, location, shipment, empty, version)
       .catch(() => renderOpenStreetMap());
   }
 
@@ -647,16 +669,19 @@ function renderFallbackMap(element, location, shipment = {}, empty = false, reas
 }
 
 function upgradeToProviderMap(element, location, shipment = {}, empty = false) {
-  renderProviderMap(element, location, shipment, empty)
-    .catch(() => {
+  const version = mapRenderVersion;
+  renderProviderMap(element, location, shipment, empty, version)
+    .catch((error) => {
+      if (error?.isStaleMapRender || version !== mapRenderVersion) return;
       const providerBadge = element.querySelector('.map-provider-badge');
-      if (providerBadge) providerBadge.textContent = 'Smart route preview';
+      if (providerBadge) providerBadge.textContent = 'Live map unavailable; showing route preview';
     });
 }
 
 window.__MAP_INIT = function () {
   const element = document.getElementById('map');
   if (!element) return;
+  nextMapRenderVersion();
 
   const placeholderShipment = {
     status: 'Waiting for tracking number',
@@ -677,6 +702,7 @@ window.__MAP_UPDATE = function (location, shipment = {}) {
     window.__MAP_INIT();
     return;
   }
+  nextMapRenderVersion();
 
   const state = buildMapState(location, shipment, false);
   window.__MAP_DETAILS = { mode: state.mode, weather: state.weather };

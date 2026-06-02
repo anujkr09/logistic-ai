@@ -238,8 +238,6 @@
 
       setShipmentUI(data);
       subscribeTracking(trackingNumber);
-      window.__MAP_INIT?.();
-      window.__MAP_UPDATE?.(data.currentLocation, data);
       if (error) {
         error.classList.remove('is-loading');
         error.textContent = '';

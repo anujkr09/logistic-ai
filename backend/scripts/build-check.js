@@ -42,6 +42,17 @@ for (const file of collectJsFiles(sourceRoot)) {
   }
 }
 
+const appJs = fs.readFileSync(path.join(root, 'src/app.js'), 'utf8');
+if (!appJs.includes('/runtime-config.js') || !appJs.includes('GOOGLE_MAPS_API_KEY')) {
+  fail('Backend must expose runtime-config.js with public map config when serving frontend assets.');
+}
+
+const analyticsSummary = fs.readFileSync(path.join(root, 'src/services/analyticsSummary.js'), 'utf8');
+const shipmentRoutes = fs.readFileSync(path.join(root, 'src/routes/shipmentRoutes.js'), 'utf8');
+if (!analyticsSummary.includes('refreshRevenueSummary') || !shipmentRoutes.includes('refreshRevenueSummary')) {
+  fail('Shipment writes must refresh revenue_summary analytics.');
+}
+
 if (!process.exitCode) {
   console.log('Static backend build check passed.');
 }

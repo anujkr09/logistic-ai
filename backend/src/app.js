@@ -50,9 +50,11 @@ app.use((req, res, next) => {
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      'script-src': ["'self'", 'https://cdn.socket.io'],
-      'img-src': ["'self'", 'data:', 'https:'],
-      'connect-src': ["'self'", 'https:', 'wss:'],
+      'script-src': ["'self'", 'https://cdn.socket.io', 'https://maps.googleapis.com', 'https://unpkg.com'],
+      'style-src': ["'self'", "'unsafe-inline'", 'https://unpkg.com', 'https://fonts.googleapis.com'],
+      'img-src': ["'self'", 'data:', 'https:', 'https://*.tile.openstreetmap.org'],
+      'connect-src': ["'self'", 'https:', 'wss:', 'https://maps.googleapis.com', 'https://*.tile.openstreetmap.org'],
+      'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
       'frame-src': ["'self'", 'https://www.openstreetmap.org'],
     },
   },
@@ -65,6 +67,17 @@ app.use(express.json({ limit: '2mb' }));
 app.use(morgan('dev'));
 
 app.get('/health', (req, res) => res.json({ ok: true, app: 'ZYRAVIQ AI Logistics backend', brand: 'ZYRAVIQ' }));
+
+app.get('/runtime-config.js', (req, res) => {
+  const apiBaseUrl = (process.env.PUBLIC_API_BASE_URL || process.env.API_BASE_URL || '').replace(/\/$/, '');
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.send([
+    `window.API_BASE_URL=${JSON.stringify(apiBaseUrl)};`,
+    `window.GOOGLE_MAPS_API_KEY=${JSON.stringify(googleMapsApiKey)};`,
+  ].join('\n'));
+});
 
 app.use('/api/auth', authLimiter);
 app.use('/api', apiLimiter);

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { requireAuth } = require('../middleware/authMiddleware');
 const { Warehouse, Shipment, Notification, Analytics } = require('../services/models');
 const { validateLocation, predictEta, detectFraud, recommendRoute, analyzeTracking, chat } = require('../services/aiClient');
-const { getRevenueSummary } = require('../services/analyticsSummary');
+const { getRevenueSummary, refreshRevenueSummary } = require('../services/analyticsSummary');
 
 // NOTE: This is a minimal schema system to start making the UI dynamic.
 // It returns JSON config for each page and provides a generic action dispatcher.
@@ -409,6 +409,7 @@ router.post('/action', requireAuth, async (req, res) => {
       });
 
       await shipment.save();
+      await refreshRevenueSummary(companyId);
       return res.json({ shipment });
     }
 
@@ -463,6 +464,7 @@ router.post('/action', requireAuth, async (req, res) => {
       }
 
       await shipment.save();
+      await refreshRevenueSummary(companyId);
 
       return res.json({ shipment });
     }

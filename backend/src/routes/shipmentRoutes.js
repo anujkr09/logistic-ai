@@ -3,6 +3,7 @@ const { requireAuth, requireRole } = require('../middleware/authMiddleware');
 const { Shipment, Warehouse, Notification } = require('../services/models');
 const { predictEta, detectFraud, analyzeTracking } = require('../services/aiClient');
 const { scoreShipmentFraud, publishFraudNotifications } = require('../services/operationsIntelligence');
+const { refreshRevenueSummary } = require('../services/analyticsSummary');
 const { getIo } = require('../sockets/instance');
 const { findShipment } = require('../services/trackingLookup');
 
@@ -82,6 +83,7 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
   if (fraud.isFlagged) {
     await publishFraudNotifications(shipment, fraud);
   }
+  await refreshRevenueSummary(req.user.companyId);
   io.to(`company:${req.user.companyId}`).emit('shipment:created', { shipment });
   io.to(`company:${req.user.companyId}`).emit('shipment:update', { shipment, notification });
 
@@ -154,6 +156,7 @@ router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']),
   if (fraud.isFlagged) {
     await publishFraudNotifications(shipment, fraud);
   }
+  await refreshRevenueSummary(req.user.companyId);
   io.to(`company:${req.user.companyId}`).emit('shipment:update', { shipment, notification });
   io.to(`tracking:${shipment.trackingNumber}`).emit('shipment:update', { shipment, notification });
 
@@ -213,6 +216,7 @@ router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager'])
   if (fraud.isFlagged) {
     await publishFraudNotifications(shipment, fraud);
   }
+  await refreshRevenueSummary(req.user.companyId);
   io.to(`company:${req.user.companyId}`).emit('shipment:update', { shipment, notification });
   io.to(`tracking:${shipment.trackingNumber}`).emit('shipment:update', { shipment, notification });
 

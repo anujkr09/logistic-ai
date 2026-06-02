@@ -98,6 +98,16 @@ if (!serviceWorker.includes('./app.html') || !serviceWorker.includes('dynamicApp
   fail('Service worker must cache the dynamic app shell.');
 }
 
+const trackingHtml = fs.readFileSync(path.join(root, 'pages/tracking.html'), 'utf8');
+if (!trackingHtml.includes('/runtime-config.js') || !trackingHtml.includes('assets/js/maps.js')) {
+  fail('Tracking page must load runtime config before the map script.');
+}
+
+const frontendServer = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
+if (!frontendServer.includes('GOOGLE_MAPS_API_KEY') || !frontendServer.includes('window.GOOGLE_MAPS_API_KEY')) {
+  fail('Frontend runtime config must expose the public Google Maps key.');
+}
+
 if (!process.exitCode) {
   console.log('Static frontend build check passed.');
 }
