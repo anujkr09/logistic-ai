@@ -35,6 +35,22 @@ app.get('/health', (req, res) => {
   res.json({ ok: true, app: 'ZYRAVIQ AI Logistics frontend' });
 });
 
+app.get('/robots.txt', (req, res, next) => {
+  res.type('text/plain');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.sendFile(path.join(__dirname, 'robots.txt'), (err) => {
+    if (err) next(err);
+  });
+});
+
+app.get('/sitemap.xml', (req, res, next) => {
+  res.type('application/xml');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.sendFile(path.join(__dirname, 'sitemap.xml'), (err) => {
+    if (err) next(err);
+  });
+});
+
 app.get('/runtime-config.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');

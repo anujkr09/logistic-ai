@@ -123,6 +123,9 @@ const frontendServer = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
 if (!frontendServer.includes('GOOGLE_MAPS_API_KEY') || !frontendServer.includes('window.GOOGLE_MAPS_API_KEY')) {
   fail('Frontend runtime config must expose the public Google Maps key.');
 }
+if (!frontendServer.includes("app.get('/robots.txt'") || !frontendServer.includes("app.get('/sitemap.xml'")) {
+  fail('Frontend server must serve robots.txt and sitemap.xml before SPA fallback.');
+}
 
 if (!process.exitCode) {
   console.log('Static frontend build check passed.');
