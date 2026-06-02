@@ -9,13 +9,36 @@
   const apiBase = window.__getApiBase?.() || window.API_BASE_URL || 'http://localhost:4000';
   const tdTracking = document.getElementById('tdTracking');
   const tdStatus = document.getElementById('tdStatus');
+  const tdStage = document.getElementById('tdStage');
+  const tdType = document.getElementById('tdType');
+  const tdPriority = document.getElementById('tdPriority');
+  const tdWeight = document.getElementById('tdWeight');
+  const tdDimensions = document.getElementById('tdDimensions');
+  const tdPackages = document.getElementById('tdPackages');
+  const tdOrigin = document.getElementById('tdOrigin');
+  const tdDestination = document.getElementById('tdDestination');
   const tdLocation = document.getElementById('tdLocation');
+  const tdUpdated = document.getElementById('tdUpdated');
+  const tdCreated = document.getElementById('tdCreated');
   const tdRoute = document.getElementById('tdRoute');
   const tdMode = document.getElementById('tdMode');
   const tdWeather = document.getElementById('tdWeather');
   const tdDelay = document.getElementById('tdDelay');
   const tdETA = document.getElementById('tdETA');
   const tdConfidence = document.getElementById('tdConfidence');
+  const tdCovered = document.getElementById('tdCovered');
+  const tdRemaining = document.getElementById('tdRemaining');
+  const tdExpectedDelay = document.getElementById('tdExpectedDelay');
+  const tdVehicle = document.getElementById('tdVehicle');
+  const tdDriver = document.getElementById('tdDriver');
+  const tdGps = document.getElementById('tdGps');
+  const tdSender = document.getElementById('tdSender');
+  const tdPickupAddress = document.getElementById('tdPickupAddress');
+  const tdPickupContact = document.getElementById('tdPickupContact');
+  const tdReceiver = document.getElementById('tdReceiver');
+  const tdDeliveryAddress = document.getElementById('tdDeliveryAddress');
+  const tdDeliveryContact = document.getElementById('tdDeliveryContact');
+  const documentActions = document.getElementById('documentActions');
   const aiSummary = document.getElementById('aiSummary');
   const timeline = document.getElementById('timeline');
   const notifications = document.getElementById('notifications');
@@ -144,6 +167,40 @@
     return Number.isNaN(date.getTime()) ? '-' : date.toLocaleString();
   }
 
+  function formatRelative(value) {
+    if (!value) return '-';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '-';
+    const diffMs = Date.now() - date.getTime();
+    const minutes = Math.max(0, Math.round(diffMs / 60000));
+    if (minutes < 2) return 'Just now';
+    if (minutes < 60) return `${minutes} minutes ago`;
+    const hours = Math.round(minutes / 60);
+    if (hours < 24) return `${hours} hours ago`;
+    return formatDate(value);
+  }
+
+  function formatDimensions(dimensions = {}) {
+    const parts = [dimensions.length, dimensions.width, dimensions.height].map((item) => Number(item || 0)).filter((item) => item > 0);
+    return parts.length ? `${parts.join(' x ')} ${dimensions.unit || 'cm'}` : '-';
+  }
+
+  function formatDelay(minutes) {
+    const value = Number(minutes || 0);
+    if (!value) return 'No expected delay';
+    const hours = Math.floor(value / 60);
+    const mins = value % 60;
+    return [hours ? `${hours} hr` : '', mins ? `${mins} min` : ''].filter(Boolean).join(' ');
+  }
+
+  function renderDocuments(shipment) {
+    if (!documentActions) return;
+    const docs = Array.isArray(shipment.documents) ? shipment.documents : [];
+    documentActions.innerHTML = docs.length
+      ? docs.map((doc) => `<a class="doc-action" href="${escapeHtml(apiBase)}${escapeHtml(doc.url)}" target="_blank" rel="noopener">${escapeHtml(doc.label)}</a>`).join('')
+      : '<span class="muted">Documents will appear after tracking loads.</span>';
+  }
+
   function renderTimeline(history, insights) {
     if (!timeline) return;
     const items = insights?.timeline || history || [];
@@ -156,6 +213,7 @@
               <div class="timeline-meta">${escapeHtml(formatDate(entry.at || entry.timestamp))}</div>
               <div class="timeline-sub">${escapeHtml(locationText(entry.location))}</div>
               ${entry.progressPercent != null ? `<div class="timeline-chip">${escapeHtml(entry.progressPercent)}% route completed</div>` : ''}
+              ${entry.description ? `<div class="timeline-detail">${escapeHtml(entry.description)}</div>` : ''}
               ${entry.detail ? `<div class="timeline-detail">${escapeHtml(entry.detail)}</div>` : ''}
             </div>
           </div>
@@ -165,7 +223,7 @@
 
   function renderProgress(status, insights) {
     if (!progressBar || !progressLabel) return;
-    const steps = ['Created', 'In Transit', 'Arrived', 'Out for Delivery', 'Delivered'];
+    const steps = ['Shipment Created', 'Pickup Scheduled', 'Picked Up', 'At Origin Hub', 'Departed Origin Hub', 'In Transit', 'At Destination Hub', 'Out For Delivery', 'Delivered'];
     const index = Math.max(0, steps.findIndex((step) => step.toLowerCase() === String(status || '').toLowerCase()));
     const insightPercent = Number(insights?.progressPercent);
     const percent = Number.isFinite(insightPercent) ? insightPercent : (index / (steps.length - 1)) * 100;
@@ -203,14 +261,38 @@
     }
     tdTracking.textContent = shipment.trackingNumber || '-';
     tdStatus.textContent = shipment.status || '-';
+    if (tdStage) tdStage.textContent = shipment.currentStage || insights.currentStage || shipment.status || '-';
+    if (tdType) tdType.textContent = shipment.shipmentType || '-';
+    if (tdPriority) tdPriority.textContent = shipment.priority || '-';
+    if (tdWeight) tdWeight.textContent = shipment.weight ? `${shipment.weight} kg` : '-';
+    if (tdDimensions) tdDimensions.textContent = formatDimensions(shipment.dimensions);
+    if (tdPackages) tdPackages.textContent = shipment.packageCount || '-';
+    if (tdOrigin) tdOrigin.textContent = locationText(shipment.origin);
+    if (tdDestination) tdDestination.textContent = locationText(shipment.destination);
     tdLocation.textContent = insights.currentLocationText || locationText(shipment.currentLocation);
+    if (tdUpdated) tdUpdated.textContent = formatDate(shipment.updatedAt);
+    if (tdCreated) tdCreated.textContent = formatDate(shipment.createdAt);
     if (tdRoute) tdRoute.textContent = insights.routeSummary || `${locationText(shipment.origin)} -> ${locationText(shipment.destination)}`;
     tdETA.textContent = shipment.estimatedDelivery ? formatDate(shipment.estimatedDelivery) : '-';
     if (tdDelay) tdDelay.textContent = delay ? `${delay.severity}: ${delay.reason}` : '-';
-    if (tdConfidence) tdConfidence.textContent = insights.etaConfidence ? `${insights.etaConfidence}% confidence` : '-';
+    if (tdConfidence) tdConfidence.textContent = (shipment.logistics?.deliveryConfidence || insights.etaConfidence) ? `${shipment.logistics?.deliveryConfidence || insights.etaConfidence}% confidence` : '-';
+    if (tdCovered) tdCovered.textContent = shipment.logistics?.coveredDistanceKm != null ? `${shipment.logistics.coveredDistanceKm} KM` : '-';
+    if (tdRemaining) tdRemaining.textContent = shipment.logistics?.remainingDistanceKm != null ? `${shipment.logistics.remainingDistanceKm} KM` : '-';
+    if (tdExpectedDelay) tdExpectedDelay.textContent = formatDelay(shipment.logistics?.expectedDelayMinutes || insights.expectedDelayMinutes);
+    if (tdVehicle) tdVehicle.textContent = shipment.vehicle?.number ? `${shipment.vehicle.number}${shipment.vehicle.type ? ` (${shipment.vehicle.type})` : ''}` : 'Unassigned';
+    if (tdDriver) tdDriver.textContent = shipment.driver?.name ? `${shipment.driver.name}${shipment.driver.phone ? `, ${shipment.driver.phone}` : ''}` : 'Unassigned';
+    if (tdGps) tdGps.textContent = formatRelative(shipment.logistics?.lastGpsPingAt || insights.lastGpsPingAt);
+    const customer = shipment.customerView || {};
+    if (tdSender) tdSender.textContent = customer.senderName || '-';
+    if (tdPickupAddress) tdPickupAddress.textContent = customer.pickupAddress || '-';
+    if (tdPickupContact) tdPickupContact.textContent = [customer.pickupContact, customer.senderPhone, customer.senderEmail].filter(Boolean).join(' | ') || '-';
+    if (tdReceiver) tdReceiver.textContent = customer.receiverName || '-';
+    if (tdDeliveryAddress) tdDeliveryAddress.textContent = customer.deliveryAddress || '-';
+    if (tdDeliveryContact) tdDeliveryContact.textContent = [customer.receiverPhone, customer.receiverEmail].filter(Boolean).join(' | ') || '-';
     if (aiSummary) aiSummary.textContent = insights.aiSummary || 'AI analysis is waiting for the next route scan.';
-    renderTimeline(shipment.history, insights);
+    renderTimeline(shipment.routeHistory || shipment.history, { ...insights, timeline: shipment.routeHistory || insights.timeline });
     renderProgress(shipment.status, insights);
+    renderDocuments(shipment);
     window.__MAP_UPDATE?.(shipment.currentLocation, shipment);
     const mapDetails = window.__MAP_DETAILS || {};
     if (tdMode) tdMode.textContent = mode ? `${mode.label} - ${mode.detail}` : (mapDetails.mode ? `${mapDetails.mode.label} - ${mapDetails.mode.detail}` : '-');

@@ -6,13 +6,90 @@ const { scoreShipmentFraud, publishFraudNotifications } = require('../services/o
 const { refreshRevenueSummary } = require('../services/analyticsSummary');
 const { getIo } = require('../sockets/instance');
 const { findShipment } = require('../services/trackingLookup');
+const { PROFESSIONAL_STATUSES, normalizeStatus, computeLogistics, enrichShipment } = require('../services/logisticsEngine');
+
+function parseDimensions(value = {}) {
+  if (!value) value = {};
+  if (typeof value === 'string') {
+    const [length, width, height] = value.split(/[x*]/i).map((item) => Number(item.trim()));
+    return { length: length || 0, width: width || 0, height: height || 0, unit: 'cm' };
+  }
+  return {
+    length: Number(value.length || 0),
+    width: Number(value.width || 0),
+    height: Number(value.height || 0),
+    unit: value.unit || 'cm',
+  };
+}
+
+function shipmentPayload(body = {}) {
+  const customerName = body.customerName || body.sender?.name || '';
+  const customerPhone = body.customerPhone || body.sender?.phone || '';
+  const customerEmail = body.customerEmail || body.sender?.email || '';
+  const pickupAddress = body.pickupAddress || body.sender?.address || body.origin?.text || '';
+  const deliveryAddress = body.deliveryAddress || body.receiver?.address || body.destination?.text || '';
+
+  return {
+    shipmentType: body.shipmentType || 'Standard',
+    priority: body.priority || 'Normal',
+    weight: Number(body.packageWeight ?? body.weight ?? 0),
+    dimensions: parseDimensions(body.dimensions),
+    packageCount: Math.max(1, Number(body.packageCount || 1)),
+    sender: {
+      name: customerName,
+      phone: customerPhone,
+      email: customerEmail,
+      address: pickupAddress,
+      contactName: body.pickupContact || body.sender?.contactName || customerName,
+    },
+    receiver: {
+      name: body.receiverName || body.receiver?.name || '',
+      phone: body.receiverPhone || body.receiver?.phone || '',
+      email: body.receiverEmail || body.receiver?.email || '',
+      address: deliveryAddress,
+    },
+    driver: {
+      name: body.assignedDriver || body.driver?.name || '',
+      phone: body.driverPhone || body.driver?.phone || '',
+      licenseNumber: body.licenseNumber || body.driver?.licenseNumber || '',
+      status: body.driverStatus || body.driver?.status || 'Assigned',
+    },
+    vehicle: {
+      number: body.assignedVehicle || body.vehicleNumber || body.vehicle?.number || '',
+      type: body.vehicleType || body.vehicle?.type || '',
+      fuelStatus: body.fuelStatus || body.vehicle?.fuelStatus || 'Operational',
+      speedKmph: Number(body.speedKmph || body.vehicle?.speedKmph || 0),
+    },
+    gpsDeviceId: body.gpsDeviceId || '',
+    routeCode: body.route || body.routeCode || '',
+    expectedDeliveryDate: body.expectedDeliveryDate ? new Date(body.expectedDeliveryDate) : null,
+  };
+}
+
+function textDocument(title, shipment) {
+  const data = enrichShipment(shipment);
+  return [
+    title,
+    `Tracking Number: ${data.trackingNumber}`,
+    `Status: ${data.status}`,
+    `Origin: ${data.origin?.text || '-'}`,
+    `Destination: ${data.destination?.text || '-'}`,
+    `Current Location: ${data.currentLocation?.text || '-'}`,
+    `Estimated Delivery: ${data.estimatedDelivery || '-'}`,
+    `Delivery Confidence: ${data.logistics?.deliveryConfidence || 0}%`,
+    `Distance Covered: ${data.logistics?.coveredDistanceKm || 0} KM`,
+    `Distance Remaining: ${data.logistics?.remainingDistanceKm || 0} KM`,
+    `Driver: ${data.driver?.name || 'Unassigned'}`,
+    `Vehicle: ${data.vehicle?.number || 'Unassigned'}`,
+  ].join('\n');
+}
 
 // Public tracking by tracking number
 router.get('/track/:trackingNumber', async (req, res) => {
   const { trackingNumber } = req.params;
   const { shipment, candidates } = await findShipment({ trackingNumber });
   if (!shipment) return res.status(404).json({ message: 'Shipment not found' });
-  const data = shipment.toObject();
+  const data = enrichShipment(shipment);
   data.aiInsights = await analyzeTracking({ shipment: data });
   data.lookup = { requestedTracking: trackingNumber, tried: candidates };
   res.json(data);
@@ -22,7 +99,7 @@ router.get('/track/:trackingNumber', async (req, res) => {
 router.get('/', requireAuth, async (req, res) => {
   const { status, page = 1, limit = 20 } = req.query;
   const q = { companyId: req.user.companyId };
-  if (status) q.status = String(status);
+  if (status) q.status = normalizeStatus(status);
 
   const p = Number(page);
   const l = Number(limit);
@@ -32,7 +109,8 @@ router.get('/', requireAuth, async (req, res) => {
     Shipment.countDocuments(q),
   ]);
 
-  res.json({ items, shipments: items, page: p, limit: l, total });
+  const enriched = items.map((item) => enrichShipment(item));
+  res.json({ items: enriched, shipments: enriched, page: p, limit: l, total, statuses: PROFESSIONAL_STATUSES });
 });
 
 // Admin/Warehouse manager: create a shipment
@@ -44,6 +122,7 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
   const existing = await Shipment.findOne({ trackingNumber: finalTrackingNumber }).exec();
   if (existing) return res.status(409).json({ message: 'Tracking number already exists' });
 
+  const metadata = shipmentPayload(req.body || {});
   const shipment = await Shipment.create({
     companyId: req.user.companyId,
     customerId: req.user.role === 'customer' ? req.user.id : null,
@@ -52,18 +131,22 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
     origin: { text: String(origin.text).trim(), city: origin.city || '', country: origin.country || '', coordinates: origin.coordinates || undefined },
     destination: { text: String(destination.text).trim(), city: destination.city || '', country: destination.country || '', coordinates: destination.coordinates || undefined },
     currentLocation: currentLocation ? { text: currentLocation.text || '', city: currentLocation.city || '', country: currentLocation.country || '', coordinates: currentLocation.coordinates || undefined } : { ...origin },
-    status: status ? String(status) : 'Created',
+    status: normalizeStatus(status || 'Shipment Created'),
+    ...metadata,
     history: [],
   });
 
   shipment.history.push({
     status: shipment.status,
     location: { ...shipment.currentLocation },
-    meta: { createdAt: new Date().toISOString() },
+    description: 'Shipment record created and pickup validation started.',
+    meta: { createdAt: new Date().toISOString(), autoProgress: 6 },
   });
 
   const eta = await predictEta({ origin: shipment.origin, destination: shipment.destination, delayHistory: shipment.history });
-  if (eta?.estimatedDelivery) shipment.estimatedDelivery = new Date(eta.estimatedDelivery);
+  const logistics = computeLogistics(shipment);
+  shipment.logistics = { ...(shipment.logistics || {}), ...logistics };
+  shipment.estimatedDelivery = metadata.expectedDeliveryDate || (eta?.estimatedDelivery ? new Date(eta.estimatedDelivery) : new Date(logistics.estimatedDelivery));
 
   const fraud = scoreShipmentFraud(shipment);
   shipment.fraud = fraud;
@@ -87,7 +170,7 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
   io.to(`company:${req.user.companyId}`).emit('shipment:created', { shipment });
   io.to(`company:${req.user.companyId}`).emit('shipment:update', { shipment, notification });
 
-  res.status(201).json({ shipment, notification });
+  res.status(201).json({ shipment: enrichShipment(shipment), notification });
 });
 
 // Admin/Warehouse manager: assign shipment to warehouse + update current location
@@ -110,7 +193,7 @@ router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']),
     };
   }
 
-  const nextStatus = status ? String(status) : shipment.status;
+  const nextStatus = status ? normalizeStatus(status) : normalizeStatus(shipment.status);
   shipment.status = nextStatus;
   shipment.warehouseId = warehouse._id;
 
@@ -122,11 +205,15 @@ router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']),
       country: shipment.currentLocation.country,
       coordinates: shipment.currentLocation.coordinates,
     },
-    meta: { assignedAt: new Date().toISOString() },
+    description: `Shipment assigned to ${warehouse.name} and scan recorded.`,
+    meta: { assignedAt: new Date().toISOString(), autoProgress: computeLogistics(shipment).progressPercent },
   });
 
   const eta = await predictEta({ origin: shipment.origin, destination: shipment.destination, delayHistory: shipment.history });
+  const assignedLogistics = computeLogistics(shipment);
+  shipment.logistics = { ...(shipment.logistics || {}), ...assignedLogistics };
   if (eta?.estimatedDelivery) shipment.estimatedDelivery = new Date(eta.estimatedDelivery);
+  else if (assignedLogistics.estimatedDelivery) shipment.estimatedDelivery = new Date(assignedLogistics.estimatedDelivery);
 
   const aiFraud = await detectFraud({ trackingNumber: shipment.trackingNumber, history: shipment.history });
   let fraud = scoreShipmentFraud(shipment);
@@ -160,7 +247,7 @@ router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']),
   io.to(`company:${req.user.companyId}`).emit('shipment:update', { shipment, notification });
   io.to(`tracking:${shipment.trackingNumber}`).emit('shipment:update', { shipment, notification });
 
-  res.json({ shipment, notification });
+  res.json({ shipment: enrichShipment(shipment), notification });
 });
 
 // Admin/Warehouse manager: update shipment status without changing customer tracking flow
@@ -183,7 +270,7 @@ router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager'])
     };
   }
 
-  shipment.status = String(status);
+  shipment.status = normalizeStatus(status);
   shipment.history.push({
     status: shipment.status,
     location: {
@@ -192,11 +279,15 @@ router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager'])
       country: shipment.currentLocation.country,
       coordinates: shipment.currentLocation.coordinates,
     },
-    meta: { statusUpdatedAt: new Date().toISOString(), updatedBy: req.user.id },
+    description: `Status updated to ${shipment.status}.`,
+    meta: { statusUpdatedAt: new Date().toISOString(), updatedBy: req.user.id, autoProgress: computeLogistics(shipment).progressPercent },
   });
 
   const eta = await predictEta({ origin: shipment.origin, destination: shipment.destination, delayHistory: shipment.history });
+  const statusLogistics = computeLogistics(shipment);
+  shipment.logistics = { ...(shipment.logistics || {}), ...statusLogistics };
   if (eta?.estimatedDelivery) shipment.estimatedDelivery = new Date(eta.estimatedDelivery);
+  else if (statusLogistics.estimatedDelivery) shipment.estimatedDelivery = new Date(statusLogistics.estimatedDelivery);
 
   const fraud = scoreShipmentFraud(shipment);
   shipment.fraud = fraud;
@@ -220,7 +311,21 @@ router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager'])
   io.to(`company:${req.user.companyId}`).emit('shipment:update', { shipment, notification });
   io.to(`tracking:${shipment.trackingNumber}`).emit('shipment:update', { shipment, notification });
 
-  res.json({ shipment, notification });
+  res.json({ shipment: enrichShipment(shipment), notification });
+});
+
+router.get('/:trackingNumber/documents/:documentType', async (req, res) => {
+  const { trackingNumber, documentType } = req.params;
+  const { shipment } = await findShipment({ trackingNumber });
+  if (!shipment) return res.status(404).json({ message: 'Shipment not found' });
+
+  const allowed = new Set(['tracking-report', 'invoice', 'manifest', 'shipping-label', 'proof-of-delivery', 'print-tracking-report']);
+  if (!allowed.has(documentType)) return res.status(404).json({ message: 'Document not found' });
+
+  const title = documentType.split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join(' ');
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="${shipment.trackingNumber}-${documentType}.txt"`);
+  return res.send(textDocument(title, shipment));
 });
 
 // Admin: aggregated shipment lists
@@ -241,7 +346,18 @@ router.get('/admin', requireAuth, requireRole(['admin']), async (req, res) => {
   ]);
 
   const items = await Shipment.find(q).sort({ createdAt: -1 }).limit(50).exec();
-  res.json({ total, delayed, delivered, items, shipments: items, totalShipments: total, delayedShipments: delayed, deliveredShipments: delivered });
+  const enriched = items.map((item) => enrichShipment(item));
+  res.json({
+    total,
+    delayed,
+    delivered,
+    items: enriched,
+    shipments: enriched,
+    totalShipments: total,
+    delayedShipments: delayed,
+    deliveredShipments: delivered,
+    statuses: PROFESSIONAL_STATUSES,
+  });
 });
 
 module.exports = router;

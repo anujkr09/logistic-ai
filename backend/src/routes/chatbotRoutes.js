@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { requireAuth } = require('../middleware/authMiddleware');
 const { analyzeTracking, chat } = require('../services/aiClient');
 const { findShipmentForChat, latestActiveShipment } = require('../services/trackingLookup');
+const { enrichShipment } = require('../services/logisticsEngine');
 
 router.post('/', requireAuth, async (req, res) => {
   const { message, trackingNumber } = req.body || {};
@@ -22,7 +23,7 @@ router.post('/', requireAuth, async (req, res) => {
 
   const suggestedShipment = shipment ? null : await latestActiveShipment({ companyId: req.user.companyId });
 
-  const shipmentData = shipment ? shipment.toObject() : null;
+  const shipmentData = shipment ? enrichShipment(shipment) : null;
   if (shipmentData) {
     shipmentData.aiInsights = await analyzeTracking({ shipment: shipmentData });
   }

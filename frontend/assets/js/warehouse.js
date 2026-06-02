@@ -57,8 +57,8 @@
     grid.innerHTML = items.length
       ? items.map((warehouse) => {
           const inventory = warehouse.inventory || {};
-          const total = Number(inventory.total || 0);
-          const used = Number(inventory.used || assignedCounts[String(warehouse._id)] || 0);
+          const total = Number(warehouse.capacity || inventory.total || 0);
+          const used = Number(warehouse.occupancy || inventory.used || assignedCounts[String(warehouse._id)] || 0);
           const capacityLabel = total > 0 ? `${Math.max(total - used, 0)} open slots` : 'Capacity not set';
           const assignedLabel = `${assignedCounts[String(warehouse._id)] || 0} assigned shipments`;
           return `
@@ -73,6 +73,11 @@
               <div class="warehouse-body">
                 <div class="warehouse-row"><span class="muted">Assigned</span><b>${escapeHtml(assignedLabel)}</b></div>
                 <div class="warehouse-row"><span class="muted">Capacity</span><b>${escapeHtml(capacityLabel)}</b></div>
+                <div class="warehouse-row"><span class="muted">Incoming</span><b>${escapeHtml(warehouse.incomingShipments || 0)} shipments</b></div>
+                <div class="warehouse-row"><span class="muted">Outgoing</span><b>${escapeHtml(warehouse.outgoingShipments || 0)} shipments</b></div>
+                <div class="warehouse-row"><span class="muted">Pending</span><b>${escapeHtml(warehouse.pendingShipments || 0)} shipments</b></div>
+                <div class="warehouse-row"><span class="muted">Delay score</span><b>${escapeHtml(warehouse.hubDelayScore || 0)} / 100</b></div>
+                <div class="warehouse-row"><span class="muted">Risk</span><b>${escapeHtml(warehouse.riskLevel || 'Low')}</b></div>
                 <div class="warehouse-row"><span class="muted">Inventory</span><b>${escapeHtml(inventory.summary || 'Available')}</b></div>
                 <div class="warehouse-row"><span class="muted">Location</span><b>${escapeHtml(warehouse.address || '-')}</b></div>
                 <button class="table-action" type="button" data-select-warehouse="${escapeHtml(warehouse._id)}">Use this hub</button>
@@ -122,6 +127,10 @@
     const address = document.getElementById('warehouseAddress')?.value?.trim();
     const city = document.getElementById('warehouseCity')?.value?.trim();
     const country = document.getElementById('warehouseCountry')?.value?.trim();
+    const capacity = document.getElementById('warehouseCapacity')?.value;
+    const occupancy = document.getElementById('warehouseOccupancy')?.value;
+    const hubDelayScore = document.getElementById('warehouseDelayScore')?.value;
+    const riskLevel = document.getElementById('warehouseRiskLevel')?.value;
 
     if (!name) {
       window.__showToast?.('Warehouse name is required');
@@ -133,10 +142,10 @@
       await fetchJson('/api/warehouses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, address, city, country }),
+        body: JSON.stringify({ name, address, city, country, capacity, occupancy, hubDelayScore, riskLevel }),
       });
 
-      ['warehouseName', 'warehouseAddress', 'warehouseCity', 'warehouseCountry'].forEach((id) => {
+      ['warehouseName', 'warehouseAddress', 'warehouseCity', 'warehouseCountry', 'warehouseCapacity', 'warehouseOccupancy', 'warehouseDelayScore'].forEach((id) => {
         const input = document.getElementById(id);
         if (input) input.value = '';
       });

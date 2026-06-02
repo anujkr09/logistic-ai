@@ -375,7 +375,21 @@
     const tableId = `${container.id || 'shipments'}Table`;
     const summary = `${list.length} shipment${list.length === 1 ? '' : 's'}`;
 
-    const statusOptions = ['Created', 'In Transit', 'Arrived', 'Out for Delivery', 'Delivered', 'Delayed'];
+    const statusOptions = [
+      'Shipment Created',
+      'Pickup Scheduled',
+      'Picked Up',
+      'At Origin Hub',
+      'Departed Origin Hub',
+      'In Transit',
+      'At Destination Hub',
+      'Out For Delivery',
+      'Delivered',
+      'Delayed',
+      'Exception',
+      'Returned',
+      'Cancelled',
+    ];
 
     container.innerHTML = `
       <div class="list-toolbar" data-list-toolbar>
@@ -399,6 +413,7 @@
             ${role === 'admin' ? '<th>Current / Warehouse</th>' : '<th>Current location</th>'}
             <th>Status</th>
             <th>ETA</th>
+            ${role === 'admin' ? '<th>Assignment</th>' : ''}
             ${role === 'admin' ? '<th>Risk</th>' : ''}
             <th>Updated</th>
             <th>Action</th>
@@ -437,9 +452,15 @@
               <td>
                 <div class="route-cell">
                   <span>${escapeHtml(formatDate(shipment.estimatedDelivery))}</span>
-                  <span class="${eta.className}">${escapeHtml(eta.label)}</span>
+                  <span class="${eta.className}">${escapeHtml(eta.label)}${shipment.logistics?.deliveryConfidence ? ` - ${escapeHtml(shipment.logistics.deliveryConfidence)}%` : ''}</span>
                 </div>
               </td>
+              ${role === 'admin' ? `<td>
+                <div class="route-cell">
+                  <span>${escapeHtml(shipment.driver?.name || 'No driver')}</span>
+                  <span>${escapeHtml(shipment.vehicle?.number || 'No vehicle')}</span>
+                </div>
+              </td>` : ''}
               ${role === 'admin' ? `<td><span class="badge ${shipment.fraud?.isFlagged ? 'status-danger' : 'status-success'}">${escapeHtml(riskLabel)}</span></td>` : ''}
               <td>${escapeHtml(formatDateTime(shipment.updatedAt || shipment.createdAt))}</td>
               <td>
@@ -566,7 +587,7 @@
       const trackingNumber = document.getElementById('createTracking')?.value?.trim();
       const originText = document.getElementById('createOrigin')?.value?.trim();
       const destinationText = document.getElementById('createDestination')?.value?.trim();
-      const status = document.getElementById('createStatus')?.value || 'Created';
+      const status = document.getElementById('createStatus')?.value || 'Shipment Created';
 
       if (!originText || !destinationText) {
         showToast('Please fill all required fields');
@@ -583,12 +604,53 @@
             origin: { text: originText },
             destination: { text: destinationText },
             status,
+            customerName: document.getElementById('createCustomerName')?.value?.trim(),
+            customerPhone: document.getElementById('createCustomerPhone')?.value?.trim(),
+            customerEmail: document.getElementById('createCustomerEmail')?.value?.trim(),
+            pickupAddress: originText,
+            pickupContact: document.getElementById('createPickupContact')?.value?.trim(),
+            receiverName: document.getElementById('createReceiverName')?.value?.trim(),
+            receiverPhone: document.getElementById('createReceiverPhone')?.value?.trim(),
+            deliveryAddress: destinationText,
+            packageWeight: document.getElementById('createWeight')?.value,
+            dimensions: document.getElementById('createDimensions')?.value?.trim(),
+            packageCount: document.getElementById('createPackageCount')?.value,
+            shipmentType: document.getElementById('createShipmentType')?.value,
+            priority: document.getElementById('createPriority')?.value,
+            assignedDriver: document.getElementById('createDriver')?.value?.trim(),
+            driverPhone: document.getElementById('createDriverPhone')?.value?.trim(),
+            assignedVehicle: document.getElementById('createVehicle')?.value?.trim(),
+            vehicleType: document.getElementById('createVehicleType')?.value?.trim(),
+            gpsDeviceId: document.getElementById('createGps')?.value?.trim(),
+            route: document.getElementById('createRoute')?.value?.trim(),
+            expectedDeliveryDate: document.getElementById('createExpectedDelivery')?.value || undefined,
           }),
         });
 
-        document.getElementById('createTracking').value = '';
-        document.getElementById('createOrigin').value = '';
-        document.getElementById('createDestination').value = '';
+        [
+          'createTracking',
+          'createOrigin',
+          'createDestination',
+          'createCustomerName',
+          'createCustomerPhone',
+          'createCustomerEmail',
+          'createPickupContact',
+          'createReceiverName',
+          'createReceiverPhone',
+          'createWeight',
+          'createDimensions',
+          'createPackageCount',
+          'createDriver',
+          'createDriverPhone',
+          'createVehicle',
+          'createVehicleType',
+          'createGps',
+          'createRoute',
+          'createExpectedDelivery',
+        ].forEach((id) => {
+          const element = document.getElementById(id);
+          if (element) element.value = '';
+        });
         showToast('Shipment created successfully');
         await Promise.all([loadAdminStats(), loadAdminShipments(), loadAdminAlerts()]);
       } catch (error) {

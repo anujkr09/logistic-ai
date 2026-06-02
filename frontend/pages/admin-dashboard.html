@@ -106,13 +106,39 @@
           <label class="field">
             <span>Status</span>
             <select id="createStatus" class="select">
-              <option value="Created">Created</option>
+              <option value="Shipment Created">Shipment Created</option>
+              <option value="Pickup Scheduled">Pickup Scheduled</option>
+              <option value="Picked Up">Picked Up</option>
+              <option value="At Origin Hub">At Origin Hub</option>
+              <option value="Departed Origin Hub">Departed Origin Hub</option>
               <option value="In Transit">In Transit</option>
-              <option value="Arrived">Arrived</option>
-              <option value="Out for Delivery">Out for Delivery</option>
+              <option value="At Destination Hub">At Destination Hub</option>
+              <option value="Out For Delivery">Out For Delivery</option>
               <option value="Delivered">Delivered</option>
+              <option value="Delayed">Delayed</option>
+              <option value="Exception">Exception</option>
+              <option value="Returned">Returned</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
           </label>
+          <label class="field"><span>Customer name</span><input id="createCustomerName" class="input" placeholder="Sender / customer name" /></label>
+          <label class="field"><span>Customer phone</span><input id="createCustomerPhone" class="input" placeholder="+91 9876543210" /></label>
+          <label class="field"><span>Customer email</span><input id="createCustomerEmail" class="input" placeholder="customer@example.com" /></label>
+          <label class="field"><span>Pickup contact</span><input id="createPickupContact" class="input" placeholder="Pickup person" /></label>
+          <label class="field"><span>Receiver name</span><input id="createReceiverName" class="input" placeholder="Receiver name" /></label>
+          <label class="field"><span>Receiver phone</span><input id="createReceiverPhone" class="input" placeholder="+91 9123456789" /></label>
+          <label class="field"><span>Package weight</span><input id="createWeight" class="input" type="number" min="0" step="0.1" placeholder="12.5" /></label>
+          <label class="field"><span>Dimensions</span><input id="createDimensions" class="input" placeholder="40 x 30 x 20" /></label>
+          <label class="field"><span>Package count</span><input id="createPackageCount" class="input" type="number" min="1" placeholder="1" /></label>
+          <label class="field"><span>Shipment type</span><select id="createShipmentType" class="select"><option>Standard</option><option>Express</option><option>Same Day</option><option>Cold Chain</option><option>Fragile</option><option>Heavy Freight</option></select></label>
+          <label class="field"><span>Priority</span><select id="createPriority" class="select"><option>Normal</option><option>High</option><option>Express</option><option>Critical</option></select></label>
+          <label class="field"><span>Assigned driver</span><input id="createDriver" class="input" placeholder="Driver name" /></label>
+          <label class="field"><span>Driver phone</span><input id="createDriverPhone" class="input" placeholder="+91 XXXXX" /></label>
+          <label class="field"><span>Assigned vehicle</span><input id="createVehicle" class="input" placeholder="DL01AB1234" /></label>
+          <label class="field"><span>Vehicle type</span><input id="createVehicleType" class="input" placeholder="Truck / Van / Bike" /></label>
+          <label class="field"><span>GPS device ID</span><input id="createGps" class="input" placeholder="GPS-DEL-001" /></label>
+          <label class="field"><span>Route</span><input id="createRoute" class="input" placeholder="DEL-KNP-PAT" /></label>
+          <label class="field"><span>Expected delivery date</span><input id="createExpectedDelivery" class="input" type="datetime-local" /></label>
         </div>
         <div class="form-actions">
           <button id="createShipmentBtn" class="btn btn-primary" type="button">Create shipment</button>
@@ -130,12 +156,19 @@
           <label class="field">
             <span>Status</span>
             <select id="updateStatus" class="select">
-              <option value="Created">Created</option>
+              <option value="Shipment Created">Shipment Created</option>
+              <option value="Pickup Scheduled">Pickup Scheduled</option>
+              <option value="Picked Up">Picked Up</option>
+              <option value="At Origin Hub">At Origin Hub</option>
+              <option value="Departed Origin Hub">Departed Origin Hub</option>
               <option value="In Transit">In Transit</option>
-              <option value="Arrived">Arrived</option>
-              <option value="Out for Delivery">Out for Delivery</option>
+              <option value="At Destination Hub">At Destination Hub</option>
+              <option value="Out For Delivery">Out For Delivery</option>
               <option value="Delivered">Delivered</option>
               <option value="Delayed">Delayed</option>
+              <option value="Exception">Exception</option>
+              <option value="Returned">Returned</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
           </label>
           <label class="field">

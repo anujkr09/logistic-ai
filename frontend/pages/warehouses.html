@@ -88,6 +88,26 @@
             <span>Country</span>
             <input id="warehouseCountry" class="input" placeholder="India" />
           </label>
+          <label class="field">
+            <span>Capacity</span>
+            <input id="warehouseCapacity" class="input" type="number" min="0" placeholder="2500" />
+          </label>
+          <label class="field">
+            <span>Occupancy</span>
+            <input id="warehouseOccupancy" class="input" type="number" min="0" placeholder="850" />
+          </label>
+          <label class="field">
+            <span>Hub delay score</span>
+            <input id="warehouseDelayScore" class="input" type="number" min="0" max="100" placeholder="18" />
+          </label>
+          <label class="field">
+            <span>Risk level</span>
+            <select id="warehouseRiskLevel" class="select">
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+          </label>
         </div>
         <div class="form-actions">
           <button id="createWarehouseBtn" class="btn btn-primary" type="button">Create warehouse</button>

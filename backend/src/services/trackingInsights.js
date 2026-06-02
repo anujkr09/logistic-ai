@@ -4,6 +4,7 @@ const WEATHER = [
   { label: 'Rain', icon: 'RAIN', detail: 'Wet roads can slow pickup or handoff by 1-3 hours', temp: 22 },
   { label: 'Hot', icon: 'HOT', detail: 'Heat-sensitive parcels may need extra handling care', temp: 34 },
 ];
+const { normalizeStatus, statusProgress, computeLogistics } = require('./logisticsEngine');
 
 function compactLocation(location, fallback = '-') {
   if (!location) return fallback;
@@ -21,12 +22,7 @@ function latestAutoProgress(shipment) {
     if (Number.isFinite(progress)) return Math.max(0, Math.min(100, progress));
   }
 
-  const status = String(shipment?.status || '').toLowerCase();
-  if (status === 'delivered') return 100;
-  if (status === 'out for delivery') return 88;
-  if (status === 'arrived') return 70;
-  if (status === 'in transit') return 42;
-  return 8;
+  return statusProgress(shipment?.status);
 }
 
 function transportModeFor(shipment, progress) {
@@ -88,14 +84,16 @@ function buildTimeline(shipment, progress) {
   const history = Array.isArray(shipment?.history) ? shipment.history : [];
   const items = history.slice(-8).reverse().map((entry) => {
     const entryProgress = Number(entry?.meta?.autoProgress);
+    const status = normalizeStatus(entry.status || 'Update');
     return {
-      status: entry.status || 'Update',
+      status,
       at: entry.at || entry.timestamp || entry.meta?.autoUpdatedAt || entry.meta?.statusUpdatedAt || null,
       location: entry.location || null,
       progressPercent: Number.isFinite(entryProgress) ? Math.round(entryProgress) : null,
+      description: entry.description || entry.meta?.note || '',
       detail: entry.meta?.autoTracked
         ? 'AI auto scan updated this route checkpoint.'
-        : 'Manual or system scan recorded for this parcel.',
+        : (entry.description || 'Manual or system scan recorded for this parcel.'),
     };
   });
 
@@ -103,7 +101,7 @@ function buildTimeline(shipment, progress) {
 
   return [
     {
-      status: shipment?.status || 'Created',
+      status: normalizeStatus(shipment?.status || 'Shipment Created'),
       at: shipment?.updatedAt || null,
       location: shipment?.currentLocation || shipment?.origin || null,
       progressPercent: Math.round(progress),
@@ -113,11 +111,12 @@ function buildTimeline(shipment, progress) {
 }
 
 function buildTrackingInsights(shipment) {
+  const logistics = computeLogistics(shipment);
   const progressPercent = latestAutoProgress(shipment);
   const transportMode = transportModeFor(shipment, progressPercent);
   const weather = weatherFor(shipment);
   const delay = delayFor(shipment, progressPercent, weather);
-  const confidence = etaConfidence(progressPercent, delay);
+  const confidence = logistics.deliveryConfidence || etaConfidence(progressPercent, delay);
   const origin = compactLocation(shipment?.origin, 'origin hub');
   const destination = compactLocation(shipment?.destination, 'destination');
   const current = compactLocation(shipment?.currentLocation, 'current hub');
@@ -126,11 +125,24 @@ function buildTrackingInsights(shipment) {
     progressPercent: Math.round(progressPercent),
     routeSummary: `${origin} -> ${destination}`,
     currentLocationText: current,
+    currentStage: normalizeStatus(shipment?.status),
     transportMode,
-    weather,
+    weather: {
+      ...weather,
+      riskScore: logistics.weatherRiskScore,
+      impact: logistics.weatherImpact,
+    },
     delay,
     etaConfidence: confidence,
-    estimatedDelivery: shipment?.estimatedDelivery || null,
+    estimatedDelivery: shipment?.estimatedDelivery || logistics.estimatedDelivery || null,
+    distance: {
+      totalKm: logistics.totalDistanceKm,
+      coveredKm: logistics.coveredDistanceKm,
+      remainingKm: logistics.remainingDistanceKm,
+      averageSpeedKmph: logistics.averageSpeedKmph,
+    },
+    expectedDelayMinutes: logistics.expectedDelayMinutes,
+    lastGpsPingAt: logistics.lastGpsPingAt,
     timeline: buildTimeline(shipment, progressPercent),
     aiSummary: delay.isDelayed
       ? `AI detected a ${delay.severity.toLowerCase()} delay risk: ${delay.reason}`

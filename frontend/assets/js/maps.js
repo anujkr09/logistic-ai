@@ -186,9 +186,25 @@ function hashText(value) {
 }
 
 function progressForStatus(status) {
-  const steps = ['Created', 'In Transit', 'Arrived', 'Out for Delivery', 'Delivered'];
-  const index = Math.max(0, steps.indexOf(status || 'Created'));
-  return Math.round((index / (steps.length - 1)) * 100);
+  const map = {
+    'Shipment Created': 6,
+    Created: 6,
+    'Pickup Scheduled': 12,
+    'Picked Up': 22,
+    'At Origin Hub': 32,
+    'Departed Origin Hub': 42,
+    'In Transit': 58,
+    Arrived: 76,
+    'At Destination Hub': 76,
+    'Out for Delivery': 90,
+    'Out For Delivery': 90,
+    Delivered: 100,
+    Delayed: 54,
+    Exception: 45,
+    Returned: 38,
+    Cancelled: 0,
+  };
+  return map[status] ?? 8;
 }
 
 function progressForShipment(shipment = {}) {

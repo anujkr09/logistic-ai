@@ -84,6 +84,75 @@
   align-items:start;
 }
 
+.tracking-info-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:12px;
+}
+
+.info-block{
+  min-width:0;
+  display:grid;
+  gap:5px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:rgba(248,250,252,.78);
+}
+
+.info-block span{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.info-block b,
+.info-block small{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.info-block b{
+  color:var(--text);
+  font-size:15px;
+}
+
+.info-block small{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+}
+
+.document-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:14px;
+}
+
+.doc-action{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 12px;
+  border-radius:8px;
+  border:1px solid rgba(14,143,135,.22);
+  background:#ecfdf5;
+  color:#0f766e;
+  font-size:12px;
+  font-weight:900;
+  text-decoration:none;
+}
+
+.doc-action:hover,
+.doc-action:focus{
+  border-color:#14b8a6;
+  background:#d1fae5;
+  outline:none;
+}
+
 .fraud-report-panel{
   position:relative;
   overflow:hidden;
@@ -1216,6 +1285,10 @@
   }
 
   .fraud-report-form{
+    grid-template-columns:1fr;
+  }
+
+  .tracking-info-grid{
     grid-template-columns:1fr;
   }
 

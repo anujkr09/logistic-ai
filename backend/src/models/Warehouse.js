@@ -15,6 +15,13 @@ const WarehouseSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    capacity: { type: Number, default: 0 },
+    occupancy: { type: Number, default: 0 },
+    incomingShipments: { type: Number, default: 0 },
+    outgoingShipments: { type: Number, default: 0 },
+    pendingShipments: { type: Number, default: 0 },
+    hubDelayScore: { type: Number, default: 0 },
+    riskLevel: { type: String, default: 'Low' },
   },
   { timestamps: true }
 );

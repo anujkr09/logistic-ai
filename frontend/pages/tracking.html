@@ -54,13 +54,29 @@
               <tbody>
                 <tr><th>Tracking</th><td id="tdTracking">-</td></tr>
                 <tr><th>Status</th><td id="tdStatus">-</td></tr>
+                <tr><th>Current stage</th><td id="tdStage">-</td></tr>
+                <tr><th>Shipment type</th><td id="tdType">-</td></tr>
+                <tr><th>Priority</th><td id="tdPriority">-</td></tr>
+                <tr><th>Weight</th><td id="tdWeight">-</td></tr>
+                <tr><th>Dimensions</th><td id="tdDimensions">-</td></tr>
+                <tr><th>Packages</th><td id="tdPackages">-</td></tr>
+                <tr><th>Origin</th><td id="tdOrigin">-</td></tr>
+                <tr><th>Destination</th><td id="tdDestination">-</td></tr>
                 <tr><th>Current location</th><td id="tdLocation">-</td></tr>
+                <tr><th>Last updated</th><td id="tdUpdated">-</td></tr>
+                <tr><th>Created date</th><td id="tdCreated">-</td></tr>
                 <tr><th>Route</th><td id="tdRoute">-</td></tr>
                 <tr><th>Transport mode</th><td id="tdMode">-</td></tr>
                 <tr><th>Weather</th><td id="tdWeather">-</td></tr>
                 <tr><th>Delay reason</th><td id="tdDelay">-</td></tr>
                 <tr><th>Estimated delivery</th><td id="tdETA">-</td></tr>
                 <tr><th>ETA confidence</th><td id="tdConfidence">-</td></tr>
+                <tr><th>Distance covered</th><td id="tdCovered">-</td></tr>
+                <tr><th>Distance remaining</th><td id="tdRemaining">-</td></tr>
+                <tr><th>Expected delay</th><td id="tdExpectedDelay">-</td></tr>
+                <tr><th>Vehicle assigned</th><td id="tdVehicle">-</td></tr>
+                <tr><th>Driver assigned</th><td id="tdDriver">-</td></tr>
+                <tr><th>Last GPS ping</th><td id="tdGps">-</td></tr>
               </tbody>
             </table>
           </div>
@@ -100,6 +116,25 @@
         <div class="panel card animate-in" style="grid-column:1/-1;">
           <h2 class="panel-title">Delivery timeline</h2>
           <div id="timeline" class="timeline"></div>
+        </div>
+
+        <div class="panel card animate-in" style="grid-column:1/-1;">
+          <h2 class="panel-title">Customer and documents</h2>
+          <div class="tracking-info-grid">
+            <div class="info-block">
+              <span>Sender</span>
+              <b id="tdSender">-</b>
+              <small id="tdPickupAddress">-</small>
+              <small id="tdPickupContact">-</small>
+            </div>
+            <div class="info-block">
+              <span>Receiver</span>
+              <b id="tdReceiver">-</b>
+              <small id="tdDeliveryAddress">-</small>
+              <small id="tdDeliveryContact">-</small>
+            </div>
+          </div>
+          <div id="documentActions" class="document-actions"></div>
         </div>
       </div>
     </section>
