@@ -8,6 +8,8 @@ const requiredFiles = [
   'index.html',
   'app.html',
   'manifest.webmanifest',
+  'robots.txt',
+  'sitemap.xml',
   'service-worker.js',
   'server.js',
   'assets/css/style.css',
@@ -91,6 +93,20 @@ for (const file of sourceFiles) {
 const appHtml = fs.readFileSync(path.join(root, 'app.html'), 'utf8');
 if (!appHtml.includes('app-splash') || !appHtml.includes('dynamic-app.css')) {
   fail('Dynamic app shell must include the branded startup splash and dynamic CSS.');
+}
+if (!appHtml.includes('meta name="description"') || !appHtml.includes('rel="canonical"')) {
+  fail('Dynamic app shell must include SEO description and canonical metadata.');
+}
+
+const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+if (!indexHtml.includes('meta name="description"') || !indexHtml.includes('rel="canonical"')) {
+  fail('Home page must include SEO description and canonical metadata.');
+}
+
+const robotsTxt = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
+const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+if (!robotsTxt.includes('Sitemap: https://zyraviq-ai-frontend.onrender.com/sitemap.xml') || !sitemapXml.includes('https://zyraviq-ai-frontend.onrender.com/')) {
+  fail('SEO discovery files must point to the production frontend URL.');
 }
 
 const serviceWorker = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zyraviq-ai-frontend.onrender.com/sitemap.xml
