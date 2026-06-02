@@ -94,6 +94,37 @@
   window.API_BASE_URL = apiBase;
   window.__getApiBase = resolveApiBase;
 
+  let csrfTokenPromise = null;
+  async function getCsrfToken() {
+    if (csrfTokenPromise) return csrfTokenPromise;
+    csrfTokenPromise = window.fetch(`${apiBase}/api/security/csrf`, { credentials: 'include' })
+      .then((response) => response.json())
+      .then((data) => data.csrfToken || '')
+      .catch(() => '');
+    return csrfTokenPromise;
+  }
+
+  const nativeFetch = window.fetch.bind(window);
+  window.fetch = async function zyraviqFetch(input, options = {}) {
+    const url = typeof input === 'string' ? input : input?.url || '';
+    const method = String(options.method || 'GET').toUpperCase();
+    const isWrite = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+    const targetsApi = String(url).startsWith(apiBase) || String(url).startsWith('/api/');
+
+    if (!isWrite || !targetsApi || String(url).includes('/api/security/csrf') || String(url).includes('/api/auth/login') || String(url).includes('/api/auth/register')) {
+      return nativeFetch(input, options);
+    }
+
+    const token = await getCsrfToken();
+    const headers = new Headers(options.headers || {});
+    if (token) headers.set('x-csrf-token', token);
+    return nativeFetch(input, {
+      ...options,
+      credentials: options.credentials || 'include',
+      headers,
+    });
+  };
+
   function userRole() {
     return localStorage.getItem('userRole') || '';
   }

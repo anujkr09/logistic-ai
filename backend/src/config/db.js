@@ -7,6 +7,9 @@ const Shipment = require('../models/Shipment');
 const Notification = require('../models/Notification');
 const Analytics = require('../models/Analytics');
 const WorkspaceItem = require('../models/WorkspaceItem');
+const AuditLog = require('../models/AuditLog');
+const Driver = require('../models/Driver');
+const Vehicle = require('../models/Vehicle');
 const { MONGODB_URI } = require('./env');
 
 async function connectMongo() {
@@ -22,4 +25,4 @@ async function connectMongo() {
   console.log('MongoDB connected successfully');
 }
 
-module.exports = { connectMongo, Company, User, Warehouse, Shipment, Notification, Analytics, WorkspaceItem };
+module.exports = { connectMongo, Company, User, Warehouse, Shipment, Notification, Analytics, WorkspaceItem, AuditLog, Driver, Vehicle };

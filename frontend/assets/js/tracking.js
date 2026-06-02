@@ -244,6 +244,7 @@
   function setShipmentUI(shipment) {
     if (!shipment) return;
     const insights = shipment.aiInsights || {};
+    const routeIntel = shipment.routeIntelligence || {};
     const mode = insights.transportMode;
     const weather = insights.weather;
     const delay = insights.delay;
@@ -296,7 +297,14 @@
     window.__MAP_UPDATE?.(shipment.currentLocation, shipment);
     const mapDetails = window.__MAP_DETAILS || {};
     if (tdMode) tdMode.textContent = mode ? `${mode.label} - ${mode.detail}` : (mapDetails.mode ? `${mapDetails.mode.label} - ${mapDetails.mode.detail}` : '-');
-    if (tdWeather) tdWeather.textContent = weather ? `${weather.label}, ${weather.temp}C at ${weather.location} - ${weather.detail}` : (mapDetails.weather ? `${mapDetails.weather.label}, ${mapDetails.weather.temp}C - ${mapDetails.weather.detail}` : '-');
+    if (tdWeather) {
+      const providerWeather = routeIntel.weather;
+      const traffic = routeIntel.traffic;
+      const road = routeIntel.road;
+      tdWeather.textContent = providerWeather
+        ? `${providerWeather.condition || providerWeather.label || 'Weather'} - ${providerWeather.alert || providerWeather.detail || 'No alert'} | Traffic: ${traffic?.condition || 'Normal'} | Road: ${road?.condition || 'Open'}`
+        : (weather ? `${weather.label}, ${weather.temp}C at ${weather.location} - ${weather.detail}` : (mapDetails.weather ? `${mapDetails.weather.label}, ${mapDetails.weather.temp}C - ${mapDetails.weather.detail}` : '-'));
+    }
   }
 
   function subscribeTracking(trackingNumber) {

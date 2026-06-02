@@ -8,6 +8,7 @@ const fs = require('fs');
 
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const { rateLimit } = require('./middleware/rateLimitMiddleware');
+const { csrfProtection, csrfToken, setCsrfCookie } = require('./middleware/securityMiddleware');
 
 const authRoutes = require('./routes/authRoutes');
 const shipmentRoutes = require('./routes/shipmentRoutes');
@@ -20,6 +21,9 @@ const aiRoutes = require('./routes/aiRoutes');
 const publicAiRoutes = require('./routes/publicAiRoutes');
 const uiRoutes = require('./routes/uiRoutes');
 const workspaceRoutes = require('./routes/workspaceRoutes');
+const driverRoutes = require('./routes/driverRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 const { CORS_ORIGIN } = require('./config/env');
 
 const app = express();
@@ -66,6 +70,12 @@ app.use(cors({
 app.use(express.json({ limit: '2mb' }));
 app.use(morgan('dev'));
 
+app.get('/api/security/csrf', (req, res) => {
+  const token = csrfToken();
+  setCsrfCookie(res, token);
+  res.json({ csrfToken: token, header: 'x-csrf-token' });
+});
+
 app.get('/health', (req, res) => res.json({ ok: true, app: 'ZYRAVIQ AI Logistics backend', brand: 'ZYRAVIQ' }));
 
 app.get('/runtime-config.js', (req, res) => {
@@ -81,6 +91,7 @@ app.get('/runtime-config.js', (req, res) => {
 
 app.use('/api/auth', authLimiter);
 app.use('/api', apiLimiter);
+app.use('/api', csrfProtection);
 app.use('/api/auth', authRoutes);
 app.use('/api/shipments', shipmentRoutes);
 app.use('/api/warehouses', warehouseRoutes);
@@ -92,6 +103,9 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/ai/public', publicAiRoutes);
 app.use('/api/ui', uiRoutes);
 app.use('/api/workspace', workspaceRoutes);
+app.use('/api/drivers', driverRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/reports', reportRoutes);
 
 const frontendDir = path.resolve(__dirname, '../../frontend');
 const frontendIndex = path.join(frontendDir, 'index.html');

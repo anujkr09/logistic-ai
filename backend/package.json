@@ -6,6 +6,7 @@
   "main": "src/server.js",
   "scripts": {
     "build": "node scripts/build-check.js",
+    "test": "node scripts/qa-enterprise-check.js",
     "brand:migrate": "node scripts/brand-migrate.js",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"

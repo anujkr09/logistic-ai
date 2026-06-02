@@ -187,6 +187,57 @@
         <div id="shipmentsAdmin" class="table-wrap"></div>
       </section>
 
+      <section class="grid-2" style="margin-top:16px;">
+        <div class="panel card">
+          <div class="panel-head">
+            <h2 class="panel-title">Driver management</h2>
+            <button id="refreshDriversBtn" class="table-action" type="button">Refresh</button>
+          </div>
+          <div class="form-grid ops-mini-form">
+            <label class="field"><span>Driver name</span><input id="driverName" class="input" placeholder="Ravi Kumar" /></label>
+            <label class="field"><span>Driver phone</span><input id="driverPhone" class="input" placeholder="+91 9876543210" /></label>
+            <label class="field"><span>Vehicle number</span><input id="driverVehicleNumber" class="input" placeholder="DL01AB1234" /></label>
+            <label class="field"><span>Vehicle type</span><input id="driverVehicleType" class="input" placeholder="Truck" /></label>
+            <label class="field"><span>License number</span><input id="driverLicense" class="input" placeholder="DL-2026-0001" /></label>
+            <label class="field"><span>Status</span><select id="driverStatus" class="select"><option>Available</option><option>Assigned</option><option>On Route</option><option>Off Duty</option><option>Suspended</option></select></label>
+          </div>
+          <div class="form-actions"><button id="createDriverBtn" class="btn btn-primary" type="button">Save driver</button></div>
+          <div id="driversList" class="notif-list"></div>
+        </div>
+        <div class="panel card">
+          <div class="panel-head">
+            <h2 class="panel-title">Vehicle tracking</h2>
+            <button id="refreshVehiclesBtn" class="table-action" type="button">Refresh</button>
+          </div>
+          <div class="form-grid ops-mini-form">
+            <label class="field"><span>Vehicle number</span><input id="vehicleNumber" class="input" placeholder="DL01AB1234" /></label>
+            <label class="field"><span>Driver</span><input id="vehicleDriver" class="input" placeholder="Ravi Kumar" /></label>
+            <label class="field"><span>Type</span><input id="vehicleType" class="input" placeholder="Truck" /></label>
+            <label class="field"><span>Current location</span><input id="vehicleLocation" class="input" placeholder="Kanpur Hub" /></label>
+            <label class="field"><span>Fuel status</span><input id="vehicleFuel" class="input" placeholder="72%" /></label>
+            <label class="field"><span>Speed KM/H</span><input id="vehicleSpeed" class="input" type="number" min="0" placeholder="58" /></label>
+            <label class="field"><span>Route</span><input id="vehicleRoute" class="input" placeholder="DEL-KNP-PAT" /></label>
+            <label class="field"><span>Status</span><select id="vehicleStatus" class="select"><option>Available</option><option>Assigned</option><option>In Transit</option><option>Maintenance</option><option>Inactive</option></select></label>
+          </div>
+          <div class="form-actions"><button id="createVehicleBtn" class="btn btn-primary" type="button">Save vehicle</button></div>
+          <div id="vehiclesList" class="notif-list"></div>
+        </div>
+      </section>
+
+      <section class="grid-2" style="margin-top:16px;">
+        <div class="panel card">
+          <div class="panel-head">
+            <h2 class="panel-title">Operations reports</h2>
+            <button id="refreshReportsBtn" class="table-action" type="button">Refresh</button>
+          </div>
+          <div id="operationsReport" class="notif-list"></div>
+        </div>
+        <div class="panel card">
+          <h2 class="panel-title">Audit logs</h2>
+          <div id="auditLogs" class="notif-list"></div>
+        </div>
+      </section>
+
     </main>
   </div>
 

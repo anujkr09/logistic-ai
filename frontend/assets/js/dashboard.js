@@ -363,6 +363,103 @@
     `;
   }
 
+  function renderDriverList(container, items = []) {
+    if (!container) return;
+    container.innerHTML = items.length
+      ? items.map((driver) => `
+        <article class="notif-item">
+          <div class="notif-head">
+            <div class="notif-title">${escapeHtml(driver.name || 'Driver')}</div>
+            <span class="mini-chip">${escapeHtml(driver.currentStatus || 'Available')}</span>
+          </div>
+          <div class="notif-body">${escapeHtml(driver.phone || 'No phone')} - ${escapeHtml(driver.vehicleNumber || 'No vehicle')} - ${escapeHtml(driver.licenseNumber || 'No license')}</div>
+          <div class="notif-meta"><span>${escapeHtml((driver.assignedShipments || []).length)} assigned shipments</span><span>${escapeHtml(driver.availability === false ? 'Unavailable' : 'Available')}</span></div>
+        </article>
+      `).join('')
+      : '<div class="empty-state compact"><strong>No drivers</strong><span>Add drivers to assign shipments and monitor availability.</span></div>';
+  }
+
+  function renderVehicleList(container, items = []) {
+    if (!container) return;
+    container.innerHTML = items.length
+      ? items.map((vehicle) => `
+        <article class="notif-item">
+          <div class="notif-head">
+            <div class="notif-title">${escapeHtml(vehicle.vehicleNumber || 'Vehicle')}</div>
+            <span class="mini-chip">${escapeHtml(vehicle.status || 'Available')}</span>
+          </div>
+          <div class="notif-body">${escapeHtml(vehicle.driverName || 'No driver')} - ${escapeHtml(vehicle.currentLocation?.text || 'Location pending')} - ${escapeHtml(vehicle.fuelStatus || 'Fuel pending')}</div>
+          <div class="notif-meta"><span>${escapeHtml(vehicle.speedKmph || 0)} KM/H</span><span>${escapeHtml((vehicle.assignedShipments || []).length)} shipments</span></div>
+        </article>
+      `).join('')
+      : '<div class="empty-state compact"><strong>No vehicles</strong><span>Add vehicles to track fuel, GPS, speed, route and ETA.</span></div>';
+  }
+
+  function renderOperationsReport(data = {}) {
+    const report = document.getElementById('operationsReport');
+    const audit = document.getElementById('auditLogs');
+    const summary = data.summary || {};
+    if (report) {
+      report.innerHTML = `
+        <article class="notif-item">
+          <div class="notif-head"><div class="notif-title">AI prediction monitor</div><span class="mini-chip">${escapeHtml(summary.aiPredictionConfidence || 0)}% confidence</span></div>
+          <div class="notif-body">Active ${escapeHtml(summary.activeShipments || 0)}, delayed ${escapeHtml(summary.delayedShipments || 0)}, exceptions ${escapeHtml(summary.exceptionShipments || 0)}.</div>
+        </article>
+        ${(data.delayMonitor || []).slice(0, 5).map((item) => `
+          <article class="notif-item ${item.expectedDelayMinutes ? 'alert-danger' : ''}">
+            <div class="notif-title">${escapeHtml(item.trackingNumber)}</div>
+            <div class="notif-body">${escapeHtml(item.status)} - ${escapeHtml(locationText(item.currentLocation))} - delay ${escapeHtml(item.expectedDelayMinutes || 0)} min</div>
+            <div class="notif-meta"><span>${escapeHtml(item.weatherImpact || 'No weather impact')}</span><a class="link" href="./tracking.html?tracking=${encodeURIComponent(item.trackingNumber)}">Track</a></div>
+          </article>
+        `).join('')}
+      `;
+    }
+    if (audit) {
+      audit.innerHTML = (data.auditLogs || []).length
+        ? data.auditLogs.slice(0, 8).map((log) => `
+          <article class="notif-item">
+            <div class="notif-head"><div class="notif-title">${escapeHtml(log.action || 'Audit')}</div><span class="mini-chip">${escapeHtml(log.success ? 'OK' : 'Failed')}</span></div>
+            <div class="notif-body">${escapeHtml(log.resourceType || 'system')} ${escapeHtml(log.resourceId || '')}</div>
+            <div class="notif-meta"><span>${escapeHtml(formatDateTime(log.createdAt))}</span><span>${escapeHtml(log.ip || '')}</span></div>
+          </article>
+        `).join('')
+        : '<div class="empty-state compact"><strong>No audit logs</strong><span>Security-sensitive operations will appear here.</span></div>';
+    }
+  }
+
+  async function loadDrivers() {
+    const container = document.getElementById('driversList');
+    if (!container) return;
+    try {
+      const data = await fetchJson('/api/drivers');
+      renderDriverList(container, data.items || data.drivers || []);
+    } catch (error) {
+      setError(container, error.message);
+    }
+  }
+
+  async function loadVehicles() {
+    const container = document.getElementById('vehiclesList');
+    if (!container) return;
+    try {
+      const data = await fetchJson('/api/vehicles');
+      renderVehicleList(container, data.items || data.vehicles || []);
+    } catch (error) {
+      setError(container, error.message);
+    }
+  }
+
+  async function loadReports() {
+    if (!document.getElementById('operationsReport')) return;
+    try {
+      const data = await fetchJson('/api/reports/operations');
+      renderOperationsReport(data);
+    } catch (error) {
+      const container = document.getElementById('operationsReport');
+      setError(container, error.message);
+    }
+  }
+
   function renderShipmentList(container, items, options = {}) {
     const list = items || [];
     if (!list.length) {
@@ -661,6 +758,82 @@
     });
   }
 
+  function setupDriverVehicleForms() {
+    document.getElementById('refreshDriversBtn')?.addEventListener('click', loadDrivers);
+    document.getElementById('refreshVehiclesBtn')?.addEventListener('click', loadVehicles);
+    document.getElementById('refreshReportsBtn')?.addEventListener('click', loadReports);
+
+    document.getElementById('createDriverBtn')?.addEventListener('click', async () => {
+      const button = document.getElementById('createDriverBtn');
+      const name = document.getElementById('driverName')?.value?.trim();
+      if (!name) {
+        showToast('Driver name required');
+        return;
+      }
+      button.disabled = true;
+      try {
+        await fetchJson('/api/drivers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            phone: document.getElementById('driverPhone')?.value?.trim(),
+            vehicleNumber: document.getElementById('driverVehicleNumber')?.value?.trim(),
+            vehicleType: document.getElementById('driverVehicleType')?.value?.trim(),
+            licenseNumber: document.getElementById('driverLicense')?.value?.trim(),
+            currentStatus: document.getElementById('driverStatus')?.value,
+          }),
+        });
+        ['driverName', 'driverPhone', 'driverVehicleNumber', 'driverVehicleType', 'driverLicense'].forEach((id) => {
+          const element = document.getElementById(id);
+          if (element) element.value = '';
+        });
+        showToast('Driver saved');
+        await loadDrivers();
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById('createVehicleBtn')?.addEventListener('click', async () => {
+      const button = document.getElementById('createVehicleBtn');
+      const vehicleNumber = document.getElementById('vehicleNumber')?.value?.trim();
+      if (!vehicleNumber) {
+        showToast('Vehicle number required');
+        return;
+      }
+      button.disabled = true;
+      try {
+        await fetchJson('/api/vehicles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            vehicleNumber,
+            driverName: document.getElementById('vehicleDriver')?.value?.trim(),
+            vehicleType: document.getElementById('vehicleType')?.value?.trim(),
+            currentLocation: document.getElementById('vehicleLocation')?.value?.trim(),
+            fuelStatus: document.getElementById('vehicleFuel')?.value?.trim(),
+            speedKmph: document.getElementById('vehicleSpeed')?.value,
+            route: document.getElementById('vehicleRoute')?.value?.trim(),
+            status: document.getElementById('vehicleStatus')?.value,
+          }),
+        });
+        ['vehicleNumber', 'vehicleDriver', 'vehicleType', 'vehicleLocation', 'vehicleFuel', 'vehicleSpeed', 'vehicleRoute'].forEach((id) => {
+          const element = document.getElementById(id);
+          if (element) element.value = '';
+        });
+        showToast('Vehicle saved');
+        await loadVehicles();
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
   async function loadCustomerNotifications() {
     const container = document.getElementById('notifCenter');
     if (!container) return;
@@ -811,9 +984,13 @@
       setupIntelligenceActions();
       setupAdminShipmentForm();
       setupAdminStatusForm();
+      setupDriverVehicleForms();
       loadAdminStats();
       loadAdminAlerts();
       loadAdminShipments();
+      loadDrivers();
+      loadVehicles();
+      loadReports();
     }
 
     if (page === 'customer') {
@@ -830,6 +1007,9 @@
         loadAdminStats();
         loadAdminAlerts();
         loadAdminShipments();
+        loadDrivers();
+        loadVehicles();
+        loadReports();
       }
       if (currentPage() === 'customer') {
         loadCustomerAnalytics();

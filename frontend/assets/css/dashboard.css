@@ -269,6 +269,22 @@
   gap:12px;
 }
 
+.ops-mini-form{
+  grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+  margin-bottom:12px;
+}
+
+.ops-mini-form .field{
+  min-height:74px;
+}
+
+.ops-mini-form .input,
+.ops-mini-form .select{
+  min-height:44px;
+  height:44px;
+  font-size:14px;
+}
+
 .field{
   display:flex;
   flex-direction:column;

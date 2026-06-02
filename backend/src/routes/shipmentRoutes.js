@@ -1,12 +1,16 @@
 const router = require('express').Router();
 const { requireAuth, requireRole } = require('../middleware/authMiddleware');
-const { Shipment, Warehouse, Notification } = require('../services/models');
+const { Shipment, Warehouse, Driver, Vehicle } = require('../services/models');
 const { predictEta, detectFraud, analyzeTracking } = require('../services/aiClient');
 const { scoreShipmentFraud, publishFraudNotifications } = require('../services/operationsIntelligence');
 const { refreshRevenueSummary } = require('../services/analyticsSummary');
 const { getIo } = require('../sockets/instance');
 const { findShipment } = require('../services/trackingLookup');
 const { PROFESSIONAL_STATUSES, normalizeStatus, computeLogistics, enrichShipment } = require('../services/logisticsEngine');
+const { createAndDispatchNotification } = require('../services/notificationDispatcher');
+const { auditAction } = require('../middleware/securityMiddleware');
+const { routeRisk } = require('../services/routeIntelligence');
+const { buildPdf } = require('../services/pdfDocument');
 
 function parseDimensions(value = {}) {
   if (!value) value = {};
@@ -91,6 +95,7 @@ router.get('/track/:trackingNumber', async (req, res) => {
   if (!shipment) return res.status(404).json({ message: 'Shipment not found' });
   const data = enrichShipment(shipment);
   data.aiInsights = await analyzeTracking({ shipment: data });
+  data.routeIntelligence = await routeRisk(data);
   data.lookup = { requestedTracking: trackingNumber, tried: candidates };
   res.json(data);
 });
@@ -114,7 +119,7 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 // Admin/Warehouse manager: create a shipment
-router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async (req, res) => {
+router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), auditAction('shipment.create', 'shipment'), async (req, res) => {
   const { trackingNumber, origin, destination, currentLocation, status, warehouseId } = req.body || {};
   if (!origin?.text || !destination?.text) return res.status(400).json({ message: 'origin.text and destination.text required' });
 
@@ -153,13 +158,56 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
 
   await shipment.save();
 
-  const notification = await Notification.create({
+  if (shipment.driver?.name) {
+    await Driver.findOneAndUpdate(
+      { companyId: req.user.companyId, name: shipment.driver.name },
+      {
+        $set: {
+          companyId: req.user.companyId,
+          name: shipment.driver.name,
+          phone: shipment.driver.phone || '',
+          vehicleNumber: shipment.vehicle?.number || '',
+          vehicleType: shipment.vehicle?.type || '',
+          licenseNumber: shipment.driver.licenseNumber || '',
+          currentStatus: 'Assigned',
+          availability: false,
+        },
+        $addToSet: { assignedShipments: shipment.trackingNumber },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    ).exec();
+  }
+
+  if (shipment.vehicle?.number) {
+    await Vehicle.findOneAndUpdate(
+      { companyId: req.user.companyId, vehicleNumber: shipment.vehicle.number },
+      {
+        $set: {
+          companyId: req.user.companyId,
+          vehicleNumber: shipment.vehicle.number,
+          driverName: shipment.driver?.name || '',
+          vehicleType: shipment.vehicle?.type || 'Truck',
+          currentLocation: shipment.currentLocation,
+          fuelStatus: shipment.vehicle?.fuelStatus || 'Operational',
+          speedKmph: shipment.vehicle?.speedKmph || shipment.logistics?.averageSpeedKmph || 0,
+          route: shipment.routeCode || '',
+          eta: shipment.estimatedDelivery || null,
+          lastGpsUpdate: shipment.logistics?.lastGpsPingAt || new Date(),
+          status: 'Assigned',
+        },
+        $addToSet: { assignedShipments: shipment.trackingNumber },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    ).exec();
+  }
+
+  const notification = await createAndDispatchNotification({
     companyId: req.user.companyId,
     userId: null,
     type: 'shipment_update',
     title: `Shipment ${shipment.trackingNumber} created`,
     message: `New shipment created from ${shipment.origin.text || 'origin'} to ${shipment.destination.text || 'destination'}`,
-    meta: { trackingNumber: shipment.trackingNumber },
+    meta: { trackingNumber: shipment.trackingNumber, event: 'Shipment Created' },
   });
 
   const io = getIo();
@@ -174,7 +222,7 @@ router.post('/', requireAuth, requireRole(['admin', 'warehouse_manager']), async
 });
 
 // Admin/Warehouse manager: assign shipment to warehouse + update current location
-router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']), async (req, res) => {
+router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']), auditAction('shipment.assign', 'shipment'), async (req, res) => {
   const { trackingNumber, warehouseId, currentLocation, status } = req.body || {};
   if (!trackingNumber || !warehouseId) return res.status(400).json({ message: 'trackingNumber, warehouseId required' });
 
@@ -230,13 +278,13 @@ router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']),
 
   await shipment.save();
 
-  const notification = await Notification.create({
+  const notification = await createAndDispatchNotification({
     companyId: req.user.companyId,
     userId: null,
     type: 'shipment_update',
     title: `Shipment ${shipment.trackingNumber} updated`,
     message: `Status changed to ${shipment.status}`,
-    meta: { trackingNumber: shipment.trackingNumber, warehouseId: warehouse._id },
+    meta: { trackingNumber: shipment.trackingNumber, warehouseId: warehouse._id, event: shipment.status },
   });
 
   const io = getIo();
@@ -251,7 +299,7 @@ router.post('/assign', requireAuth, requireRole(['admin', 'warehouse_manager']),
 });
 
 // Admin/Warehouse manager: update shipment status without changing customer tracking flow
-router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager']), async (req, res) => {
+router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager']), auditAction('shipment.status.update', 'shipment'), async (req, res) => {
   const { trackingNumber, status, currentLocation } = req.body || {};
   if (!trackingNumber || !status) return res.status(400).json({ message: 'trackingNumber and status required' });
 
@@ -294,13 +342,13 @@ router.patch('/status', requireAuth, requireRole(['admin', 'warehouse_manager'])
 
   await shipment.save();
 
-  const notification = await Notification.create({
+  const notification = await createAndDispatchNotification({
     companyId: req.user.companyId,
     userId: null,
     type: 'shipment_update',
     title: `Shipment ${shipment.trackingNumber} status updated`,
     message: `Status changed to ${shipment.status}`,
-    meta: { trackingNumber: shipment.trackingNumber },
+    meta: { trackingNumber: shipment.trackingNumber, event: shipment.status },
   });
 
   const io = getIo();
@@ -323,9 +371,11 @@ router.get('/:trackingNumber/documents/:documentType', async (req, res) => {
   if (!allowed.has(documentType)) return res.status(404).json({ message: 'Document not found' });
 
   const title = documentType.split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join(' ');
-  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="${shipment.trackingNumber}-${documentType}.txt"`);
-  return res.send(textDocument(title, shipment));
+  const lines = textDocument(title, shipment).split('\n');
+  const pdf = buildPdf(title, lines);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="${shipment.trackingNumber}-${documentType}.pdf"`);
+  return res.send(pdf);
 });
 
 // Admin: aggregated shipment lists
