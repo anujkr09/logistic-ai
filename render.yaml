@@ -22,6 +22,8 @@ services:
         value: https://zyraviq-ai-frontend.onrender.com
       - key: SOCKET_CORS_ORIGIN
         value: https://zyraviq-ai-frontend.onrender.com
+      - key: PUBLIC_GOOGLE_MAPS_API_KEY
+        sync: false
 
   - type: web
     name: zyraviq-ai-frontend
@@ -35,6 +37,8 @@ services:
         value: production
       - key: API_BASE_URL
         value: https://zyraviq-ai-logistics.onrender.com
+      - key: PUBLIC_GOOGLE_MAPS_API_KEY
+        sync: false
 
   - type: web
     name: zyraviq-ai-service
