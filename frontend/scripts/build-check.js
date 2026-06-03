@@ -111,7 +111,7 @@ if (!indexHtml.includes('google-site-verification')) {
 
 const robotsTxt = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
 const sitemapXml = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-if (!robotsTxt.includes('Sitemap: https://zyraviq-ai-frontend.onrender.com/sitemap.xml') || !sitemapXml.includes('https://zyraviq-ai-frontend.onrender.com/')) {
+if (!robotsTxt.includes('Sitemap: https://zyraviq-ai.onrender.com/sitemap.xml') || !sitemapXml.includes('https://zyraviq-ai.onrender.com/')) {
   fail('SEO discovery files must point to the production frontend URL.');
 }
 

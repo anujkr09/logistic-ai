@@ -3,4 +3,4 @@ Allow: /
 Allow: /tracking
 Allow: /tracking/
 
-Sitemap: https://zyraviq-ai-frontend.onrender.com/sitemap.xml
+Sitemap: https://zyraviq-ai.onrender.com/sitemap.xml

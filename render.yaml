@@ -19,14 +19,14 @@ services:
           name: zyraviq-ai-service
           property: hostport
       - key: CORS_ORIGIN
-        value: https://zyraviq-ai-frontend.onrender.com
+        value: https://zyraviq-ai.onrender.com
       - key: SOCKET_CORS_ORIGIN
-        value: https://zyraviq-ai-frontend.onrender.com
+        value: https://zyraviq-ai.onrender.com
       - key: PUBLIC_GOOGLE_MAPS_API_KEY
         sync: false
 
   - type: web
-    name: zyraviq-ai-frontend
+    name: zyraviq-ai
     runtime: node
     plan: free
     buildCommand: cd frontend && npm ci
