@@ -37,7 +37,7 @@ app.get('/health', (req, res) => {
 
 app.get('/robots.txt', (req, res, next) => {
   res.type('text/plain');
-  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.sendFile(path.join(__dirname, 'robots.txt'), (err) => {
     if (err) next(err);
   });
@@ -45,7 +45,7 @@ app.get('/robots.txt', (req, res, next) => {
 
 app.get('/sitemap.xml', (req, res, next) => {
   res.type('application/xml');
-  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.sendFile(path.join(__dirname, 'sitemap.xml'), (err) => {
     if (err) next(err);
   });
