@@ -98,6 +98,7 @@ function sendHtmlWithRuntimeConfig(filePath, res, next) {
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('X-Robots-Tag', 'index, follow');
     res.send(body);
   });
 }
