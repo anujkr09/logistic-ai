@@ -109,6 +109,10 @@ app.get(['/', '/index.html', '/app.html', '/pages/*.html'], (req, res, next) => 
   sendHtmlWithRuntimeConfig(filePath, res, next);
 });
 
+app.get(['/tracking', '/tracking/'], (req, res, next) => {
+  sendHtmlWithRuntimeConfig(path.join(__dirname, 'pages', 'tracking.html'), res, next);
+});
+
 // Serve static files from the current directory
 app.use(express.static(path.join(__dirname), {
   setHeaders(res, filePath) {
