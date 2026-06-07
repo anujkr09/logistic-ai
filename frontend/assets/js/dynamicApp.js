@@ -269,6 +269,36 @@
     toast.timer = setTimeout(() => { node.style.display = 'none'; }, 2600);
   }
 
+  function setupServiceWorkerUpdates() {
+    if (!('serviceWorker' in navigator)) return;
+    let refreshing = false;
+    const appRootUrl = new URL('../../', document.currentScript?.src || location.href);
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      toast('Updating ZYRAVIQ AI...');
+      setTimeout(() => location.reload(), 450);
+    });
+
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register(new URL('service-worker.js', appRootUrl), {
+          updateViaCache: 'none',
+        });
+        const checkForUpdates = () => registration.update().catch(() => {});
+        checkForUpdates();
+        setInterval(checkForUpdates, 30 * 60 * 1000);
+        window.addEventListener('focus', checkForUpdates);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') checkForUpdates();
+        });
+      } catch {
+        toast('App update setup could not start.', 'error');
+      }
+    });
+  }
+
   function signedIn() {
     return Boolean(state.token || state.user);
   }
@@ -1614,6 +1644,7 @@
   }
 
   window.addEventListener('popstate', render);
+  setupServiceWorkerUpdates();
   loadWorkspaceFromMongo().catch(() => {
     state.backendReady = false;
   }).finally(render);

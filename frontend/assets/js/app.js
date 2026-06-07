@@ -5,13 +5,8 @@
     [/ZYRAVIQ/g, 'ZYRAVIQ'],
     [/zyraviq/g, 'zyraviq'],
     [/zyraviq/g, 'zyraviq'],
-    [new RegExp(`SHI${'PX'}`, 'g'), 'ZYRAVIQ'],
-    [new RegExp(`Shi${'pX'}`, 'g'), 'ZYRAVIQ'],
-    [new RegExp(`shi${'px'}`, 'g'), 'zyraviq'],
     [/FEDEX/g, 'ZYRAVIQ'],
     [/FEDX/g, 'ZYRAVIQ'],
-    [new RegExp(`\\bSHI${'PX'}-`, 'g'), 'ZQ-'],
-    [new RegExp(`\\bS${'X'}-`, 'g'), 'ZQ-'],
     [/\bFX-/g, 'ZQ-'],
     [/\bFX\b/g, 'ZQ'],
   ];
@@ -526,13 +521,35 @@
     });
   }
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register(new URL('service-worker.js', appRootUrl)).catch(() => {
+  function setupServiceWorkerUpdates() {
+    if (!('serviceWorker' in navigator)) return;
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      showToast('Updating ZYRAVIQ AI...');
+      setTimeout(() => location.reload(), 450);
+    });
+
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register(new URL('service-worker.js', appRootUrl), {
+          updateViaCache: 'none',
+        });
+        const checkForUpdates = () => registration.update().catch(() => {});
+        checkForUpdates();
+        setInterval(checkForUpdates, 30 * 60 * 1000);
+        window.addEventListener('focus', checkForUpdates);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') checkForUpdates();
+        });
+      } catch {
         showToast('Install setup could not start. Please try again.');
-      });
+      }
     });
   }
+
+  setupServiceWorkerUpdates();
 
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault();
