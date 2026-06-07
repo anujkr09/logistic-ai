@@ -41,6 +41,14 @@
       : './customer-dashboard.html';
   }
 
+  function syncCountryCode(select) {
+    if (!select) return;
+    const form = select.closest('form');
+    const input = form?.elements.phoneCountryCode;
+    const selected = select.selectedOptions?.[0];
+    if (input && selected?.dataset.code) input.value = selected.dataset.code;
+  }
+
   function redirectIfSignedIn() {
     const path = location.pathname.split('/').pop();
     const token = localStorage.getItem('token');
@@ -51,9 +59,120 @@
 
   function setupLoginForm() {
     const form = document.getElementById('loginForm');
-    if (!form) return;
-
     const hint = document.getElementById('authHint');
+    const otpRequestForm = document.getElementById('otpRequestForm');
+    const otpVerifyForm = document.getElementById('otpVerifyForm');
+    const methodTabs = document.querySelectorAll('[data-auth-method]');
+    let otpPayload = null;
+
+    function setLoginMethod(method) {
+      methodTabs.forEach((tab) => tab.classList.toggle('is-active', tab.dataset.authMethod === method));
+      if (otpRequestForm) otpRequestForm.hidden = method !== 'otp' || Boolean(otpPayload);
+      if (otpVerifyForm) otpVerifyForm.hidden = method !== 'otp' || !otpPayload;
+      if (form) form.hidden = method !== 'password';
+      if (hint) hint.textContent = '';
+    }
+
+    methodTabs.forEach((tab) => tab.addEventListener('click', () => {
+      otpPayload = null;
+      setLoginMethod(tab.dataset.authMethod || 'otp');
+    }));
+
+    otpRequestForm?.querySelectorAll('.auth-country').forEach((select) => {
+      syncCountryCode(select);
+      select.addEventListener('change', () => syncCountryCode(select));
+    });
+
+    async function requestOtp() {
+      if (!otpRequestForm) return;
+      const companyName = otpRequestForm.elements.companyName?.value?.trim();
+      const phoneCountryCode = otpRequestForm.elements.phoneCountryCode?.value?.trim();
+      const phoneNumber = otpRequestForm.elements.phoneNumber?.value?.trim();
+      if (!companyName || !phoneCountryCode || !phoneNumber) {
+        if (hint) hint.textContent = 'Company and mobile number required';
+        return;
+      }
+
+      if (hint) {
+        hint.textContent = 'Sending OTP...';
+        hint.classList.add('is-loading');
+      }
+      setFormBusy(otpRequestForm, true, 'Sending OTP...');
+      try {
+        const response = await fetch(`${apiBase}/api/auth/login/request-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ companyName, phoneCountryCode, phoneNumber }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data?.message || 'Could not send OTP');
+        otpPayload = { companyName, phoneCountryCode, phoneNumber };
+        if (hint) {
+          hint.textContent = data.demoOtp
+            ? `Demo OTP: ${data.demoOtp}. Enter it to verify login.`
+            : data.message || 'OTP sent. Please check your mobile.';
+        }
+        setLoginMethod('otp');
+        otpVerifyForm?.elements.otp?.focus();
+      } catch (error) {
+        const offline = error?.message === 'Failed to fetch';
+        if (hint) hint.textContent = offline ? 'Backend server is not running on port 4000' : error?.message || 'OTP request failed';
+      } finally {
+        setFormBusy(otpRequestForm, false);
+        hint?.classList.remove('is-loading');
+      }
+    }
+
+    otpRequestForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      requestOtp();
+    });
+
+    otpVerifyForm?.querySelector('[data-action="resend-otp"]')?.addEventListener('click', requestOtp);
+
+    otpVerifyForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const otp = otpVerifyForm.elements.otp?.value?.trim();
+      if (!otpPayload || !otp) {
+        if (hint) hint.textContent = 'Request OTP and enter the code';
+        return;
+      }
+
+      if (hint) {
+        hint.textContent = 'Verifying OTP...';
+        hint.classList.add('is-loading');
+      }
+      setFormBusy(otpVerifyForm, true, 'Verifying...');
+      try {
+        const response = await fetch(`${apiBase}/api/auth/login/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...otpPayload, otp }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data?.message || 'OTP verification failed');
+        setToken(data.token);
+        setUser(data.user);
+        showToast('OTP verified');
+        setTimeout(() => {
+          location.href = dashboardFor(data.user?.role);
+        }, 400);
+      } catch (error) {
+        const offline = error?.message === 'Failed to fetch';
+        if (hint) hint.textContent = offline ? 'Backend server is not running on port 4000' : error?.message || 'OTP verification error';
+      } finally {
+        setFormBusy(otpVerifyForm, false);
+        hint?.classList.remove('is-loading');
+      }
+    });
+
+    if (!form) {
+      setLoginMethod('otp');
+      return;
+    }
+
+    setLoginMethod('otp');
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
@@ -138,10 +257,8 @@
       return true;
     }
 
-    countrySelect?.addEventListener('change', () => {
-      const selected = countrySelect.selectedOptions?.[0];
-      if (countryCodeInput && selected?.dataset.code) countryCodeInput.value = selected.dataset.code;
-    });
+    syncCountryCode(countrySelect);
+    countrySelect?.addEventListener('change', () => syncCountryCode(countrySelect));
     panInput?.addEventListener('input', validateTaxFields);
     gstInput?.addEventListener('input', validateTaxFields);
 

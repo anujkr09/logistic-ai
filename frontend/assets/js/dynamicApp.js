@@ -320,6 +320,20 @@
     localStorage.setItem('companyId', 'local-company');
   }
 
+  function saveBackendAuth(token, user) {
+    state.token = token || '';
+    state.user = user;
+    if (token) localStorage.setItem('token', token);
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userRole', user.role || 'customer');
+      localStorage.setItem('userId', user.id || '');
+      localStorage.setItem('companyId', user.companyId || '');
+      if (user.companyName) state.db.settings.companyName = user.companyName;
+      persist();
+    }
+  }
+
   function clearAuth() {
     state.token = '';
     state.user = null;
@@ -542,20 +556,40 @@
 
   function loginPage() {
     return layout(`
-      <section class="dynamic-grid two">
-        <div class="dynamic-panel">
-          <p class="home-kicker">Secure access</p>
-          <h1>Login</h1>
-          <p class="muted-text">Use any valid email. Choose admin role for operations pages or customer role for customer-only views.</p>
+      <section class="dynamic-grid two auth-dynamic-grid">
+        <div class="dynamic-panel auth-dynamic-copy">
+          <p class="home-kicker">Mobile OTP access</p>
+          <h1>Login to ZYRAVIQ AI</h1>
+          <p class="muted-text">Use your registered company and mobile number. OTP verification opens the correct customer or admin workspace.</p>
+          <div class="auth-proof-grid">
+            <span><strong>Verified mobile</strong> OTP based login for daily access.</span>
+            <span><strong>Role aware</strong> Dashboard opens based on saved account role.</span>
+            <span><strong>PWA ready</strong> Works inside the installed app too.</span>
+          </div>
         </div>
         <div class="dynamic-panel">
-          <form id="loginForm" class="dynamic-form">
-            <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" inputmode="email" required /></label>
-            <label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="current-password" required minlength="4" /></label>
-            <label class="field"><span>Role</span><select class="select" name="role"><option value="admin">Admin</option><option value="customer">Customer</option></select></label>
-            <button class="btn btn-primary" type="submit">Login</button>
-            <div id="authHint" class="hint" role="alert"></div>
+          <form id="otpRequestForm" class="dynamic-form">
+            <label class="field"><span>Company</span><input class="input" name="companyName" autocomplete="organization" required /></label>
+            <div class="form-row">
+              <label class="field"><span>Country</span><select class="select" name="phoneCountry" data-country-code-target="phoneCountryCode"><option value="India" data-code="+91">India (+91)</option><option value="United States" data-code="+1">United States (+1)</option><option value="United Kingdom" data-code="+44">United Kingdom (+44)</option><option value="United Arab Emirates" data-code="+971">UAE (+971)</option><option value="Singapore" data-code="+65">Singapore (+65)</option></select></label>
+              <label class="field"><span>Mobile number</span><div class="phone-field"><input class="input phone-code" name="phoneCountryCode" value="+91" readonly /><input class="input" name="phoneNumber" type="tel" inputmode="tel" required /></div></label>
+            </div>
+            <button class="btn btn-primary" type="submit">Send OTP</button>
           </form>
+          <form id="otpVerifyForm" class="dynamic-form" hidden>
+            <label class="field"><span>OTP</span><input class="input otp-input" name="otp" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required /></label>
+            <div class="dynamic-actions"><button class="btn btn-primary" type="submit">Verify and login</button><button class="btn-secondary" type="button" data-action="resend-otp">Resend OTP</button></div>
+          </form>
+          <details class="password-login-panel">
+            <summary>Password login</summary>
+            <form id="loginForm" class="dynamic-form">
+              <label class="field"><span>Company</span><input class="input" name="companyName" autocomplete="organization" required /></label>
+              <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" inputmode="email" required /></label>
+              <label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="current-password" required minlength="4" /></label>
+              <button class="btn btn-primary" type="submit">Login with password</button>
+            </form>
+          </details>
+          <div id="authHint" class="hint" role="alert"></div>
         </div>
       </section>
     `, '/login');
@@ -564,21 +598,41 @@
   function registerPage() {
     return layout(`
       <section class="dynamic-grid two">
-        <div class="dynamic-panel">
-          <p class="home-kicker">Open account</p>
-          <h1>Create workspace user</h1>
-          <p class="muted-text">The account is saved locally so refreshes keep the session and data available.</p>
+        <div class="dynamic-panel auth-dynamic-copy">
+          <p class="home-kicker">New user onboarding</p>
+          <h1>Create a verified logistics account</h1>
+          <p class="muted-text">Add user, mobile, company, PAN, and GST details. The mobile number becomes your OTP login identity.</p>
+          <div class="auth-proof-grid">
+            <span><strong>User</strong>Name, email, role, and password.</span>
+            <span><strong>Mobile</strong>Country code and OTP-ready phone.</span>
+            <span><strong>Business</strong>Company, PAN, and GST validation.</span>
+          </div>
         </div>
         <div class="dynamic-panel">
           <form id="registerForm" class="dynamic-form" data-dirty-form>
+            <p class="home-kicker">1. User details</p>
             <div class="form-row">
               <label class="field"><span>Name</span><input class="input" name="name" required /></label>
-              <label class="field"><span>Email</span><input class="input" name="email" type="email" required /></label>
+              <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" required /></label>
             </div>
-            <label class="field"><span>Password</span><input class="input" name="password" type="password" required minlength="6" /></label>
-            <label class="field"><span>Role</span><select class="select" name="role"><option value="customer">Customer</option><option value="admin">Admin</option></select></label>
+            <div class="form-row">
+              <label class="field"><span>Role</span><select class="select" name="accountRole"><option value="customer">Customer</option><option value="admin">Admin</option></select></label>
+              <label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="new-password" required minlength="6" /></label>
+            </div>
+            <p class="home-kicker">2. Mobile login</p>
+            <div class="form-row">
+              <label class="field"><span>Country</span><select class="select" name="phoneCountry" data-country-code-target="phoneCountryCode"><option value="India" data-code="+91">India (+91)</option><option value="United States" data-code="+1">United States (+1)</option><option value="United Kingdom" data-code="+44">United Kingdom (+44)</option><option value="United Arab Emirates" data-code="+971">UAE (+971)</option><option value="Singapore" data-code="+65">Singapore (+65)</option></select></label>
+              <label class="field"><span>Mobile number</span><div class="phone-field"><input class="input phone-code" name="phoneCountryCode" value="+91" readonly /><input class="input" name="phoneNumber" type="tel" inputmode="tel" autocomplete="tel-national" required /></div></label>
+            </div>
+            <p class="home-kicker">3. Company verification</p>
+            <label class="field"><span>Company</span><input class="input" name="companyName" autocomplete="organization" required /></label>
+            <div class="form-row">
+              <label class="field"><span>PAN number</span><input class="input" name="panNumber" maxlength="10" required /></label>
+              <label class="field"><span>GST number</span><input class="input" name="gstNumber" maxlength="15" required /></label>
+            </div>
+            <label class="check-row"><input type="checkbox" name="termsAccepted" required /><span>I confirm these details are correct and this mobile can receive OTP.</span></label>
             <div class="dynamic-actions">
-              <button class="btn btn-primary" type="submit">Submit</button>
+              <button class="btn btn-primary" type="submit">Create verified account</button>
               <button class="btn-secondary" type="button" data-action="cancel-form">Cancel</button>
             </div>
             <div id="authHint" class="hint" role="alert"></div>
@@ -1408,6 +1462,16 @@
   }
 
   function bindPage() {
+    document.querySelectorAll('[data-country-code-target]').forEach((select) => {
+      const sync = () => {
+        const input = select.closest('form')?.elements?.[select.dataset.countryCodeTarget];
+        const selected = select.selectedOptions?.[0];
+        if (input && selected?.dataset.code) input.value = selected.dataset.code;
+      };
+      sync();
+      select.addEventListener('change', sync);
+    });
+
     document.querySelectorAll('[data-link]').forEach((link) => {
       link.addEventListener('click', (event) => {
         const href = link.getAttribute('href');
@@ -1488,25 +1552,116 @@
     });
     applyTableFilters();
 
-    document.getElementById('loginForm')?.addEventListener('submit', (event) => {
+    const otpRequestForm = document.getElementById('otpRequestForm');
+    const otpVerifyForm = document.getElementById('otpVerifyForm');
+    let otpPayload = null;
+
+    async function requestOtp() {
+      if (!otpRequestForm?.reportValidity()) return;
+      const values = Object.fromEntries(new FormData(otpRequestForm));
+      const hint = document.getElementById('authHint');
+      if (hint) hint.textContent = 'Sending OTP...';
+      try {
+        const response = await fetch(`${apiBase}/api/auth/login/request-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(values),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || 'Could not send OTP');
+        otpPayload = {
+          companyName: values.companyName,
+          phoneCountryCode: values.phoneCountryCode,
+          phoneNumber: values.phoneNumber,
+        };
+        otpRequestForm.hidden = true;
+        otpVerifyForm.hidden = false;
+        if (hint) hint.textContent = data.demoOtp ? `Demo OTP: ${data.demoOtp}` : 'OTP sent. Enter the code to login.';
+        otpVerifyForm.elements.otp?.focus();
+      } catch (error) {
+        if (hint) hint.textContent = error.message || 'OTP request failed';
+        toast(error.message || 'OTP request failed', 'error');
+      }
+    }
+
+    otpRequestForm?.addEventListener('submit', (event) => {
       event.preventDefault();
-      const values = Object.fromEntries(new FormData(event.currentTarget));
-      if (!event.currentTarget.reportValidity()) return;
-      saveAuth({ id: `usr-${Date.now()}`, name: values.role === 'admin' ? 'Admin User' : 'Customer User', email: values.email, role: values.role, companyName: state.db.settings.companyName });
-      toast('Login successful');
-      go(values.role === 'admin' ? '/admin' : '/dashboard');
+      requestOtp();
     });
 
-    document.getElementById('registerForm')?.addEventListener('submit', (event) => {
+    document.querySelector('[data-action="resend-otp"]')?.addEventListener('click', requestOtp);
+
+    otpVerifyForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!otpPayload || !otpVerifyForm.reportValidity()) return;
+      const hint = document.getElementById('authHint');
+      if (hint) hint.textContent = 'Verifying OTP...';
+      try {
+        const response = await fetch(`${apiBase}/api/auth/login/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...otpPayload, otp: otpVerifyForm.elements.otp.value }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || 'OTP verification failed');
+        saveBackendAuth(data.token, data.user);
+        toast('OTP verified');
+        go(data.user?.role === 'admin' || data.user?.role === 'warehouse_manager' ? '/admin' : '/dashboard');
+      } catch (error) {
+        if (hint) hint.textContent = error.message || 'OTP verification failed';
+        toast(error.message || 'OTP verification failed', 'error');
+      }
+    });
+
+    document.getElementById('loginForm')?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const values = Object.fromEntries(new FormData(event.currentTarget));
+      if (!event.currentTarget.reportValidity()) return;
+      const hint = document.getElementById('authHint');
+      if (hint) hint.textContent = 'Signing in...';
+      try {
+        const response = await fetch(`${apiBase}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(values),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || 'Login failed');
+        saveBackendAuth(data.token, data.user);
+        toast('Login successful');
+        go(data.user?.role === 'admin' || data.user?.role === 'warehouse_manager' ? '/admin' : '/dashboard');
+      } catch (error) {
+        if (hint) hint.textContent = error.message || 'Login failed';
+        toast(error.message || 'Login failed', 'error');
+      }
+    });
+
+    document.getElementById('registerForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!event.currentTarget.reportValidity()) return;
       const values = Object.fromEntries(new FormData(event.currentTarget));
-      const user = { id: `usr-${Date.now()}`, name: values.name, email: values.email, role: values.role, status: 'Active', companyName: state.db.settings.companyName };
-      state.db.users.unshift(user);
-      persist();
-      saveAuth(user);
-      toast('Account created');
-      go(values.role === 'admin' ? '/admin' : '/dashboard');
+      const hint = document.getElementById('authHint');
+      if (hint) hint.textContent = 'Creating account...';
+      try {
+        const payload = {
+          ...values,
+          panNumber: String(values.panNumber || '').toUpperCase(),
+          gstNumber: String(values.gstNumber || '').toUpperCase(),
+        };
+        const response = await fetch(`${apiBase}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || 'Registration failed');
+        saveBackendAuth(data.token, data.user);
+        toast('Account created');
+        go(data.user?.role === 'admin' || data.user?.role === 'warehouse_manager' ? '/admin' : '/dashboard');
+      } catch (error) {
+        if (hint) hint.textContent = error.message || 'Registration failed';
+        toast(error.message || 'Registration failed', 'error');
+      }
     });
 
     document.getElementById('trackingForm')?.addEventListener('submit', (event) => {

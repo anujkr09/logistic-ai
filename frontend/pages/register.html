@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - ZYRAVIQ AI Logistics</title>
   <link rel="stylesheet" href="../assets/css/style.css?v=zyraviq37" />
-  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <link rel="stylesheet" href="../assets/css/auth.css?v=zyraviq33" />
   <link rel="stylesheet" href="../assets/css/animations.css?v=zyraviq30" />
   <link rel="stylesheet" href="../assets/css/responsive.css?v=zyraviq34" />
 </head>
@@ -25,14 +25,14 @@
   </header>
 
   <main class="container auth-page">
-    <section class="auth-info card animate-in">
+    <section class="auth-info auth-info--visual card animate-in">
       <span class="eyebrow">New user onboarding</span>
-      <h1>Create a verified logistics account</h1>
-      <p>Register once with company details, contact information, and tax verification for a cleaner shipment workflow.</p>
-      <div class="auth-points" aria-label="Registration benefits">
-        <span><strong>Fast setup</strong> Country selection fills the phone code automatically.</span>
-        <span><strong>Correct access</strong> Pick Customer or Admin during account creation.</span>
-        <span><strong>Business checks</strong> PAN and GST details are validated before onboarding.</span>
+      <h1>Create a verified ZYRAVIQ business workspace.</h1>
+      <p>New users need profile, company, mobile, and tax details. Mobile is used later for OTP login.</p>
+      <div class="auth-proof-grid" aria-label="Registration benefits">
+        <span><strong>User profile</strong> Name, email, role, and password.</span>
+        <span><strong>Mobile login</strong> Country code and verified phone number.</span>
+        <span><strong>Business KYC</strong> Company name, PAN, and GST.</span>
       </div>
     </section>
 
@@ -45,10 +45,14 @@
       <div class="auth-heading">
         <span class="auth-kicker">Create account</span>
         <h2 class="auth-title">Register your company</h2>
-        <p class="auth-sub">Add your user, mobile, company, PAN, and GST details.</p>
+        <p class="auth-sub">Fill these details once. After registration, users can login with mobile OTP.</p>
       </div>
 
       <form id="registerForm" class="auth-form">
+        <div class="auth-section-title auth-full">
+          <span>1</span>
+          <div><strong>User details</strong><small>Who will use this workspace?</small></div>
+        </div>
         <label class="field">
           <span>Name</span>
           <input name="name" type="text" class="input" placeholder="Your full name" autocomplete="name" required />
@@ -64,6 +68,10 @@
             <option value="admin">Admin</option>
           </select>
         </label>
+        <div class="auth-section-title auth-full">
+          <span>2</span>
+          <div><strong>Mobile login</strong><small>This number will receive login OTPs.</small></div>
+        </div>
         <label class="field">
           <span>Country</span>
           <select name="phoneCountry" id="phoneCountry" class="select" required>
@@ -88,7 +96,11 @@
           <span>Password</span>
           <input name="password" type="password" class="input" placeholder="Minimum 6 characters" autocomplete="new-password" required />
         </label>
-        <label class="field">
+        <div class="auth-section-title auth-full">
+          <span>3</span>
+          <div><strong>Company verification</strong><small>PAN and GST must belong to the same business.</small></div>
+        </div>
+        <label class="field auth-full">
           <span>Company</span>
           <input name="companyName" type="text" class="input" placeholder="Company name" autocomplete="organization" required />
           <small class="field-help">If this company already exists, PAN/GST must match the registered details.</small>
@@ -103,7 +115,12 @@
           <small class="field-help">Example: first 2 digits are state code, next 10 characters must be your PAN.</small>
         </label>
 
-        <button class="btn btn-primary auth-submit" type="submit">Create account</button>
+        <label class="check-row auth-full">
+          <input type="checkbox" name="termsAccepted" required />
+          <span>I confirm these business details are correct and I can receive OTP on this mobile number.</span>
+        </label>
+
+        <button class="btn btn-primary auth-submit" type="submit">Create verified account</button>
         <div id="authHint" class="hint" aria-live="polite"></div>
       </form>
 
@@ -116,7 +133,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="../assets/js/app.js?v=zyraviq35"></script>
-  <script src="../assets/js/auth.js?v=zyraviq32"></script>
+  <script src="../assets/js/app.js?v=zyraviq36"></script>
+  <script src="../assets/js/auth.js?v=zyraviq33"></script>
 </body>
 </html>

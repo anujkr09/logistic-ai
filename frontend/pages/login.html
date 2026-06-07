@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - ZYRAVIQ AI Logistics</title>
   <link rel="stylesheet" href="../assets/css/style.css?v=zyraviq37" />
-  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <link rel="stylesheet" href="../assets/css/auth.css?v=zyraviq33" />
   <link rel="stylesheet" href="../assets/css/animations.css?v=zyraviq30" />
   <link rel="stylesheet" href="../assets/css/responsive.css?v=zyraviq34" />
 </head>
@@ -24,15 +24,15 @@
     <button id="themeToggle" class="icon-btn" title="Toggle theme" type="button">Moon</button>
   </header>
 
-  <main class="container auth-page">
-    <section class="auth-info card animate-in">
-      <span class="eyebrow">Secure logistics access</span>
-      <h1>Sign in to your ZYRAVIQ workspace</h1>
-      <p>Continue with your company account to manage shipments, tracking, operations, and saved business details.</p>
-      <div class="auth-points" aria-label="Account benefits">
-        <span><strong>Workspace ready</strong> Profile, dashboard, and shipment history stay connected.</span>
-        <span><strong>Role based</strong> Customers and admins open the right tools automatically.</span>
-        <span><strong>Verified business</strong> Company, PAN, GST, and mobile details remain protected.</span>
+  <main class="container auth-page auth-page--login">
+    <section class="auth-info auth-info--visual card animate-in">
+      <span class="eyebrow">Secure mobile access</span>
+      <h1>Login with OTP and open the right logistics workspace.</h1>
+      <p>Use your registered company and mobile number. ZYRAVIQ verifies the OTP before opening customer or admin tools.</p>
+      <div class="auth-proof-grid" aria-label="Login security benefits">
+        <span><strong>OTP first</strong> No shared passwords for daily access.</span>
+        <span><strong>Role aware</strong> Customer/admin dashboard opens automatically.</span>
+        <span><strong>Device ready</strong> Works cleanly in installed PWA mode.</span>
       </div>
     </section>
 
@@ -45,11 +45,53 @@
       <div class="auth-heading">
         <span class="auth-kicker">Existing account</span>
         <h2 class="auth-title">Welcome back</h2>
-        <p class="auth-sub">Use your registered company, email, and password.</p>
+        <p class="auth-sub">OTP login is recommended. Password login is available for backup.</p>
       </div>
 
-      <form id="loginForm" class="auth-form">
+      <div class="auth-method-tabs" role="tablist" aria-label="Login method">
+        <button class="auth-method-tab is-active" type="button" data-auth-method="otp">Mobile OTP</button>
+        <button class="auth-method-tab" type="button" data-auth-method="password">Password</button>
+      </div>
+
+      <form id="otpRequestForm" class="auth-form auth-form--otp">
+        <label class="field auth-full">
+          <span>Company</span>
+          <input name="companyName" type="text" class="input" placeholder="Company name" autocomplete="organization" required />
+        </label>
         <label class="field">
+          <span>Country</span>
+          <select name="phoneCountry" class="select auth-country" required>
+            <option value="India" data-code="+91">India (+91)</option>
+            <option value="United States" data-code="+1">United States (+1)</option>
+            <option value="United Kingdom" data-code="+44">United Kingdom (+44)</option>
+            <option value="United Arab Emirates" data-code="+971">United Arab Emirates (+971)</option>
+            <option value="Singapore" data-code="+65">Singapore (+65)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Mobile number</span>
+          <div class="phone-field">
+            <input name="phoneCountryCode" class="input phone-code" value="+91" readonly aria-label="Country code" autocomplete="tel-country-code" />
+            <input name="phoneNumber" type="tel" class="input" placeholder="9876543210" inputmode="tel" autocomplete="tel-national" required />
+          </div>
+        </label>
+        <button class="btn btn-primary auth-submit" type="submit">Send OTP</button>
+      </form>
+
+      <form id="otpVerifyForm" class="auth-form auth-form--verify" hidden>
+        <label class="field auth-full">
+          <span>Enter OTP</span>
+          <input name="otp" type="text" class="input otp-input" placeholder="6 digit OTP" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required />
+          <small class="field-help">OTP expires in 5 minutes. Demo mode may show OTP on screen if SMS provider is not configured.</small>
+        </label>
+        <div class="auth-inline-actions">
+          <button class="btn btn-primary auth-submit" type="submit">Verify and login</button>
+          <button class="btn-secondary" type="button" data-action="resend-otp">Resend OTP</button>
+        </div>
+      </form>
+
+      <form id="loginForm" class="auth-form" hidden>
+        <label class="field auth-full">
           <span>Company</span>
           <input name="companyName" type="text" class="input" placeholder="Company name" autocomplete="organization" required />
         </label>
@@ -61,10 +103,10 @@
           <span>Password</span>
           <input name="password" type="password" class="input" placeholder="Your password" autocomplete="current-password" required />
         </label>
-
-        <button class="btn btn-primary auth-submit" type="submit">Sign in securely</button>
-        <div id="authHint" class="hint" aria-live="polite"></div>
+        <button class="btn btn-primary auth-submit" type="submit">Sign in with password</button>
       </form>
+
+      <div id="authHint" class="hint" aria-live="polite"></div>
 
       <div class="auth-footer">
         <span>New to ZYRAVIQ?</span>
@@ -75,7 +117,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="../assets/js/app.js?v=zyraviq35"></script>
-  <script src="../assets/js/auth.js?v=zyraviq32"></script>
+  <script src="../assets/js/app.js?v=zyraviq36"></script>
+  <script src="../assets/js/auth.js?v=zyraviq33"></script>
 </body>
 </html>

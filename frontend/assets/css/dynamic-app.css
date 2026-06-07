@@ -2782,3 +2782,91 @@ body.dynamic-app,
     border-radius:8px;
   }
 }
+
+/* Auth screens inside installed app */
+.dynamic-app .auth-dynamic-copy{
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.10) 1px, transparent 1px),
+    linear-gradient(135deg, #17324d, #0f766e);
+  background-size:32px 32px, 32px 32px, auto;
+  color:#ffffff;
+}
+
+.dynamic-app .auth-dynamic-copy h1,
+.dynamic-app .auth-dynamic-copy .home-kicker{
+  color:#ffffff;
+}
+
+.dynamic-app .auth-dynamic-copy .muted-text{
+  color:#d6f4ef !important;
+}
+
+.dynamic-app .auth-proof-grid{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+
+.dynamic-app .auth-proof-grid span{
+  display:block;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:8px;
+  background:rgba(255,255,255,.10);
+  color:#d6f4ef;
+  font-weight:750;
+}
+
+.dynamic-app .auth-proof-grid strong{
+  display:block;
+  color:#ffffff;
+  margin-bottom:4px;
+}
+
+.dynamic-app .phone-field{
+  display:grid;
+  grid-template-columns:88px minmax(0, 1fr);
+  gap:8px;
+}
+
+.dynamic-app .phone-code{
+  text-align:center;
+  font-weight:950;
+}
+
+.dynamic-app .otp-input{
+  text-align:center;
+  font-size:24px;
+  font-weight:950;
+  letter-spacing:.28em;
+}
+
+.dynamic-app .password-login-panel{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(23,32,51,.10);
+}
+
+.dynamic-app .password-login-panel summary{
+  cursor:pointer;
+  color:#17324d;
+  font-weight:950;
+}
+
+.dynamic-app .password-login-panel .dynamic-form{
+  margin-top:14px;
+}
+
+.dynamic-app .check-row{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.dynamic-app .check-row input{
+  width:18px;
+  height:18px;
+  margin-top:2px;
+  flex:0 0 auto;
+}

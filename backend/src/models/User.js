@@ -12,6 +12,12 @@ const UserSchema = new mongoose.Schema(
       number: { type: String, trim: true, default: '' },
       fullNumber: { type: String, trim: true, default: '' },
     },
+    loginOtp: {
+      hash: { type: String, default: '' },
+      expiresAt: { type: Date, default: null },
+      attempts: { type: Number, default: 0 },
+      lastSentAt: { type: Date, default: null },
+    },
     role: { type: String, enum: ['customer', 'admin', 'warehouse_manager'], default: 'customer' },
     status: { type: String, enum: ['active', 'disabled'], default: 'active' },
   },
@@ -20,6 +26,7 @@ const UserSchema = new mongoose.Schema(
 
 // Unique user email per tenant (company)
 UserSchema.index({ companyId: 1, email: 1 }, { unique: true });
+UserSchema.index({ 'phone.fullNumber': 1, companyId: 1 });
 
 module.exports = mongoose.model('User', UserSchema);
 

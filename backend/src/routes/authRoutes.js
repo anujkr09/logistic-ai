@@ -1,8 +1,14 @@
 const router = require('express').Router();
+const fetch = global.fetch || require('node-fetch');
 const { Company, User, Warehouse } = require('../services/models');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { signAccessToken } = require('../utils/jwt');
 const { requireAuth } = require('../middleware/authMiddleware');
+
+const OTP_TTL_MINUTES = Number(process.env.LOGIN_OTP_TTL_MINUTES || 5);
+const OTP_RESEND_SECONDS = Number(process.env.LOGIN_OTP_RESEND_SECONDS || 45);
+const SMS_WEBHOOK_URL = process.env.SMS_WEBHOOK_URL || process.env.OTP_SMS_WEBHOOK_URL || '';
+const SMS_WEBHOOK_TOKEN = process.env.SMS_WEBHOOK_TOKEN || process.env.OTP_SMS_WEBHOOK_TOKEN || '';
 
 function normalizeTaxId(value) {
   return String(value || '').trim().toUpperCase().replace(/\s+/g, '');
@@ -37,6 +43,50 @@ function normalizePhone({ phoneCountry, phoneCountryCode, phoneNumber }) {
     number,
     fullNumber: `${normalizedCode}${number}`,
   };
+}
+
+function normalizeLoginPhone({ phoneCountryCode, phoneNumber }) {
+  const countryCode = String(phoneCountryCode || '').trim().replace(/[^\d+]/g, '');
+  const number = String(phoneNumber || '').trim().replace(/[^\d]/g, '');
+  const normalizedCode = countryCode ? (countryCode.startsWith('+') ? countryCode : `+${countryCode}`) : '';
+  if (!normalizedCode || !number) return { error: 'Country code and mobile number required' };
+  if (number.length < 6 || number.length > 15) return { error: 'Invalid mobile number length' };
+  return { countryCode: normalizedCode, number, fullNumber: `${normalizedCode}${number}` };
+}
+
+function generateOtp() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+async function sendLoginOtp({ phone, otp, user, company }) {
+  const message = `Your ZYRAVIQ AI login OTP is ${otp}. It expires in ${OTP_TTL_MINUTES} minutes.`;
+  if (!SMS_WEBHOOK_URL) {
+    console.log(`[DEV OTP] ${phone}: ${otp}`);
+    return { sent: false, provider: 'dev-console', message };
+  }
+
+  const response = await fetch(SMS_WEBHOOK_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(SMS_WEBHOOK_TOKEN ? { Authorization: `Bearer ${SMS_WEBHOOK_TOKEN}` } : {}),
+    },
+    body: JSON.stringify({
+      to: phone,
+      otp,
+      message,
+      userId: String(user._id),
+      companyId: String(company._id),
+      companyName: company.name,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(text || 'OTP SMS provider failed');
+  }
+
+  return { sent: true, provider: 'webhook' };
 }
 
 function publicUser(user, company) {
@@ -84,6 +134,91 @@ router.post('/login', async (req, res) => {
     token,
     user: publicUser(user, company),
   });
+});
+
+router.post('/login/request-otp', async (req, res) => {
+  const { companyName, companyId, phoneCountryCode, phoneNumber } = req.body || {};
+  const phone = normalizeLoginPhone({ phoneCountryCode, phoneNumber });
+  if (phone.error) return res.status(400).json({ message: phone.error });
+  if (!companyId && !companyName) return res.status(400).json({ message: 'companyId or companyName required' });
+
+  const company = companyId
+    ? await Company.findOne({ _id: companyId }).exec()
+    : await Company.findOne({ name: String(companyName).trim() }).exec();
+  if (!company) return res.status(404).json({ message: 'Company not found. Please register first.' });
+
+  const user = await User.findOne({
+    companyId: company._id,
+    'phone.fullNumber': phone.fullNumber,
+  }).exec();
+  if (!user) return res.status(404).json({ message: 'No user found with this mobile number. Please register first.' });
+  if (user.status === 'disabled') return res.status(403).json({ message: 'Account is disabled' });
+
+  const now = Date.now();
+  const lastSentAt = user.loginOtp?.lastSentAt ? new Date(user.loginOtp.lastSentAt).getTime() : 0;
+  const waitMs = OTP_RESEND_SECONDS * 1000 - (now - lastSentAt);
+  if (waitMs > 0) {
+    return res.status(429).json({ message: `Please wait ${Math.ceil(waitMs / 1000)} seconds before requesting another OTP` });
+  }
+
+  const otp = generateOtp();
+  user.loginOtp = {
+    hash: hashPassword(otp),
+    expiresAt: new Date(now + OTP_TTL_MINUTES * 60 * 1000),
+    attempts: 0,
+    lastSentAt: new Date(now),
+  };
+  await user.save();
+
+  const delivery = await sendLoginOtp({ phone: phone.fullNumber, otp, user, company });
+  res.json({
+    message: delivery.sent ? 'OTP sent to your mobile number' : 'OTP generated for demo login',
+    phone: phone.fullNumber.replace(/(\+\d{1,3})\d+(\d{4})$/, '$1******$2'),
+    expiresInSeconds: OTP_TTL_MINUTES * 60,
+    delivery,
+    ...(!delivery.sent ? { demoOtp: otp } : {}),
+  });
+});
+
+router.post('/login/verify-otp', async (req, res) => {
+  const { companyName, companyId, phoneCountryCode, phoneNumber, otp } = req.body || {};
+  const phone = normalizeLoginPhone({ phoneCountryCode, phoneNumber });
+  if (phone.error) return res.status(400).json({ message: phone.error });
+  if (!String(otp || '').trim()) return res.status(400).json({ message: 'OTP required' });
+  if (!companyId && !companyName) return res.status(400).json({ message: 'companyId or companyName required' });
+
+  const company = companyId
+    ? await Company.findOne({ _id: companyId }).exec()
+    : await Company.findOne({ name: String(companyName).trim() }).exec();
+  if (!company) return res.status(401).json({ message: 'Invalid OTP login details' });
+
+  const user = await User.findOne({
+    companyId: company._id,
+    'phone.fullNumber': phone.fullNumber,
+  }).exec();
+  if (!user) return res.status(401).json({ message: 'Invalid OTP login details' });
+  if (user.status === 'disabled') return res.status(403).json({ message: 'Account is disabled' });
+
+  const otpState = user.loginOtp || {};
+  if (!otpState.hash || !otpState.expiresAt || new Date(otpState.expiresAt) < new Date()) {
+    return res.status(401).json({ message: 'OTP expired. Request a new OTP.' });
+  }
+  if (Number(otpState.attempts || 0) >= 5) {
+    return res.status(429).json({ message: 'Too many OTP attempts. Request a new OTP.' });
+  }
+
+  const ok = verifyPassword(String(otp).trim(), otpState.hash);
+  if (!ok) {
+    user.loginOtp.attempts = Number(user.loginOtp.attempts || 0) + 1;
+    await user.save();
+    return res.status(401).json({ message: 'Invalid OTP' });
+  }
+
+  user.loginOtp = { hash: '', expiresAt: null, attempts: 0, lastSentAt: user.loginOtp.lastSentAt };
+  await user.save();
+
+  const token = signAccessToken({ user });
+  res.json({ token, user: publicUser(user, company) });
 });
 
 router.get('/me', requireAuth, async (req, res) => {
