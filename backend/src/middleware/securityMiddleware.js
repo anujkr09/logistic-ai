@@ -31,7 +31,14 @@ function setCsrfCookie(res, token) {
 
 function csrfProtection(req, res, next) {
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) return next();
-  if (req.path === '/api/auth/login' || req.path === '/api/auth/register') return next();
+  const path = req.originalUrl?.split('?')[0] || req.path || '';
+  const publicAuthWrites = new Set([
+    '/api/auth/login',
+    '/api/auth/login/request-otp',
+    '/api/auth/login/verify-otp',
+    '/api/auth/register',
+  ]);
+  if (publicAuthWrites.has(path) || publicAuthWrites.has(req.path)) return next();
 
   const cookies = parseCookies(req.headers.cookie);
   const cookieToken = cookies[CSRF_COOKIE];
