@@ -8,8 +8,6 @@ const fallbackFile = path.join(__dirname, 'app.html');
 const apiBaseUrl = (process.env.API_BASE_URL || '').replace(/\/$/, '');
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.PUBLIC_GOOGLE_MAPS_API_KEY || '';
 const legacyHostRedirects = {
-  'shipx-ai-logistics.onrender.com': 'zyraviq-ai-logistics.onrender.com',
-  'shipx-ai-frontend.onrender.com': 'zyraviq-ai.onrender.com',
   'zyraviq-ai-frontend.onrender.com': 'zyraviq-ai.onrender.com',
 };
 

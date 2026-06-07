@@ -27,9 +27,7 @@ const reportRoutes = require('./routes/reportRoutes');
 const { CORS_ORIGIN } = require('./config/env');
 
 const app = express();
-const legacyHostRedirects = {
-  'shipx-ai-logistics.onrender.com': 'zyraviq-ai-logistics.onrender.com',
-};
+const legacyHostRedirects = {};
 
 const apiLimiter = rateLimit({
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000),

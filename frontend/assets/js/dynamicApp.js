@@ -416,43 +416,71 @@
 
   function homePage() {
     const cards = [
-      ['Shipments', 'Create, edit, delete, track, download, and print shipments.', '/shipments'],
-      ['Orders', 'Manage ecommerce and pickup orders with status filters.', '/orders'],
-      ['Products', 'Maintain shipping supplies and product inventory.', '/products'],
-      ['Analytics', 'Review delivery, revenue, fraud, and SLA metrics.', '/analytics'],
-      ['Data Center', 'See orders, deliveries, tracking, issues, payments, invoices, and export data.', '/data-center'],
-      ['Support', 'Open and resolve delivery or account tickets.', '/support'],
-      ['Settings', 'Control profile, notifications, and workspace preferences.', '/settings'],
+      ['Shipments', 'Create, track, download, and print shipment records.', '/shipments', 'SHP'],
+      ['Orders', 'Move ecommerce and pickup orders through fulfillment.', '/orders', 'ORD'],
+      ['Routes', 'Compare ETA, service type, and dispatch options.', '/routes', 'RTE'],
+      ['Analytics', 'Review delivery, revenue, risk, and SLA trends.', '/analytics', 'ANA'],
+      ['Data Center', 'Export operational data across payments and issues.', '/data-center', 'DAT'],
+      ['Support', 'Open tickets, resolve delivery issues, and manage callbacks.', '/support', 'SUP'],
     ];
+    const openTickets = state.db.support.filter((x) => x.status !== 'Resolved').length;
+    const unreadAlerts = state.db.notifications.filter((x) => x.status === 'Unread').length;
+    const activeShipments = state.db.shipments.filter((x) => x.status !== 'Delivered').length;
+    const recentShipment = state.db.shipments[0];
     return layout(`
-      <section class="hero-dynamic">
-        <div class="dynamic-panel dynamic-hero-copy">
-          <p class="home-kicker">AI logistics operations</p>
-          <h1>One working place for every visible ZYRAVIQ action.</h1>
-          <p>Every card and navigation item opens a useful page with persisted local data, validation, search, filters, sorting, details, add, edit, delete, download, and print actions.</p>
+      <section class="app-command-hero">
+        <div class="app-command-hero__copy">
+          <p class="home-kicker">AI logistics control room</p>
+          <h1>Move shipments, routes, teams, and alerts from one sharp workspace.</h1>
+          <p>Plan dispatch, monitor live work, open records, export data, and keep every logistics action reachable from the installed ZYRAVIQ app.</p>
           <div class="dynamic-actions">
             <a class="btn btn-primary" href="/shipments?action=add" data-link>Create shipment</a>
             <a class="btn-secondary" href="/tracking" data-link>Track shipment</a>
           </div>
         </div>
-        <div class="dynamic-panel route-box">
-          <h2>Operations Snapshot</h2>
-          <div class="route-line"></div>
-          <div class="dynamic-grid">
-            <div><b>${state.db.shipments.length}</b><p class="muted-text">Shipments</p></div>
-            <div><b>${state.db.orders.length}</b><p class="muted-text">Orders</p></div>
-            <div><b>${state.db.support.filter((x) => x.status !== 'Resolved').length}</b><p class="muted-text">Open tickets</p></div>
+        <div class="app-live-card" aria-label="Operations snapshot">
+          <div class="app-live-card__top">
+            <span>Live lane</span>
+            <b>${escapeHtml(recentShipment?.trackingNumber || 'ZQ-DEMO')}</b>
           </div>
-          <button class="btn-secondary snapshot-print-button" type="button" data-action="print">Print snapshot</button>
+          <div class="app-route-visual" aria-hidden="true">
+            <span class="app-route-visual__node app-route-visual__node--start"></span>
+            <span class="app-route-visual__path"></span>
+            <span class="app-route-visual__vehicle">AI</span>
+            <span class="app-route-visual__node app-route-visual__node--end"></span>
+          </div>
+          <div class="app-live-card__grid">
+            <div><span>Origin</span><b>${escapeHtml(recentShipment?.origin || 'Mumbai Hub')}</b></div>
+            <div><span>Current</span><b>${escapeHtml(recentShipment?.currentLocation || 'Jaipur Linehaul')}</b></div>
+            <div><span>Status</span><b>${escapeHtml(recentShipment?.status || 'In Transit')}</b></div>
+          </div>
         </div>
       </section>
-      <section class="dynamic-grid">
-        ${cards.map(([title, text, href]) => `
-          <article class="dynamic-card actionable-card" tabindex="0" data-card-href="${href}">
+      <section class="app-metric-strip" aria-label="Workspace metrics">
+        <article><span>Total shipments</span><b>${state.db.shipments.length}</b></article>
+        <article><span>Active moves</span><b>${activeShipments}</b></article>
+        <article><span>Open tickets</span><b>${openTickets}</b></article>
+        <article><span>Unread alerts</span><b>${unreadAlerts}</b></article>
+      </section>
+      <section class="app-work-grid">
+        ${cards.map(([title, text, href, code]) => `
+          <article class="dynamic-card actionable-card app-work-card" tabindex="0" data-card-href="${href}">
+            <span class="app-work-card__icon">${code}</span>
             <h3>${title}</h3>
             <p class="muted-text">${text}</p>
-            <a href="${href}" data-link>Open ${title}</a>
+            <a href="${href}" data-link>Open</a>
           </article>`).join('')}
+        <article class="app-activity-panel">
+          <div>
+            <p class="home-kicker">Today focus</p>
+            <h2>Keep the lane clean</h2>
+            <p class="muted-text">${openTickets ? `${openTickets} support item needs attention before dispatch closure.` : 'No open support items in the local workspace.'}</p>
+          </div>
+          <div class="app-activity-list">
+            ${smallList('shipments', state.db.shipments.slice(0, 3))}
+          </div>
+          <button class="btn-secondary snapshot-print-button" type="button" data-action="print">Print snapshot</button>
+        </article>
       </section>
     `, '/', [['Home', '/']]);
   }

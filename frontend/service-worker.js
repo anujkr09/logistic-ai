@@ -1,26 +1,26 @@
-const CACHE_NAME = 'zyraviq-ai-logistics-v53';
+const CACHE_NAME = 'zyraviq-ai-logistics-v55';
 const APP_SHELL = [
   './',
   './index.html',
   './app.html',
-  './manifest.webmanifest?v=dynamic3',
+  './manifest.webmanifest?v=zyraviq31',
   './assets/css/style.css?v=zyraviq37',
   './assets/css/animations.css?v=zyraviq31',
   './assets/css/responsive.css?v=zyraviq34',
-  './assets/css/dynamic-app.css?v=dynamic14',
+  './assets/css/dynamic-app.css?v=dynamic15',
   './assets/css/tracking.css?v=zyraviq31',
   './assets/css/chatbot.css?v=zyraviq33',
   './assets/css/dashboard.css?v=zyraviq32',
   './assets/js/app.js?v=zyraviq35',
-  './assets/js/dynamicApp.js?v=dynamic12',
+  './assets/js/dynamicApp.js?v=dynamic13',
   './assets/js/universalChatbot.js?v=zyraviq34',
   './assets/js/auth.js?v=zyraviq32',
   './assets/js/maps.js?v=zyraviq33',
   './assets/js/profile.js?v=zyraviq31',
   './assets/js/tracking.js?v=zyraviq33',
   './assets/js/dynamicServicePages.js?v=zyraviq32',
-  './assets/img/app-icon-192.png',
-  './assets/img/app-icon-512.png',
+  './assets/img/app-icon-192.png?v=zyraviq3',
+  './assets/img/app-icon-512.png?v=zyraviq3',
   './assets/img/download.png',
   './assets/img/images.jpg'
 ];
