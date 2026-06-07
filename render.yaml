@@ -24,6 +24,18 @@ services:
         value: https://zyraviq-ai.onrender.com
       - key: PUBLIC_GOOGLE_MAPS_API_KEY
         sync: false
+      - key: SMS_PROVIDER
+        value: webhook
+      - key: SMS_WEBHOOK_URL
+        sync: false
+      - key: SMS_WEBHOOK_TOKEN
+        sync: false
+      - key: SMS_STRICT_DELIVERY
+        value: false
+      - key: LOGIN_OTP_TTL_MINUTES
+        value: 5
+      - key: LOGIN_OTP_RESEND_SECONDS
+        value: 45
 
   - type: web
     name: zyraviq-ai

@@ -7,8 +7,10 @@ const { requireAuth } = require('../middleware/authMiddleware');
 
 const OTP_TTL_MINUTES = Number(process.env.LOGIN_OTP_TTL_MINUTES || 5);
 const OTP_RESEND_SECONDS = Number(process.env.LOGIN_OTP_RESEND_SECONDS || 45);
+const SMS_PROVIDER = String(process.env.SMS_PROVIDER || 'webhook').toLowerCase();
 const SMS_WEBHOOK_URL = process.env.SMS_WEBHOOK_URL || process.env.OTP_SMS_WEBHOOK_URL || '';
 const SMS_WEBHOOK_TOKEN = process.env.SMS_WEBHOOK_TOKEN || process.env.OTP_SMS_WEBHOOK_TOKEN || '';
+const SMS_STRICT_DELIVERY = String(process.env.SMS_STRICT_DELIVERY || '').toLowerCase() === 'true';
 
 function normalizeTaxId(value) {
   return String(value || '').trim().toUpperCase().replace(/\s+/g, '');
@@ -61,6 +63,9 @@ function generateOtp() {
 async function sendLoginOtp({ phone, otp, user, company }) {
   const message = `Your ZYRAVIQ AI login OTP is ${otp}. It expires in ${OTP_TTL_MINUTES} minutes.`;
   if (!SMS_WEBHOOK_URL) {
+    if (SMS_STRICT_DELIVERY) {
+      throw new Error('SMS provider is not configured. Set SMS_WEBHOOK_URL or OTP_SMS_WEBHOOK_URL.');
+    }
     console.log(`[DEV OTP] ${phone}: ${otp}`);
     return { sent: false, provider: 'dev-console', message };
   }
@@ -78,6 +83,7 @@ async function sendLoginOtp({ phone, otp, user, company }) {
       userId: String(user._id),
       companyId: String(company._id),
       companyName: company.name,
+      provider: SMS_PROVIDER,
     }),
   });
 
@@ -86,7 +92,7 @@ async function sendLoginOtp({ phone, otp, user, company }) {
     throw new Error(text || 'OTP SMS provider failed');
   }
 
-  return { sent: true, provider: 'webhook' };
+  return { sent: true, provider: SMS_PROVIDER || 'webhook' };
 }
 
 function publicUser(user, company) {
