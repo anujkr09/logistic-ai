@@ -343,6 +343,8 @@
         const trackingNumber = item.trackingNumber || item.meta?.trackingNumber || '';
         const score = item.riskScore || item.score;
         const priority = item.priority || (options.kind === 'danger' ? 'High' : '');
+        const confidence = item.confidence ?? null;
+        const reasons = Array.isArray(item.reasons) ? item.reasons.slice(0, 3) : [];
         return `
           <article class="notif-item ${options.kind === 'danger' ? 'alert-danger' : ''} ${item.type ? `rec-${escapeHtml(item.type)}` : ''}">
             <div class="notif-head">
@@ -350,9 +352,12 @@
               <div class="notif-chips">
                 ${priority ? `<span class="mini-chip priority-chip">${escapeHtml(priority)}</span>` : ''}
                 ${score != null ? `<span class="mini-chip">${escapeHtml(score)}${options.kind === 'danger' ? '% risk' : ' score'}</span>` : ''}
+                ${confidence != null ? `<span class="mini-chip confidence-chip">${escapeHtml(confidence)}% confidence</span>` : ''}
               </div>
             </div>
             <div class="notif-body">${escapeHtml(item.reason || item.details || item.message || 'Review this operational update.')}</div>
+            ${item.nextAction ? `<div class="notif-next"><strong>Next:</strong> ${escapeHtml(item.nextAction)}</div>` : ''}
+            ${reasons.length ? `<div class="notif-reasons">${reasons.map((reason) => `<span>${escapeHtml(reason)}</span>`).join('')}</div>` : ''}
             <div class="notif-meta">
               <span>${escapeHtml(formatDateTime(item.updatedAt || item.createdAt))}</span>
               ${trackingNumber ? `<a class="link" href="./tracking.html?tracking=${encodeURIComponent(trackingNumber)}">${escapeHtml(options.action || 'View shipment')}</a>` : ''}

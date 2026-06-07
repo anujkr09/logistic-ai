@@ -3,6 +3,7 @@ const { requireAuth } = require('../middleware/authMiddleware');
 const { Warehouse, Shipment, Notification, Analytics } = require('../services/models');
 const { validateLocation, predictEta, detectFraud, recommendRoute, analyzeTracking, chat } = require('../services/aiClient');
 const { getRevenueSummary, refreshRevenueSummary } = require('../services/analyticsSummary');
+const { buildRecommendations } = require('../services/operationsIntelligence');
 
 // NOTE: This is a minimal schema system to start making the UI dynamic.
 // It returns JSON config for each page and provides a generic action dispatcher.
@@ -365,13 +366,7 @@ router.post('/action', requireAuth, async (req, res) => {
 
     // AI recommendations
     if (actionType === 'admin.ai.recommendations') {
-      const warehouses = await Warehouse.find({ companyId }).sort({ createdAt: -1 }).limit(5).exec();
-      const recommendations = warehouses.map((warehouse, index) => ({
-        id: String(warehouse._id),
-        title: `Use ${warehouse.name} for local fulfillment`,
-        details: `Warehouse in ${warehouse.city || warehouse.country || 'your region'} is optimal for next-mile distribution.`,
-        score: 100 - index * 10,
-      }));
+      const recommendations = await buildRecommendations(companyId);
       return res.json({ recommendations });
     }
 
