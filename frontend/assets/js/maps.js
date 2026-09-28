@@ -52,13 +52,7 @@ function approximateCoordinates(location) {
   ];
   const match = cityCoordinates.find(([name]) => text.includes(name));
   if (match) return match[1];
-  if (!text) return null;
-
-  const seed = hashText(text);
-  return {
-    lat: 8 + (seed % 2600) / 100,
-    lng: 68 + ((seed * 7) % 2800) / 100,
-  };
+  return null;
 }
 
 function locationRegion(location) {
@@ -181,10 +175,6 @@ function buildRoutePlan(location, shipment = {}) {
   return { points, hasDelay, hasDiversion, delay };
 }
 
-function hashText(value) {
-  return String(value || '').split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
-}
-
 function progressForStatus(status) {
   const map = {
     'Shipment Created': 6,
@@ -244,14 +234,7 @@ function modeForShipment(shipment = {}) {
 
 function weatherForLocation(location) {
   const text = compactLocation(location, 'Current location');
-  const conditions = [
-    { label: 'Clear', icon: 'SUN', detail: 'Good visibility for movement', temp: 29 },
-    { label: 'Cloudy', icon: 'CLD', detail: 'Normal route conditions', temp: 24 },
-    { label: 'Rain', icon: 'RAIN', detail: 'Wet roads may slow handoff', temp: 22 },
-    { label: 'Hot', icon: 'HOT', detail: 'Heat-sensitive parcels need care', temp: 34 },
-  ];
-  const item = conditions[hashText(text) % conditions.length];
-  return { ...item, location: text, temp: item.temp + (hashText(text) % 4) };
+  return { label: 'Unavailable', icon: 'WX', detail: 'Live weather data is not connected', temp: '', location: text };
 }
 
 function routeStages(activeMode) {
@@ -381,7 +364,7 @@ function fallbackMapTemplate({ origin, current, destination, status, eta, mode, 
         </div>
         <div class="map-card weather-card">
           <span class="map-card-icon weather-icon">${escapeMapText(weather.icon)}</span>
-          <div><b>${escapeMapText(weather.label)} ${escapeMapText(weather.temp)}C</b><span>${escapeMapText(weather.detail)}</span></div>
+          <div><b>${escapeMapText(weather.label)}${weather.temp && weather.temp !== '--' ? ` ${escapeMapText(weather.temp)}C` : ''}</b><span>${escapeMapText(weather.detail)}</span></div>
         </div>
       </div>
       ${routeCorridorTemplate({ origin, destination, progress, routePlan: buildRoutePlan(null, { origin: { text: origin }, destination: { text: destination }, currentLocation: { text: current }, status }), empty })}

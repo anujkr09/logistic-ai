@@ -202,7 +202,7 @@
     results.forEach((result) => {
       if (result.status !== 'fulfilled') return;
       const [entity, items] = result.value;
-      if (Array.isArray(items) && items.length) {
+      if (Array.isArray(items)) {
         state.db[entity] = items;
         loaded = true;
       }
@@ -218,20 +218,20 @@
         method: record.id ? 'PUT' : 'POST',
         body: { data: record },
       });
-      return data.item || record;
+      return { item: data.item || record, synced: true };
     } catch (error) {
       state.backendReady = false;
-      toast('MongoDB save failed, saved locally', 'error');
-      return record;
+      return { item: record, synced: false };
     }
   }
 
   async function deleteWorkspaceItem(entity, id) {
     try {
       await workspaceApi(entity, { id, method: 'DELETE' });
+      return true;
     } catch (error) {
       state.backendReady = false;
-      toast('MongoDB delete failed, removed locally', 'error');
+      return false;
     }
   }
 
@@ -360,7 +360,7 @@
       ['Settings', '/settings'],
     ];
     return `
-      <div class="app-shell">
+      <div class="app-shell ${active === '/login' ? 'auth-shell' : ''}">
         <a class="skip-link" href="#app-main">Skip to content</a>
         <header class="app-header">
           <div class="app-header-inner">
@@ -379,12 +379,12 @@
             </div>
           </div>
         </header>
-        ${desktopSideNav(active)}
+        ${active === '/login' ? '' : desktopSideNav(active)}
         <main id="app-main" class="app-main">
           ${breadcrumbs(crumbs.length ? crumbs : [['Home', '/'], [pageTitle(active), active]])}
           ${content}
         </main>
-        ${bottomNav(active)}
+        ${active === '/login' ? '' : bottomNav(active)}
       </div>
       <dialog id="confirmDialog" class="confirm-dialog">
         <form method="dialog">
@@ -556,18 +556,30 @@
 
   function loginPage() {
     return layout(`
-      <section class="dynamic-grid two auth-dynamic-grid">
-        <div class="dynamic-panel auth-dynamic-copy">
-          <p class="home-kicker">Mobile OTP access</p>
-          <h1>Login to ZYRAVIQ AI</h1>
-          <p class="muted-text">Use your registered company and mobile number. OTP verification opens the correct customer or admin workspace.</p>
+      <section class="dynamic-grid two auth-dynamic-grid login-screen">
+        <div class="dynamic-panel auth-dynamic-copy login-screen__visual">
+          <div class="login-screen__meta"><span>ZYRAVIQ / OPERATIONS</span><span>SECURE WORKSPACE ACCESS</span></div>
+          <h1>Every shipment.<br />Every handoff.<br />In view.</h1>
+          <p class="muted-text">Sign in to review shipment activity, route plans, warehouse handoffs, and customer updates in one workspace.</p>
+          <div class="login-route-preview" aria-label="Illustrative shipment route">
+            <img src="/assets/img/download.png" alt="" />
+            <div class="login-route-preview__scrim"></div>
+            <div class="login-route-preview__top"><span>Sample route</span><b>ZQ-DEMO-1001</b></div>
+            <div class="login-route-preview__cities"><span><small>ORIGIN</small><b>Mumbai hub</b></span><i aria-hidden="true"></i><span><small>DESTINATION</small><b>Delhi hub</b></span></div>
+            <span class="login-route-preview__note">Illustrative data</span>
+          </div>
           <div class="auth-proof-grid">
-            <span><strong>Verified mobile</strong> OTP based login for daily access.</span>
-            <span><strong>Role aware</strong> Dashboard opens based on saved account role.</span>
-            <span><strong>PWA ready</strong> Works inside the installed app too.</span>
+            <span><strong>Shipment history</strong> Follow scans, statuses, and delivery milestones.</span>
+            <span><strong>Workspace access</strong> Tools match your account permissions.</span>
+            <span><strong>Two sign-in methods</strong> Choose mobile OTP or account password.</span>
           </div>
         </div>
-        <div class="dynamic-panel">
+        <div class="dynamic-panel login-screen__panel">
+          <div class="login-screen__heading">
+            <p class="home-kicker">Workspace access</p>
+            <h2>Welcome back</h2>
+            <p>Use the company and mobile number linked to your account.</p>
+          </div>
           <form id="otpRequestForm" class="dynamic-form">
             <label class="field"><span>Company</span><input class="input" name="companyName" autocomplete="organization" required /></label>
             <div class="form-row">
@@ -580,7 +592,7 @@
             <label class="field"><span>OTP</span><input class="input otp-input" name="otp" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required /></label>
             <div class="dynamic-actions"><button class="btn btn-primary" type="submit">Verify and login</button><button class="btn-secondary" type="button" data-action="resend-otp">Resend OTP</button></div>
           </form>
-          <details class="password-login-panel">
+          <details class="password-login-panel login-screen__password">
             <summary>Password login</summary>
             <form id="loginForm" class="dynamic-form">
               <label class="field"><span>Company</span><input class="input" name="companyName" autocomplete="organization" required /></label>
@@ -1433,9 +1445,9 @@
     const ok = await confirmAction('Delete record', 'Delete this item permanently?');
     if (!ok) return;
     state.db[entity] = state.db[entity].filter((item) => item.id !== id);
-    await deleteWorkspaceItem(entity, id);
+    const synced = await deleteWorkspaceItem(entity, id);
     persist();
-    toast('Delete success');
+    toast(synced ? 'Record deleted' : 'Removed on this device only', synced ? 'success' : 'error');
     if (normalizePath().startsWith(`/${entity}/`)) go(`/${entity}`);
     else render();
   }
@@ -1537,13 +1549,13 @@
     const existing = state.db[entity].findIndex((row) => row.id === id);
     const now = new Date().toISOString();
     const record = { id, ...values, createdAt: state.db[entity][existing]?.createdAt || now, updatedAt: now };
-    const saved = await saveWorkspaceItem(entity, record);
+    const { item: saved, synced } = await saveWorkspaceItem(entity, record);
     if (existing >= 0) state.db[entity][existing] = { ...state.db[entity][existing], ...saved };
     else state.db[entity].unshift(saved);
-      persist();
-      document.getElementById('entityDialog')?.close();
-      toast(existing >= 0 ? 'Edit success' : 'Add success');
-      render();
+    persist();
+    document.getElementById('entityDialog')?.close();
+    toast(synced ? (existing >= 0 ? 'Record updated' : 'Record added') : 'Saved on this device only', synced ? 'success' : 'error');
+    render();
     });
 
     document.querySelectorAll('[data-table-search], [data-table-filter], [data-table-sort]').forEach((control) => {
@@ -1800,7 +1812,11 @@
 
   window.addEventListener('popstate', render);
   setupServiceWorkerUpdates();
-  loadWorkspaceFromMongo().catch(() => {
-    state.backendReady = false;
-  }).finally(render);
+  if (normalizePath() === '/login') {
+    render();
+  } else {
+    loadWorkspaceFromMongo().catch(() => {
+      state.backendReady = false;
+    }).finally(render);
+  }
 })();
