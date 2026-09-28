@@ -254,16 +254,36 @@
     ].join('\n');
   }
 
-  async function restChat(payload) {
-    const apiBase = getApiBase();
+  let csrfTokenPromise = null;
 
-    const r = await fetch(`${apiBase}/api/chat`, {
+  async function getCsrfToken(apiBase) {
+    if (!csrfTokenPromise) {
+      csrfTokenPromise = fetch(`${apiBase}/api/security/csrf`, {
+        credentials: 'include',
+        cache: 'no-store',
+      })
+        .then(async (response) => {
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.csrfToken) throw new Error(data.message || 'Could not start a secure chat session');
+          return data.csrfToken;
+        })
+        .catch((error) => {
+          csrfTokenPromise = null;
+          throw error;
+        });
+    }
+    return csrfTokenPromise;
+  }
+
+  async function chatRequest(apiBase, path, payload, token = '') {
+    const csrfToken = await getCsrfToken(apiBase);
+    const r = await fetch(`${apiBase}${path}`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        ...(localStorage.getItem('token')
-          ? { Authorization: `Bearer ${localStorage.getItem('token')}` }
-          : {}),
+        'x-csrf-token': csrfToken,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(payload),
     });
@@ -273,17 +293,15 @@
     return data;
   }
 
-  async function publicChat(payload) {
-    const apiBase = getApiBase();
-    const r = await fetch(`${apiBase}/api/ai/public/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: payload.message, trackingNumber: payload.trackingNumber }),
-    });
+  async function restChat(payload) {
+    return chatRequest(getApiBase(), '/api/chat', payload, localStorage.getItem('token') || '');
+  }
 
-    const data = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(data?.error || data?.detail || `status ${r.status}`);
-    return data;
+  async function publicChat(payload) {
+    return chatRequest(getApiBase(), '/api/ai/public/chat', {
+      message: payload.message,
+      trackingNumber: payload.trackingNumber,
+    });
   }
 
   function initWidgetBehavior() {
@@ -431,9 +449,14 @@
           });
         } else {
           let data;
-          try {
-            data = await restChat({ message: outboundMessage, trackingNumber });
-          } catch (authErr) {
+          const token = localStorage.getItem('token') || '';
+          if (token) {
+            try {
+              data = await restChat({ message: outboundMessage, trackingNumber });
+            } catch (authErr) {
+              data = await publicChat({ message: outboundMessage, trackingNumber });
+            }
+          } else {
             data = await publicChat({ message: outboundMessage, trackingNumber });
           }
           removeEl(typingEl);
