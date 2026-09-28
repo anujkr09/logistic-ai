@@ -2903,10 +2903,6 @@ body.dynamic-app,
   display:none;
 }
 
-.dynamic-app .auth-shell .app-user > a:first-child:not(.btn){
-  display:none;
-}
-
 .dynamic-app .auth-shell .app-user .btn{
   min-height:40px;
   border-radius:6px;
@@ -3287,5 +3283,364 @@ body.dynamic-app,
   .dynamic-app .login-route-preview__cities{
     right:12px;
     left:12px;
+  }
+}
+
+.dynamic-app .auth-shell .app-header{
+  z-index:1300;
+}
+
+.dynamic-app .auth-shell .chatbot-widget{
+  top:88px;
+  right:18px;
+  bottom:auto;
+  max-height:calc(100vh - 108px);
+}
+
+.dynamic-app .auth-shell .chatbot-card{
+  max-height:calc(100vh - 108px);
+}
+
+.dynamic-app .auth-shell--register .app-user > a:first-child:not(.btn){
+  display:inline-flex;
+  align-items:center;
+  min-height:40px;
+  padding:0 12px;
+  border-radius:6px;
+  color:#164e3f;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.dynamic-app .auth-shell--register .app-user > a:first-child:not(.btn):hover{
+  background:#eaf1eb;
+}
+
+.dynamic-app .register-screen{
+  grid-template-columns:minmax(0, .9fr) minmax(0, 1.1fr);
+  align-items:stretch;
+  gap:28px;
+  margin:0;
+}
+
+.dynamic-app .register-screen__visual,
+.dynamic-app .register-screen__panel{
+  margin:0;
+  border-radius:8px;
+}
+
+.dynamic-app .auth-dynamic-copy.register-screen__visual{
+  display:flex;
+  flex-direction:column;
+  min-height:620px;
+  padding:34px;
+  overflow:hidden;
+  border:0;
+  background:#153d33;
+  box-shadow:0 18px 48px rgba(20,55,43,.15);
+  color:#f6f8ef;
+}
+
+.register-screen__meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  color:#c4d8ca;
+  font-size:11px;
+  font-weight:850;
+}
+
+.dynamic-app .auth-dynamic-copy.register-screen__visual h1{
+  margin:42px 0 14px;
+  color:#fff;
+  font-family:Georgia, "Times New Roman", serif;
+  font-size:42px;
+  font-weight:500;
+  line-height:1.08;
+}
+
+.dynamic-app .auth-dynamic-copy.register-screen__visual > p{
+  max-width:460px;
+  color:#d2e0d6 !important;
+  font-size:15px;
+  font-weight:500;
+  line-height:1.6;
+}
+
+.register-progress{
+  display:grid;
+  margin:26px 0 0;
+  padding:0;
+  list-style:none;
+  counter-reset:register-step;
+}
+
+.register-progress li{
+  display:grid;
+  grid-template-columns:42px minmax(0, 1fr);
+  gap:12px;
+  align-items:center;
+  padding:15px 0;
+  border-top:1px solid rgba(255,255,255,.22);
+}
+
+.register-progress li > span,
+.register-section-heading > span{
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  border:1px solid rgba(214,238,131,.55);
+  border-radius:50%;
+  color:#d6ee83;
+  font-size:11px;
+  font-weight:900;
+}
+
+.register-progress li div{
+  display:grid;
+  gap:4px;
+}
+
+.register-progress b{
+  color:#fff;
+  font-size:14px;
+}
+
+.register-progress small{
+  color:#c4d8ca;
+  font-size:12px;
+}
+
+.dynamic-app .register-screen__footnote{
+  margin-top:auto;
+  padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.22);
+  color:#c4d8ca !important;
+  font-size:12px !important;
+}
+
+.dynamic-app .register-screen__panel{
+  width:100%;
+  padding:30px;
+  border:1px solid #dfe6df;
+  background:#fff;
+  box-shadow:0 14px 38px rgba(27,45,36,.08);
+}
+
+.register-screen__heading{
+  margin-bottom:24px;
+}
+
+.dynamic-app .register-screen__heading .home-kicker{
+  margin:0 0 8px;
+  color:#487260;
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+
+.dynamic-app .register-screen__heading h2{
+  margin:0 0 7px;
+  color:#172824;
+  font-family:Georgia, "Times New Roman", serif;
+  font-size:32px;
+  font-weight:500;
+  line-height:1.12;
+}
+
+.dynamic-app .register-screen__heading > p:last-child{
+  margin:0;
+  color:#63736d;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.dynamic-app .register-section-heading{
+  display:flex;
+  grid-column:1/-1;
+  align-items:center;
+  gap:12px;
+  margin-top:8px;
+  padding-top:15px;
+  border-top:1px solid #e3e9e3;
+}
+
+.dynamic-app .register-section-heading > span{
+  flex:0 0 auto;
+  border-color:#c8d9c9;
+  color:#23634e;
+}
+
+.register-section-heading div{
+  display:grid;
+  gap:3px;
+}
+
+.register-section-heading b{
+  color:#20352c;
+  font-size:13px;
+}
+
+.register-section-heading small{
+  color:#718078;
+  font-size:11px;
+}
+
+.dynamic-app .register-screen__panel .field > span{
+  color:#53635b;
+  font-size:11px;
+  font-weight:850;
+  text-transform:uppercase;
+}
+
+.dynamic-app .register-screen__panel .dynamic-form input,
+.dynamic-app .register-screen__panel .dynamic-form select{
+  min-height:46px;
+  border:1px solid #cfd9d1;
+  border-radius:6px;
+  background:#fbfcfa;
+  color:#172824;
+  font-size:14px;
+}
+
+.dynamic-app .register-screen__panel .dynamic-form input:focus,
+.dynamic-app .register-screen__panel .dynamic-form select:focus{
+  border-color:#43856b;
+  outline:3px solid rgba(67,133,107,.14);
+}
+
+.dynamic-app .register-screen__panel .dynamic-actions .btn{
+  min-height:46px;
+  border-radius:6px;
+  background:#164e3f;
+  box-shadow:none;
+}
+
+.dynamic-app .register-screen__panel .dynamic-actions .btn-secondary{
+  min-height:46px;
+  border-radius:6px;
+}
+
+.dynamic-app.theme-dark .register-screen__panel{
+  border-color:#2b4037;
+  background:#182722;
+}
+
+.dynamic-app.theme-dark .register-screen__heading h2,
+.dynamic-app.theme-dark .register-section-heading b,
+.dynamic-app.theme-dark .register-screen__panel .field > span{
+  color:#f0f5f0;
+}
+
+.dynamic-app.theme-dark .register-screen__heading > p:last-child,
+.dynamic-app.theme-dark .register-section-heading small{
+  color:#b8c9bf;
+}
+
+.dynamic-app.theme-dark .register-screen__panel .dynamic-form input,
+.dynamic-app.theme-dark .register-screen__panel .dynamic-form select{
+  border-color:#40564b;
+  background:#14211c;
+  color:#f0f5f0;
+}
+
+@media (max-width: 900px){
+  .dynamic-app .register-screen{
+    grid-template-columns:1fr;
+  }
+
+  .dynamic-app .auth-dynamic-copy.register-screen__visual{
+    min-height:0;
+  }
+
+  .dynamic-app .register-screen__footnote{
+    margin-top:22px;
+  }
+}
+
+@media (max-width: 760px){
+  .dynamic-app .auth-shell .chatbot-widget{
+    top:auto;
+    bottom:calc(82px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dynamic-app .register-screen{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+
+  .dynamic-app .register-screen__panel{
+    order:-1;
+    padding:24px;
+  }
+
+  .dynamic-app .register-screen__visual{
+    padding:24px;
+  }
+
+  .dynamic-app .register-screen__panel .form-row{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width: 860px){
+  .dynamic-app .auth-shell .app-user{
+    display:flex !important;
+    width:auto !important;
+    margin-left:auto !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:7px !important;
+  }
+
+  .dynamic-app .auth-shell .app-user > a:not(.app-profile-link){
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:auto !important;
+    height:36px !important;
+    min-width:0 !important;
+    padding:0 9px !important;
+    overflow:visible !important;
+    border:1px solid #d4ded5 !important;
+    border-radius:6px !important;
+    background:#fff !important;
+    box-shadow:none !important;
+    color:#164e3f !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+  }
+
+  .dynamic-app .auth-shell .app-user .btn,
+  .dynamic-app .auth-shell .app-user a.btn{
+    display:inline-flex !important;
+    min-height:36px !important;
+    padding:0 9px !important;
+    font-size:11px !important;
+    white-space:nowrap !important;
+  }
+
+  .dynamic-app .auth-shell .app-user > a:not(.app-profile-link)::before{
+    display:none !important;
+    content:none !important;
+  }
+}
+
+@media (max-width: 420px){
+  .dynamic-app .register-screen__visual,
+  .dynamic-app .register-screen__panel{
+    padding:20px;
+  }
+
+  .dynamic-app .auth-dynamic-copy.register-screen__visual h1{
+    margin-top:28px;
+    font-size:34px;
+  }
+
+  .dynamic-app .register-screen__meta{
+    font-size:9px;
   }
 }

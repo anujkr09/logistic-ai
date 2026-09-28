@@ -342,6 +342,10 @@
 
   function layout(content, activePath = normalizePath(), crumbs = []) {
     const active = routeAliases[activePath] || activePath;
+    const isAuthPage = active === '/login' || active === '/register';
+    const authShellClass = active === '/login'
+      ? 'auth-shell auth-shell--login'
+      : active === '/register' ? 'auth-shell auth-shell--register' : '';
     const nav = [
       ['Dashboard', signedIn() && isAdmin() ? '/admin' : '/dashboard'],
       ['Shipments', '/shipments'],
@@ -360,7 +364,7 @@
       ['Settings', '/settings'],
     ];
     return `
-      <div class="app-shell ${active === '/login' ? 'auth-shell' : ''}">
+      <div class="app-shell ${authShellClass}">
         <a class="skip-link" href="#app-main">Skip to content</a>
         <header class="app-header">
           <div class="app-header-inner">
@@ -379,12 +383,12 @@
             </div>
           </div>
         </header>
-        ${active === '/login' ? '' : desktopSideNav(active)}
+        ${isAuthPage ? '' : desktopSideNav(active)}
         <main id="app-main" class="app-main">
           ${breadcrumbs(crumbs.length ? crumbs : [['Home', '/'], [pageTitle(active), active]])}
           ${content}
         </main>
-        ${active === '/login' ? '' : bottomNav(active)}
+        ${isAuthPage ? '' : bottomNav(active)}
       </div>
       <dialog id="confirmDialog" class="confirm-dialog">
         <form method="dialog">
@@ -609,20 +613,26 @@
 
   function registerPage() {
     return layout(`
-      <section class="dynamic-grid two">
-        <div class="dynamic-panel auth-dynamic-copy">
-          <p class="home-kicker">New user onboarding</p>
-          <h1>Create a verified logistics account</h1>
-          <p class="muted-text">Add user, mobile, company, PAN, and GST details. The mobile number becomes your OTP login identity.</p>
-          <div class="auth-proof-grid">
-            <span><strong>User</strong>Name, email, role, and password.</span>
-            <span><strong>Mobile</strong>Country code and OTP-ready phone.</span>
-            <span><strong>Business</strong>Company, PAN, and GST validation.</span>
-          </div>
+      <section class="dynamic-grid two auth-dynamic-grid register-screen">
+        <div class="dynamic-panel auth-dynamic-copy register-screen__visual">
+          <div class="register-screen__meta"><span>ZYRAVIQ / NEW WORKSPACE</span><span>3 STEPS</span></div>
+          <h1>Set up your shipping workspace.</h1>
+          <p class="muted-text">Add an account owner, verify a mobile number, and enter the business details used for logistics operations.</p>
+          <ol class="register-progress" aria-label="Registration steps">
+            <li><span>01</span><div><b>User details</b><small>Account owner and role</small></div></li>
+            <li><span>02</span><div><b>Mobile login</b><small>Number for OTP access</small></div></li>
+            <li><span>03</span><div><b>Company verification</b><small>Business identity details</small></div></li>
+          </ol>
+          <p class="register-screen__footnote">Have your company PAN and GST details ready before submitting.</p>
         </div>
-        <div class="dynamic-panel">
-          <form id="registerForm" class="dynamic-form" data-dirty-form>
-            <p class="home-kicker">1. User details</p>
+        <div class="dynamic-panel register-screen__panel">
+          <div class="register-screen__heading">
+            <p class="home-kicker">Business account</p>
+            <h2>Create your account</h2>
+            <p>Complete each section to open your ZYRAVIQ workspace.</p>
+          </div>
+          <form id="registerForm" class="dynamic-form register-form" data-dirty-form>
+            <div class="register-section-heading"><span>01</span><div><b>User details</b><small>Who will manage this account?</small></div></div>
             <div class="form-row">
               <label class="field"><span>Name</span><input class="input" name="name" required /></label>
               <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" required /></label>
@@ -631,12 +641,12 @@
               <label class="field"><span>Role</span><select class="select" name="accountRole"><option value="customer">Customer</option><option value="admin">Admin</option></select></label>
               <label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="new-password" required minlength="6" /></label>
             </div>
-            <p class="home-kicker">2. Mobile login</p>
+            <div class="register-section-heading"><span>02</span><div><b>Mobile login</b><small>This number will receive login OTPs.</small></div></div>
             <div class="form-row">
               <label class="field"><span>Country</span><select class="select" name="phoneCountry" data-country-code-target="phoneCountryCode"><option value="India" data-code="+91">India (+91)</option><option value="United States" data-code="+1">United States (+1)</option><option value="United Kingdom" data-code="+44">United Kingdom (+44)</option><option value="United Arab Emirates" data-code="+971">UAE (+971)</option><option value="Singapore" data-code="+65">Singapore (+65)</option></select></label>
               <label class="field"><span>Mobile number</span><div class="phone-field"><input class="input phone-code" name="phoneCountryCode" value="+91" readonly /><input class="input" name="phoneNumber" type="tel" inputmode="tel" autocomplete="tel-national" required /></div></label>
             </div>
-            <p class="home-kicker">3. Company verification</p>
+            <div class="register-section-heading"><span>03</span><div><b>Company verification</b><small>Use the registered legal business details.</small></div></div>
             <label class="field"><span>Company</span><input class="input" name="companyName" autocomplete="organization" required /></label>
             <div class="form-row">
               <label class="field"><span>PAN number</span><input class="input" name="panNumber" maxlength="10" required /></label>
