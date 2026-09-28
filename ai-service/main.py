@@ -493,6 +493,10 @@ def health():
     return {"ok": True}
 
 
+@app.get("/")
+def read_root():
+    return {"status": "Service is running successfully!"}
+
 @app.post("/validate-location")
 def validate_location(req: ValidateLocationRequest):
     normalized_address = req.address.strip()
